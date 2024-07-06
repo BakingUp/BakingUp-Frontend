@@ -39,3 +39,18 @@ jobs:
       - run: flutter test
       - run: flutter build apk
       - run: flutter build appbundle
+
+  build_ios:
+    runs-on: macos-latest
+    environment: frontend-ci
+    
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter pub get
+      - run: flutter test
+      - run: flutter build ios --release --no-codesign
