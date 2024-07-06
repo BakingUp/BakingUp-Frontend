@@ -27,7 +27,7 @@ jobs:
 
   build_android:
     runs-on: ubuntu-latest
-    environment: frontend-ci
+    needs: [test]
 
     steps:
       - name: Clone repository
@@ -44,7 +44,7 @@ jobs:
 
   build_ios:
     runs-on: macos-latest
-    environment: frontend-ci
+    needs: [test]
 
     steps:
       - name: Clone repository
@@ -59,7 +59,7 @@ jobs:
 
   build_web:
     runs-on: ubuntu-latest
-    environment: frontend-ci
+    needs: [test]
 
     steps:
         - name: Clone repository
