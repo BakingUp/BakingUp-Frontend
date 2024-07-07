@@ -27,7 +27,6 @@ test:
   stage: test
   tags:
     - ubuntu
-    - macos
   environment:
     name: frontend-ci
   script:
@@ -44,18 +43,6 @@ build_android:
     - flutter test
     - flutter build apk
     - flutter build appbundle
-
-build_ios:
-  stage: build
-  tags:
-    - macos
-  needs: ["test"]
-  before_script:
-    - export PATH="$FLUTTER_PATH/bin:$PATH"
-  script:
-    - flutter pub get
-    - flutter test
-    - flutter build ios
 
 build_web:
   stage: build
