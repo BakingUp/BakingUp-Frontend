@@ -6,14 +6,20 @@ variables:
   FLUTTER_CHANNEL: stable
   FLUTTER_VERSION: 3.22.2
   FLUTTER_PATH: "/usr/local/flutter"
+  ANDROID_HOME: "/opt/android-sdk"
 
 before_script:
-  # Install dependencies and Flutter
   - sudo apt-get update && sudo apt-get install -y curl git unzip xz-utils libglu1-mesa
   - if [ ! -d "$FLUTTER_PATH" ]; then sudo git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL $FLUTTER_PATH --depth 1; fi
   - sudo chown -R $USER:$USER $FLUTTER_PATH
   - export PATH="$FLUTTER_PATH/bin:$PATH"
   - flutter --version
+
+  - mkdir -p $ANDROID_HOME
+  - curl -o sdk-tools-linux.zip https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip
+  - unzip sdk-tools-linux.zip -d $ANDROID_HOME
+  - yes | $ANDROID_HOME/cmdline-tools/bin/sdkmanager --licenses
+  - $ANDROID_HOME/cmdline-tools/bin/sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3"
 
 test:
   stage: test
