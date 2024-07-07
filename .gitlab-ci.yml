@@ -54,7 +54,7 @@ build_ios:
   script:
     - flutter pub get
     - flutter test
-    - flutter build ios --no-codesign
+    - flutter build ios
 
 build_web:
   stage: build
