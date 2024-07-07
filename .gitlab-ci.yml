@@ -5,18 +5,20 @@ stages:
 variables:
   FLUTTER_CHANNEL: stable
   FLUTTER_VERSION: 3.22.2
+  FLUTTER_PATH: "/usr/local/flutter"
+
+before_script:
+  # Install dependencies and Flutter
+  - apt-get update && apt-get install -y curl git unzip xz-utils libglu1-mesa
+  - if [ ! -d "$FLUTTER_PATH" ]; then git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL $FLUTTER_PATH --depth 1; fi
+  - export PATH="$FLUTTER_PATH/bin:$PATH"
+  - flutter --version
 
 test:
   stage: test
   image: ubuntu:latest
   environment:
     name: frontend-ci
-  before_script:
-    - apt-get update
-    - apt-get install -y curl git unzip xz-utils
-    - git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL --depth 1
-    - export PATH="$PATH:`pwd`/flutter/bin"
-    - flutter --version
   script:
     - flutter pub get
     - flutter analyze
@@ -25,12 +27,6 @@ build_android:
   stage: build
   image: ubuntu:latest
   needs: ["test"]
-  before_script:
-    - apt-get update
-    - apt-get install -y curl git unzip xz-utils
-    - git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL --depth 1
-    - export PATH="$PATH:`pwd`/flutter/bin"
-    - flutter --version
   script:
     - flutter pub get
     - flutter test
@@ -42,9 +38,7 @@ build_ios:
   image: macos:latest
   needs: ["test"]
   before_script:
-    - git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL --depth 1
-    - export PATH="$PATH:`pwd`/flutter/bin"
-    - flutter --version
+    - export PATH="$FLUTTER_PATH/bin:$PATH"
   script:
     - flutter pub get
     - flutter test
@@ -54,13 +48,16 @@ build_web:
   stage: build
   image: ubuntu:latest
   needs: ["test"]
-  before_script:
-    - apt-get update
-    - apt-get install -y curl git unzip xz-utils
-    - git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL --depth 1
-    - export PATH="$PATH:`pwd`/flutter/bin"
-    - flutter --version
   script:
     - flutter pub get
     - flutter test
     - flutter build web
+
+# Debugging steps
+debug_info:
+  stage: .pre
+  script:
+    - echo "Current PATH: $PATH"
+    - echo "Flutter path: $FLUTTER_PATH"
+    - flutter --version
+    - flutter doctor
