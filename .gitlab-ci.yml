@@ -1,0 +1,66 @@
+stages:
+  - test
+  - build
+
+variables:
+  FLUTTER_CHANNEL: stable
+  FLUTTER_VERSION: 3.22.2
+
+test:
+  stage: test
+  image: ubuntu:latest
+  environment:
+    name: frontend-ci
+  before_script:
+    - apt-get update
+    - apt-get install -y curl git unzip xz-utils
+    - git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL --depth 1
+    - export PATH="$PATH:`pwd`/flutter/bin"
+    - flutter --version
+  script:
+    - flutter pub get
+    - flutter analyze
+
+build_android:
+  stage: build
+  image: ubuntu:latest
+  needs: ["test"]
+  before_script:
+    - apt-get update
+    - apt-get install -y curl git unzip xz-utils
+    - git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL --depth 1
+    - export PATH="$PATH:`pwd`/flutter/bin"
+    - flutter --version
+  script:
+    - flutter pub get
+    - flutter test
+    - flutter build apk
+    - flutter build appbundle
+
+build_ios:
+  stage: build
+  image: macos:latest
+  needs: ["test"]
+  before_script:
+    - git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL --depth 1
+    - export PATH="$PATH:`pwd`/flutter/bin"
+    - flutter --version
+  script:
+    - flutter pub get
+    - flutter test
+    - flutter build ios --release --no-codesign
+
+build_web:
+  stage: build
+  image: ubuntu:latest
+  needs: ["test"]
+  before_script:
+    - apt-get update
+    - apt-get install -y curl git unzip xz-utils
+    - git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL --depth 1
+    - export PATH="$PATH:`pwd`/flutter/bin"
+    - flutter --version
+  script:
+    - flutter pub get
+    - flutter test
+    - flutter build web
