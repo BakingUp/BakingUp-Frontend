@@ -5,20 +5,11 @@ stages:
 variables:
   FLUTTER_CHANNEL: stable
   FLUTTER_VERSION: 3.22.2
-  FLUTTER_PATH: "$HOME/flutter"
+  FLUTTER_PATH: "/usr/local/flutter"
 
 before_script:
-  - |
-    if [ "$(uname)" == "Darwin" ]; then
-      if ! command -v brew &>/dev/null; then
-        echo "Homebrew not found, installing..."
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-      fi
-      brew update
-      brew install curl git unzip xz libglu
-    else
-      apt-get update && apt-get install -y curl git unzip xz-utils libglu1-mesa
-    fi
+  # Install dependencies and Flutter
+  - apt-get update && apt-get install -y curl git unzip xz-utils libglu1-mesa
   - if [ ! -d "$FLUTTER_PATH" ]; then git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL $FLUTTER_PATH --depth 1; fi
   - export PATH="$FLUTTER_PATH/bin:$PATH"
   - flutter --version
@@ -26,7 +17,7 @@ before_script:
 test:
   stage: test
   tags:
-    - ubuntu
+    - saas-linux-small-amd64
   environment:
     name: frontend-ci
   script:
@@ -36,7 +27,7 @@ test:
 build_android:
   stage: build
   tags:
-    - ubuntu
+    - saas-linux-small-amd64
   needs: ["test"]
   script:
     - flutter pub get
@@ -47,7 +38,7 @@ build_android:
 build_ios:
   stage: build
   tags:
-    - macos
+    - saas-macos-medium-m1
   needs: ["test"]
   before_script:
     - export PATH="$FLUTTER_PATH/bin:$PATH"
@@ -59,7 +50,7 @@ build_ios:
 build_web:
   stage: build
   tags:
-    - ubuntu
+    - saas-linux-small-amd64
   needs: ["test"]
   script:
     - flutter pub get
