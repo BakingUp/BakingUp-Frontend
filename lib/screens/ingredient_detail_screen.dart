@@ -1,7 +1,17 @@
+// Importing libraries
+import 'package:flutter/material.dart';
+
+// Importing files
+import 'package:bakingup_frontend/components/baking_up_circular_add_button.dart';
+import 'package:bakingup_frontend/components/baking_up_circular_back_button.dart';
+import 'package:bakingup_frontend/components/baking_up_filter_button.dart';
+import 'package:bakingup_frontend/components/ingredient_detail/ingredient_detail_back_button_container.dart';
+import 'package:bakingup_frontend/components/ingredient_detail/ingredient_detail_image.dart';
+import 'package:bakingup_frontend/components/ingredient_detail/ingredient_detail_image_container.dart';
+import 'package:bakingup_frontend/components/ingredient_detail/ingredient_stock_detail.dart';
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/enum/expiration_status.dart';
 import 'package:bakingup_frontend/utilities/regex.dart';
-import 'package:flutter/material.dart';
 
 class IngredientDetailScreen extends StatefulWidget {
   const IngredientDetailScreen({super.key});
@@ -53,42 +63,15 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Image.network(
-              ingredientUrl,
-              width: MediaQuery.of(context)
-                  .size
-                  .width, // Make the image take all the width
-              fit: BoxFit.cover,
+          IngredientDetailImageContainer(
+            child: IngredientDetailImage(
+              ingredientUrl: ingredientUrl,
             ),
           ),
-          Positioned(
-            top: 60,
-            left: 20,
-            right: 0,
-            child: Row(
-              children: [
-                FloatingActionButton(
-                  heroTag: 'back',
-                  backgroundColor: beigeColor,
-                  onPressed: () {},
-                  elevation: 5,
-                  shape: const CircleBorder(),
-                  mini: true,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Icon(
-                      Icons.arrow_back_ios,
-                      size: 25,
-                      color: blackColor,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          const IngredientDetailBackButtonContainer(
+            children: [
+              BakingUpCircularBackButton(),
+            ],
           ),
           Positioned(
             top: (MediaQuery.of(context).size.width / 1.5) + 125,
@@ -103,12 +86,12 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
               ),
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
+                  const Padding(
+                    padding: EdgeInsets.all(20.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Image.asset('assets/icons/filter.png'),
+                        BakingUpFilterButton(),
                       ],
                     ),
                   ),
@@ -117,116 +100,9 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
                       padding: const EdgeInsets.all(0),
                       itemCount: ingredientStocks.length,
                       itemBuilder: (context, index) {
-                        return Container(
-                          margin: const EdgeInsets.fromLTRB(20, 0, 20, 25),
-                          padding: const EdgeInsets.all(12.0),
-                          decoration: BoxDecoration(
-                            color: ingredientStocks[index].expirationStatus ==
-                                    ExpirationStatus.black
-                                ? greyColor
-                                : beigeColor,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 1,
-                                blurRadius: 5,
-                                offset: const Offset(0, 3),
-                              )
-                            ],
-                            borderRadius: BorderRadius.circular(13),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(13),
-                                    child: Image.network(
-                                      ingredientStocks[index].stockUrl,
-                                      width: 80,
-                                      height: 50,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  const Padding(
-                                      padding: EdgeInsets.only(right: 12.0)),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Price: ${ingredientStocks[index].price}',
-                                        style: TextStyle(
-                                          color: blackColor,
-                                          fontFamily: 'Inter',
-                                          fontStyle: FontStyle.normal,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                      Text(
-                                        'Quantity: ${ingredientStocks[index].quantity}',
-                                        style: TextStyle(
-                                          color: blackColor,
-                                          fontFamily: 'Inter',
-                                          fontStyle: FontStyle.normal,
-                                          fontWeight: FontWeight.w300,
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                      Text(
-                                        'Expiration Date: ${ingredientStocks[index].expirationDate}',
-                                        style: TextStyle(
-                                          color: ingredientStocks[index]
-                                                      .expirationStatus ==
-                                                  ExpirationStatus.black
-                                              ? redColor
-                                              : blackColor,
-                                          fontFamily: 'Inter',
-                                          fontStyle: FontStyle.normal,
-                                          fontWeight: FontWeight.w300,
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Container(
-                                    width: 30,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color: ingredientStocks[index]
-                                                  .expirationStatus ==
-                                              ExpirationStatus.black
-                                          ? blackColor
-                                          : ingredientStocks[index]
-                                                      .expirationStatus ==
-                                                  ExpirationStatus.red
-                                              ? redColor
-                                              : ingredientStocks[index]
-                                                          .expirationStatus ==
-                                                      ExpirationStatus.yellow
-                                                  ? yellowColor
-                                                  : greenColor,
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                  const Padding(
-                                      padding: EdgeInsets.only(right: 20.0)),
-                                  Image.asset(
-                                    'assets/icons/edit.png',
-                                    scale: 0.7,
-                                  ),
-                                  const Padding(
-                                      padding: EdgeInsets.only(right: 8.0)),
-                                ],
-                              )
-                            ],
-                          ),
+                        return IngredientStockDetail(
+                          ingredientStocks: ingredientStocks,
+                          index: index,
                         );
                       },
                     ),
@@ -287,19 +163,7 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
                                 padding: EdgeInsets.only(bottom: 8.0)),
                           ],
                         ),
-                        FloatingActionButton(
-                          heroTag: 'add',
-                          backgroundColor: beigeColor,
-                          onPressed: () {},
-                          elevation: 5,
-                          shape: const CircleBorder(),
-                          mini: true,
-                          child: Icon(
-                            Icons.add,
-                            size: 25,
-                            color: blackColor,
-                          ),
-                        ),
+                        const BakingUpCircularAddButton(),
                       ],
                     ),
                     Text(
