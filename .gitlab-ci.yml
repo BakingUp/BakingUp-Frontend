@@ -15,7 +15,8 @@ before_script:
   - export PATH="$FLUTTER_PATH/bin:$PATH"
   - flutter --version
 
-  - mkdir -p $ANDROID_HOME
+  - sudo mkdir -p $ANDROID_HOME
+  - sudo chown -R $USER:$USER $ANDROID_HOME
   - curl -o sdk-tools-linux.zip https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip
   - unzip sdk-tools-linux.zip -d $ANDROID_HOME
   - yes | $ANDROID_HOME/cmdline-tools/bin/sdkmanager --licenses
