@@ -15,7 +15,6 @@ before_script:
   - sudo chown -R $USER:$USER $FLUTTER_PATH
   - export PATH="$FLUTTER_PATH/bin:$PATH"
   - flutter --version
-  - flutter upgrade --force $FLUTTER_VERSION
 
   - sudo mkdir -p $ANDROID_HOME
   - sudo chown -R $USER:$USER $ANDROID_HOME
@@ -55,7 +54,7 @@ build_ios:
   script:
     - flutter pub get
     - flutter test
-    - flutter build ios --release --no-codesign
+    - flutter build ios --no-codesign
 
 build_web:
   stage: build
