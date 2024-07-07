@@ -16,7 +16,8 @@ before_script:
 
 test:
   stage: test
-  image: ubuntu:latest
+  tags:
+    - ubuntu
   environment:
     name: frontend-ci
   script:
@@ -25,7 +26,8 @@ test:
 
 build_android:
   stage: build
-  image: ubuntu:latest
+  tags:
+    - ubuntu
   needs: ["test"]
   script:
     - flutter pub get
@@ -35,7 +37,8 @@ build_android:
 
 build_ios:
   stage: build
-  image: macos:latest
+  tags:
+    - macos
   needs: ["test"]
   before_script:
     - export PATH="$FLUTTER_PATH/bin:$PATH"
@@ -46,7 +49,8 @@ build_ios:
 
 build_web:
   stage: build
-  image: ubuntu:latest
+  tags:
+    - ubuntu
   needs: ["test"]
   script:
     - flutter pub get
