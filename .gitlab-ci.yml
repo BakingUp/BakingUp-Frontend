@@ -27,7 +27,6 @@ test:
   stage: test
   tags:
     - ubuntu
-    - macos
   environment:
     name: frontend-ci
   script:
