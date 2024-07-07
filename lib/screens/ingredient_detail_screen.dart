@@ -72,6 +72,7 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
             child: Row(
               children: [
                 FloatingActionButton(
+                  heroTag: 'back',
                   backgroundColor: beigeColor,
                   onPressed: () {},
                   elevation: 5,
@@ -287,6 +288,7 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
                           ],
                         ),
                         FloatingActionButton(
+                          heroTag: 'add',
                           backgroundColor: beigeColor,
                           onPressed: () {},
                           elevation: 5,
