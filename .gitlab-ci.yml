@@ -11,7 +11,8 @@ before_script:
   # Install dependencies and Flutter
   - sudo apt-get update && sudo apt-get install -y curl git unzip xz-utils libglu1-mesa
   - if [ ! -d "$FLUTTER_PATH" ]; then sudo git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL $FLUTTER_PATH --depth 1; fi
-  - sudo export PATH="$FLUTTER_PATH/bin:$PATH"
+  - sudo chown -R $USER:$USER $FLUTTER_PATH
+  - export PATH="$FLUTTER_PATH/bin:$PATH"
   - flutter --version
 
 test:
