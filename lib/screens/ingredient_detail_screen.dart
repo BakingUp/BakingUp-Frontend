@@ -1,4 +1,5 @@
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/enum/expiration_status.dart';
 import 'package:bakingup_frontend/utilities/regex.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,36 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
   double quantity = 1.4;
   String unit = 'kg';
   double ingredientLessThan = 3;
-  int stock = 10;
+  List<IngredientStock> ingredientStocks = [
+    IngredientStock(
+        stockId: '1',
+        stockUrl: 'https://i.imgur.com/RLsjqFm.png',
+        price: '37/kg',
+        quantity: '1 kg',
+        expirationDate: '29/06/2024',
+        expirationStatus: ExpirationStatus.red),
+    IngredientStock(
+        stockId: '2',
+        stockUrl: 'https://i.imgur.com/RLsjqFm.png',
+        price: '37/kg',
+        quantity: '1 kg',
+        expirationDate: '29/06/2024',
+        expirationStatus: ExpirationStatus.green),
+    IngredientStock(
+        stockId: '2',
+        stockUrl: 'https://i.imgur.com/RLsjqFm.png',
+        price: '37/kg',
+        quantity: '1 kg',
+        expirationDate: '29/06/2024',
+        expirationStatus: ExpirationStatus.yellow),
+    IngredientStock(
+        stockId: '3',
+        stockUrl: 'https://i.imgur.com/RLsjqFm.png',
+        price: '37/kg',
+        quantity: '1 kg',
+        expirationDate: '29/06/2024',
+        expirationStatus: ExpirationStatus.black),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -47,12 +77,12 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
                   elevation: 5,
                   shape: const CircleBorder(),
                   mini: true,
-                  child: const Padding(
-                    padding: EdgeInsets.only(left: 8.0),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
                     child: Icon(
                       Icons.arrow_back_ios,
                       size: 25,
-                      color: Colors.black,
+                      color: blackColor,
                     ),
                   ),
                 ),
@@ -84,13 +114,16 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
                   Expanded(
                     child: ListView.builder(
                       padding: const EdgeInsets.all(0),
-                      itemCount: 10,
+                      itemCount: ingredientStocks.length,
                       itemBuilder: (context, index) {
                         return Container(
                           margin: const EdgeInsets.fromLTRB(20, 0, 20, 25),
                           padding: const EdgeInsets.all(12.0),
                           decoration: BoxDecoration(
-                            color: beigeColor,
+                            color: ingredientStocks[index].expirationStatus ==
+                                    ExpirationStatus.black
+                                ? greyColor
+                                : beigeColor,
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.grey.withOpacity(0.5),
@@ -109,7 +142,7 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(13),
                                     child: Image.network(
-                                      'https://i.imgur.com/RLsjqFm.png',
+                                      ingredientStocks[index].stockUrl,
                                       width: 80,
                                       height: 50,
                                       fit: BoxFit.cover,
@@ -117,14 +150,14 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
                                   ),
                                   const Padding(
                                       padding: EdgeInsets.only(right: 12.0)),
-                                  const Column(
+                                  Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Price: 37/kg.',
+                                        'Price: ${ingredientStocks[index].price}',
                                         style: TextStyle(
-                                          color: Colors.black,
+                                          color: blackColor,
                                           fontFamily: 'Inter',
                                           fontStyle: FontStyle.normal,
                                           fontWeight: FontWeight.w500,
@@ -132,9 +165,9 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
                                         ),
                                       ),
                                       Text(
-                                        'Quantity: 1.9 kg',
+                                        'Quantity: ${ingredientStocks[index].quantity}',
                                         style: TextStyle(
-                                          color: Colors.black,
+                                          color: blackColor,
                                           fontFamily: 'Inter',
                                           fontStyle: FontStyle.normal,
                                           fontWeight: FontWeight.w300,
@@ -142,9 +175,13 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
                                         ),
                                       ),
                                       Text(
-                                        'Expiration Date: 29/06/2024',
+                                        'Expiration Date: ${ingredientStocks[index].expirationDate}',
                                         style: TextStyle(
-                                          color: Colors.black,
+                                          color: ingredientStocks[index]
+                                                      .expirationStatus ==
+                                                  ExpirationStatus.black
+                                              ? redColor
+                                              : blackColor,
                                           fontFamily: 'Inter',
                                           fontStyle: FontStyle.normal,
                                           fontWeight: FontWeight.w300,
@@ -161,7 +198,19 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
                                     width: 30,
                                     height: 30,
                                     decoration: BoxDecoration(
-                                      color: redColor,
+                                      color: ingredientStocks[index]
+                                                  .expirationStatus ==
+                                              ExpirationStatus.black
+                                          ? blackColor
+                                          : ingredientStocks[index]
+                                                      .expirationStatus ==
+                                                  ExpirationStatus.red
+                                              ? redColor
+                                              : ingredientStocks[index]
+                                                          .expirationStatus ==
+                                                      ExpirationStatus.yellow
+                                                  ? yellowColor
+                                                  : greenColor,
                                       shape: BoxShape.circle,
                                     ),
                                   ),
@@ -191,7 +240,7 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
             right: 0,
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: whiteColor,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
@@ -220,8 +269,8 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
                               children: [
                                 Text(
                                   ingredientName,
-                                  style: const TextStyle(
-                                    color: Colors.black,
+                                  style: TextStyle(
+                                    color: blackColor,
                                     fontFamily: 'Inter',
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w500,
@@ -243,18 +292,18 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
                           elevation: 5,
                           shape: const CircleBorder(),
                           mini: true,
-                          child: const Icon(
+                          child: Icon(
                             Icons.add,
                             size: 25,
-                            color: Colors.black,
+                            color: blackColor,
                           ),
                         ),
                       ],
                     ),
                     Text(
                       'Quantity: ${quantity.toString().replaceAll(removeTrailingZeros, '')} $unit',
-                      style: const TextStyle(
-                        color: Colors.black,
+                      style: TextStyle(
+                        color: blackColor,
                         fontFamily: 'Inter',
                         fontStyle: FontStyle.normal,
                         fontWeight: FontWeight.w300,
@@ -265,9 +314,9 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '$stock stocks',
-                          style: const TextStyle(
-                            color: Colors.black,
+                          '${ingredientStocks.length} ${ingredientStocks.length > 1 ? "stocks" : "stock"}',
+                          style: TextStyle(
+                            color: blackColor,
                             fontFamily: 'Inter',
                             fontStyle: FontStyle.normal,
                             fontWeight: FontWeight.w300,
@@ -276,8 +325,8 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
                         ),
                         Text(
                           'Notify me : < ${ingredientLessThan.toString().replaceAll(removeTrailingZeros, '')} $unit',
-                          style: const TextStyle(
-                            color: Colors.black,
+                          style: TextStyle(
+                            color: blackColor,
                             fontFamily: 'Inter',
                             fontStyle: FontStyle.normal,
                             fontWeight: FontWeight.w300,
@@ -295,4 +344,23 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
       ),
     );
   }
+}
+
+// Temporary class to simulate the data
+class IngredientStock {
+  final String stockId;
+  final String stockUrl;
+  final String price;
+  final String quantity;
+  final String expirationDate;
+  final ExpirationStatus expirationStatus;
+
+  IngredientStock({
+    required this.stockId,
+    required this.stockUrl,
+    required this.price,
+    required this.quantity,
+    required this.expirationDate,
+    required this.expirationStatus,
+  });
 }
