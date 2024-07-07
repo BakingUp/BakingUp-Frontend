@@ -7,9 +7,10 @@ variables:
   FLUTTER_VERSION: 3.22.2
   FLUTTER_PATH: "/usr/local/flutter"
   ANDROID_HOME: "/opt/android-sdk"
+  JAVA_HOME: "/usr/lib/jvm/java-11-openjdk-amd64"
 
 before_script:
-  - sudo apt-get update && sudo apt-get install -y curl git unzip xz-utils libglu1-mesa
+  - sudo apt-get update && sudo apt-get install -y curl git unzip xz-utils libglu1-mesa && sudo apt-get install -y openjdk-11-jdk
   - if [ ! -d "$FLUTTER_PATH" ]; then sudo git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL $FLUTTER_PATH --depth 1; fi
   - sudo chown -R $USER:$USER $FLUTTER_PATH
   - export PATH="$FLUTTER_PATH/bin:$PATH"
