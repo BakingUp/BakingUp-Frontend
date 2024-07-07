@@ -5,11 +5,20 @@ stages:
 variables:
   FLUTTER_CHANNEL: stable
   FLUTTER_VERSION: 3.22.2
-  FLUTTER_PATH: "/usr/local/flutter"
+  FLUTTER_PATH: "$HOME/flutter"
 
 before_script:
-  # Install dependencies and Flutter
-  - apt-get update && apt-get install -y curl git unzip xz-utils libglu1-mesa
+  - |
+    if [ "$(uname)" == "Darwin" ]; then
+      if ! command -v brew &>/dev/null; then
+        echo "Homebrew not found, installing..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      fi
+      brew update
+      brew install curl git unzip xz libglu
+    else
+      apt-get update && apt-get install -y curl git unzip xz-utils libglu1-mesa
+    fi
   - if [ ! -d "$FLUTTER_PATH" ]; then git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL $FLUTTER_PATH --depth 1; fi
   - export PATH="$FLUTTER_PATH/bin:$PATH"
   - flutter --version
@@ -18,6 +27,7 @@ test:
   stage: test
   tags:
     - ubuntu
+    - macos
   environment:
     name: frontend-ci
   script:
