@@ -10,7 +10,7 @@ variables:
 before_script:
   # Install dependencies and Flutter
   - sudo apt-get update && sudo apt-get install -y curl git unzip xz-utils libglu1-mesa
-  - if [ ! -d "$FLUTTER_PATH" ]; then git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL $FLUTTER_PATH --depth 1; fi
+  - if [ ! -d "$FLUTTER_PATH" ]; then sudo git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL $FLUTTER_PATH --depth 1; fi
   - export PATH="$FLUTTER_PATH/bin:$PATH"
   - flutter --version
 
