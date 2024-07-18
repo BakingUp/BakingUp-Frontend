@@ -32,6 +32,8 @@ test:
   script:
     - flutter pub get
     - flutter analyze
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
 
 build_android:
   stage: build
@@ -43,6 +45,8 @@ build_android:
     - flutter test
     - flutter build apk
     - flutter build appbundle
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
 
 build_web:
   stage: build
@@ -53,3 +57,5 @@ build_web:
     - flutter pub get
     - flutter test
     - flutter build web
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
