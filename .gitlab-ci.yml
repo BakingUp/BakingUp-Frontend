@@ -1,35 +1,21 @@
 stages:
+  - setup
   - test
   - build
 
-variables:
-  FLUTTER_CHANNEL: stable
-  FLUTTER_VERSION: 3.22.2
-  FLUTTER_PATH: "/usr/local/flutter"
-  ANDROID_HOME: "/opt/android-sdk"
-  JAVA_HOME: "/usr/lib/jvm/java-11-openjdk-amd64"
-
-before_script:
-  - sudo apt-get update && sudo apt-get install -y curl git unzip xz-utils libglu1-mesa && sudo apt-get install -y openjdk-11-jdk
-  - if [ ! -d "$FLUTTER_PATH" ]; then sudo git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL $FLUTTER_PATH --depth 1; fi
-  - sudo chown -R $USER:$USER $FLUTTER_PATH
-  - export PATH="$FLUTTER_PATH/bin:$PATH"
-  - flutter --version
-
-  - sudo mkdir -p $ANDROID_HOME
-  - sudo chown -R $USER:$USER $ANDROID_HOME
-  - curl -o sdk-tools-linux.zip https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip
-  - unzip -o sdk-tools-linux.zip -d $ANDROID_HOME
-  - yes | $ANDROID_HOME/cmdline-tools/bin/sdkmanager --licenses --sdk_root=$ANDROID_HOME || true
-  - $ANDROID_HOME/cmdline-tools/bin/sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3" --sdk_root=$ANDROID_HOME
+setup:
+  stage: setup
+  tags:
+    - ubuntu
+  script:
+    - unzip -o sdk-tools-linux.zip -d $ANDROID_HOME
+    - yes | $ANDROID_HOME/cmdline-tools/bin/sdkmanager --licenses --sdk_root=$ANDROID_HOME || true
+    - $ANDROID_HOME/cmdline-tools/bin/sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3" --sdk_root=$ANDROID_HOME
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
 
 test:
   stage: test
-  rules:
-    - changes:
-        - "**/*.dart"
-    - if: $CI_PIPELINE_SOURCE != "push"
-      when: never
   tags:
     - ubuntu
   environment:
@@ -37,14 +23,11 @@ test:
   script:
     - flutter pub get
     - flutter analyze
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
 
 build_android:
   stage: build
-  rules:
-    - changes:
-        - "**/*.dart"
-    - if: $CI_PIPELINE_SOURCE != "push"
-      when: never
   tags:
     - ubuntu
   needs: ["test"]
@@ -52,19 +35,5 @@ build_android:
     - flutter pub get
     - flutter test
     - flutter build apk
-    - flutter build appbundle
-
-build_web:
-  stage: build
   rules:
-    - changes:
-        - "**/*.dart"
-    - if: $CI_PIPELINE_SOURCE != "push"
-      when: never
-  tags:
-    - ubuntu
-  needs: ["test"]
-  script:
-    - flutter pub get
-    - flutter test
-    - flutter build web
+    - if: '$CI_COMMIT_BRANCH == "main"'
