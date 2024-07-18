@@ -3,6 +3,10 @@ stages:
   - test
   - build
 
+only:
+  - pushes
+  - tags
+
 setup:
   stage: setup
   tags:
@@ -11,8 +15,6 @@ setup:
     - unzip -o sdk-tools-linux.zip -d $ANDROID_HOME
     - yes | $ANDROID_HOME/cmdline-tools/bin/sdkmanager --licenses --sdk_root=$ANDROID_HOME || true
     - $ANDROID_HOME/cmdline-tools/bin/sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3" --sdk_root=$ANDROID_HOME
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
 
 test:
   stage: test
@@ -23,8 +25,6 @@ test:
   script:
     - flutter pub get
     - flutter analyze
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
 
 build_android:
   stage: build
@@ -35,5 +35,3 @@ build_android:
     - flutter pub get
     - flutter test
     - flutter build apk
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
