@@ -27,6 +27,7 @@ test:
   stage: test
   rules:
     - if: $CI_PIPELINE_SOURCE != "push"
+      when: never
   tags:
     - ubuntu
   environment:
@@ -39,6 +40,7 @@ build_android:
   stage: build
   rules:
     - if: $CI_PIPELINE_SOURCE != "push"
+      when: never
   tags:
     - ubuntu
   needs: ["test"]
@@ -52,6 +54,7 @@ build_web:
   stage: build
   rules:
     - if: $CI_PIPELINE_SOURCE != "push"
+      when: never
   tags:
     - ubuntu
   needs: ["test"]
