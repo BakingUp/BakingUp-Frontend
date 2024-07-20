@@ -323,18 +323,18 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 80),
+              const SizedBox(height: 80),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
                     width: 150,
-                    padding: EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
                     decoration: BoxDecoration(
                       color: greyColor,
                       borderRadius: BorderRadius.circular(50),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Cancel',
                       style: TextStyle(
                         fontSize: 15,
@@ -345,15 +345,15 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   Container(
                     width: 150,
-                    padding: EdgeInsets.symmetric(vertical: 10),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
                     decoration: BoxDecoration(
                       color: lightGreenColor,
                       borderRadius: BorderRadius.circular(50),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Save',
                       style: TextStyle(
                         fontSize: 15,
