@@ -1,7 +1,16 @@
+// Importing libraries
+import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_notification_text_field.dart';
+import 'package:flutter/material.dart';
+
+// Importing files
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
+import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_container.dart';
+import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_image_uploader.dart';
+import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_name_text_field.dart';
+import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_title.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dropdown.dart';
-import 'package:flutter/material.dart';
+import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 
 class AddEditIngredientScreen extends StatefulWidget {
   const AddEditIngredientScreen({super.key});
@@ -44,331 +53,143 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
       drawer: BakingUpDrawer(
         currentDrawerIndex: _currentDrawerIndex,
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
+      body: AddEditIngredientContainer(
+        children: [
+          const AddEditIngredientTitle(title: "Ingredient Information"),
+          const AddEditIngredientImageUploader(),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+              Row(
                 children: [
-                  Text(
-                    "Ingredient Information",
+                  const Text(
+                    'Ingredient Name',
                     style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: 'Inter',
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  Text(
+                    '*',
+                    style: TextStyle(
+                      color: redColor,
                       fontSize: 20,
                       fontFamily: 'Inter',
                       fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
                 ],
               ),
-              Container(
-                color: greyColor,
-                margin: const EdgeInsets.all(12.0),
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.width / 2,
-                child: Center(
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
-                    decoration: BoxDecoration(
-                      color: whiteColor,
-                      borderRadius: BorderRadius.circular(30),
+              const Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  AddEditIngredientNameTextField(label: 'English'),
+                  SizedBox(height: 16),
+                  AddEditIngredientNameTextField(label: 'Thai')
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          Row(
+            children: [
+              Row(
+                children: [
+                  const Text(
+                    'Unit',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: 'Inter',
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w400,
                     ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize
-                          .min, // This makes the Row only take as much space as needed
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          "Add image",
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        Image.asset('assets/icons/add.png'),
-                      ],
+                  ),
+                  Text(
+                    '*',
+                    style: TextStyle(
+                      color: redColor,
+                      fontSize: 20,
+                      fontFamily: 'Inter',
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w400,
                     ),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 8),
+              const BakingUpDropdown(text: 'select')
+            ],
+          ),
+          const SizedBox(height: 50),
+          const AddEditIngredientTitle(title: "Notification Setting"),
+          const SizedBox(height: 16),
+          const Row(
+            children: [
+              Flexible(
+                child: Text(
+                  'Notify me when an ingredient falls below',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'Inter',
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Text(
-                        'Ingredient Name',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontFamily: 'Inter',
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      Text(
-                        '*',
-                        style: TextStyle(
-                          color: redColor,
-                          fontSize: 20,
-                          fontFamily: 'Inter',
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 2,
-                        height: 45,
-                        child: TextField(
-                          maxLines: 1,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w300,
-                          ),
-                          cursorColor: blackColor,
-                          decoration: InputDecoration(
-                            border: const OutlineInputBorder(),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: darkGreyColor, width: 0.5),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: darkGreyColor, width: 0.5),
-                            ),
-                            labelText: 'English',
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                            labelStyle: const TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.normal,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 2,
-                        height: 45,
-                        child: TextField(
-                          maxLines: 1,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w300,
-                          ),
-                          cursorColor: blackColor,
-                          decoration: InputDecoration(
-                            border: const OutlineInputBorder(),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: darkGreyColor, width: 0.5),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide:
-                                  BorderSide(color: darkGreyColor, width: 0.5),
-                            ),
-                            labelText: 'Thai',
-                            floatingLabelBehavior: FloatingLabelBehavior.always,
-                            labelStyle: const TextStyle(
-                              fontFamily: 'Inter',
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.normal,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+              AddEditIngredientNotificationTextField(),
+              Text(
+                'unit',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontFamily: 'Inter',
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
-              const SizedBox(height: 24),
-              Row(
-                children: [
-                  Row(
-                    children: [
-                      const Text(
-                        'Unit',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontFamily: 'Inter',
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                      Text(
-                        '*',
-                        style: TextStyle(
-                          color: redColor,
-                          fontSize: 20,
-                          fontFamily: 'Inter',
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(width: 8),
-                  const BakingUpDropdown(text: 'select')
-                ],
-              ),
-              const SizedBox(height: 50),
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    "Notification Setting",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  const Flexible(
-                    child: Text(
-                      'Notify me when an ingredient falls below',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontFamily: 'Inter',
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: 80,
-                    height: 45,
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: TextField(
-                      maxLines: 1,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontFamily: 'Inter',
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.w300,
-                      ),
-                      cursorColor: blackColor,
-                      decoration: InputDecoration(
-                        border: const OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: darkGreyColor, width: 0.5),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: darkGreyColor, width: 0.5),
-                        ),
-                        floatingLabelBehavior: FloatingLabelBehavior.always,
-                      ),
-                    ),
-                  ),
-                  const Text(
-                    'unit',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              const Row(
-                children: [
-                  Text(
-                    'Notify me',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8.0),
-                    child: BakingUpDropdown(text: 'select'),
-                  ),
-                  Text(
-                    'days before expiration',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 80),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 150,
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    decoration: BoxDecoration(
-                      color: greyColor,
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: const Text(
-                      'Cancel',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontFamily: 'Inter',
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Container(
-                    width: 150,
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    decoration: BoxDecoration(
-                      color: lightGreenColor,
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: const Text(
-                      'Save',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontFamily: 'Inter',
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              )
             ],
           ),
-        ),
+          const SizedBox(height: 16),
+          const Row(
+            children: [
+              Text(
+                'Notify me',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontFamily: 'Inter',
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                child: BakingUpDropdown(text: 'select'),
+              ),
+              Text(
+                'days before expiration',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontFamily: 'Inter',
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 80),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              BakingUpLongActionButton(title: 'Cancel', color: greyColor),
+              const SizedBox(width: 8),
+              BakingUpLongActionButton(title: 'Save', color: lightGreenColor)
+            ],
+          )
+        ],
       ),
     );
   }
