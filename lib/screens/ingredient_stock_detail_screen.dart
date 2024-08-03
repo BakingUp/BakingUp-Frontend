@@ -61,11 +61,11 @@ class _IngredientStockDetailScreenState
       ),
       body: IngredientStockDetailContainer(
         children: [
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const IngredientStockDetailTitle(title: "Ingredient Information"),
-              const IngredientStockDetailEditButton(),
+              IngredientStockDetailTitle(title: "Ingredient Information"),
+              IngredientStockDetailEditButton(),
             ],
           ),
           const IngredientStockDetailImage(),
