@@ -7,6 +7,7 @@ const homeRoute = '/home/';
 const warehouseRoute = '/warehouse/';
 const recipeDetailRoute = '/recipeDetail/';
 const ingredientDetailRoute = '/ingredientDetail';
+const ingredientStockDetailRoute = '/ingredientStockDetail/';
 const orderRoute = '/order/';
 const orderDetailRoute = '/orderDetail/';
 const notificationRoute = '/notification/';

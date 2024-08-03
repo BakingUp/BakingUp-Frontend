@@ -1,6 +1,6 @@
 // Importing libraries
 import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_detail_container.dart';
-import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_stock_detail_edit_button.dart';
+import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_detail_edit_stock_button.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -138,7 +138,7 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
                             const Padding(
                               padding: EdgeInsets.only(right: 10.0),
                             ),
-                            const IngredientStockDetailEditButton(),
+                            const IngredientStockDetailEditStockButton(),
                           ],
                         ),
                         const Padding(padding: EdgeInsets.only(bottom: 8.0)),
