@@ -1,5 +1,6 @@
 import 'package:bakingup_frontend/constants/routes.dart';
 import 'package:bakingup_frontend/screens/add_edit_ingredient_screen.dart';
+import 'package:bakingup_frontend/screens/add_edit_ingredient_stock_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_order_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_recipe_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_stock_screen.dart';
@@ -80,6 +81,9 @@ class _MainAppState extends State<MainApp> {
           case addEditIngredientRoute:
             return MaterialPageRoute(
                 builder: (context) => const AddEditIngredientScreen());
+          case addEditIngredientStockRoute:
+            return MaterialPageRoute(
+                builder: (context) => const AddEditIngredientStockScreen());
           case addEditRecipeRoute:
             return MaterialPageRoute(
                 builder: (context) => const AddEditRecipeScreen());

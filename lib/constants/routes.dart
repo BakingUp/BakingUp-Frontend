@@ -13,6 +13,7 @@ const orderDetailRoute = '/orderDetail/';
 const notificationRoute = '/notification/';
 const profileRoute = '/profile/';
 const addEditIngredientRoute = '/addEditIngredient/';
+const addEditIngredientStockRoute = '/addEditIngredientStock/';
 const addEditRecipeRoute = '/addEditRecipe/';
 const addEditOrderRoute = '/addEditOrder/';
 const stockRoute = '/stock/';
