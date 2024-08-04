@@ -138,7 +138,7 @@ class _AddEditIngredientStockScreenState
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'Quantity',
                     style: TextStyle(
                       fontSize: 16,
@@ -157,18 +157,18 @@ class _AddEditIngredientStockScreenState
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   AddEditIngredientStockTextField(
                       label: 'Quantity',
                       width: MediaQuery.of(context).size.width - 275),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'Unit',
                     style: TextStyle(
                       fontSize: 16,

@@ -5,11 +5,11 @@ class AddEditIngredientStockExpirationDateField extends StatefulWidget {
   const AddEditIngredientStockExpirationDateField({super.key});
 
   @override
-  _AddEditIngredientStockExpirationDateFieldState createState() =>
-      _AddEditIngredientStockExpirationDateFieldState();
+  AddEditIngredientStockExpirationDateFieldState createState() =>
+      AddEditIngredientStockExpirationDateFieldState();
 }
 
-class _AddEditIngredientStockExpirationDateFieldState
+class AddEditIngredientStockExpirationDateFieldState
     extends State<AddEditIngredientStockExpirationDateField> {
   final TextEditingController _controller = TextEditingController();
 
