@@ -194,7 +194,7 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
                   title: 'Confirm Adding Ingredient?',
                   imgUrl: 'assets/icons/warning.png',
                   content:
-                      'Are you sure to add a new ingredient?',
+                      'Are you sure to add a new ingredient to the warehouse?',
                   grayButtonTitle: 'Cancel',
                   secondButtonTitle: 'Confirm',
                   secondButtonColor: lightGreenColor,
