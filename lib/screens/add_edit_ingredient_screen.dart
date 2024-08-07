@@ -23,6 +23,7 @@ class AddEditIngredientScreen extends StatefulWidget {
 
 class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
   final int _currentDrawerIndex = 4;
+  final bool _isEdit = false;
 
   @override
   Widget build(BuildContext context) {
@@ -191,10 +192,13 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
                 title: 'Save',
                 color: lightGreenColor,
                 dialogParams: BakingUpDialogParams(
-                  title: 'Confirm Adding Ingredient?',
+                  title: _isEdit
+                      ? 'Confirm Ingredient Changes?'
+                      : 'Confirm Adding Ingredient?',
                   imgUrl: 'assets/icons/warning.png',
-                  content:
-                      'Are you sure to add a new ingredient to the warehouse?',
+                  content: _isEdit
+                      ? 'You\'re about to save edited ingredient to the warehouse.'
+                      : 'Are you sure to add a new ingredient to the warehouse?',
                   grayButtonTitle: 'Cancel',
                   secondButtonTitle: 'Confirm',
                   secondButtonColor: lightGreenColor,
