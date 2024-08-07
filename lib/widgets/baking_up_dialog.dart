@@ -90,3 +90,21 @@ class BakingUpDialog extends StatelessWidget {
     );
   }
 }
+
+class BakingUpDialogParams {
+  final String title;
+  final String imgUrl;
+  final String content;
+  final String grayButtonTitle;
+  final String? secondButtonTitle;
+  final Color? secondButtonColor;
+
+  BakingUpDialogParams({
+    required this.title,
+    required this.imgUrl,
+    required this.content,
+    required this.grayButtonTitle,
+    this.secondButtonTitle,
+    this.secondButtonColor,
+  });
+}
