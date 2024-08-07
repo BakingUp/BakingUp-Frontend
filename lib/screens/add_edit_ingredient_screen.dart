@@ -186,7 +186,19 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
             children: [
               BakingUpLongActionButton(title: 'Cancel', color: greyColor),
               const SizedBox(width: 8),
-              BakingUpLongActionButton(title: 'Save', color: lightGreenColor)
+              BakingUpLongActionButton(
+                title: 'Save',
+                color: lightGreenColor,
+                dialogParams: BakingUpDialogParams(
+                  title: 'Confirm Adding Ingredient?',
+                  imgUrl: 'assets/icons/warning.png',
+                  content:
+                      'You\'re about to add new ingredient data to the database.',
+                  grayButtonTitle: 'Cancel',
+                  secondButtonTitle: 'Confirm',
+                  secondButtonColor: lightGreenColor,
+                ),
+              )
             ],
           )
         ],
