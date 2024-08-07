@@ -8,6 +8,7 @@ import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/add_ingredient_receipt/add_ingredient_receipt_container.dart';
 import 'package:bakingup_frontend/widgets/add_ingredient_receipt/add_ingredient_receipt_stock_title.dart';
+import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
 
 class AddIngredientReceiptScreen extends StatefulWidget {
   const AddIngredientReceiptScreen({super.key});
@@ -20,6 +21,7 @@ class AddIngredientReceiptScreen extends StatefulWidget {
 class _AddIngredientReceiptScreenState
     extends State<AddIngredientReceiptScreen> {
   final int _currentDrawerIndex = 4;
+  final bool _isAllEdited = false;
   final List<IngredientDetail> ingredientDetail = [
     IngredientDetail(
       ingredientName: "Dragon Fruit",
@@ -108,8 +110,31 @@ class _AddIngredientReceiptScreenState
               children: [
                 BakingUpLongActionButton(title: 'Cancel', color: greyColor),
                 const SizedBox(width: 8),
-                BakingUpLongActionButton(
-                    title: 'Confirm', color: lightGreenColor),
+                _isAllEdited
+                    ? BakingUpLongActionButton(
+                        title: 'Confirm',
+                        color: lightGreenColor,
+                        dialogParams: BakingUpDialogParams(
+                          title: 'Confirm Adding Ingredient?',
+                          imgUrl: 'assets/icons/warning.png',
+                          content:
+                              'You\'re about to add new ingredient data to the warehouse.',
+                          grayButtonTitle: 'Cancel',
+                          secondButtonTitle: 'Confirm',
+                          secondButtonColor: lightGreenColor,
+                        ),
+                      )
+                    : BakingUpLongActionButton(
+                        title: 'Confirm',
+                        color: lightGreenColor,
+                        dialogParams: BakingUpDialogParams(
+                          title: 'Required Fields',
+                          imgUrl: 'assets/icons/warning.png',
+                          content:
+                              'Please fill in all required fields before continuing.',
+                          grayButtonTitle: 'Cancel',
+                        ),
+                      ),
               ],
             ),
           ),

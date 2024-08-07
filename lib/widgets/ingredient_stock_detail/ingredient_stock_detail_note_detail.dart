@@ -1,5 +1,6 @@
 import 'package:bakingup_frontend/screens/ingredient_stock_detail_screen.dart';
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
 import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_delete_button.dart';
 import 'package:flutter/material.dart';
 
@@ -39,13 +40,23 @@ class IngredientStockDetailNoteDetail extends StatelessWidget {
                   ),
                 ),
               ),
-              const Row(
+              Row(
                 children: [
-                  SizedBox(width: 8.0),
+                  const SizedBox(width: 8.0),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      IngredientStockDetailDeleteButton(),
+                      IngredientStockDetailDeleteButton(
+                        dialogParams: BakingUpDialogParams(
+                          title: "Confirm Delete?",
+                          imgUrl: "assets/icons/delete_warning.png",
+                          content:
+                              "This will permanently delete the note. Are you sure you want to proceed?",
+                          grayButtonTitle: "Cancel",
+                          secondButtonTitle: "Delete",
+                          secondButtonColor: lightRedColor,
+                        ),
+                      ),
                     ],
                   ),
                 ],

@@ -9,6 +9,7 @@ import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredien
 import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_name_text_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_title.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_notification_text_field.dart';
+import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dropdown.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 
@@ -22,6 +23,7 @@ class AddEditIngredientScreen extends StatefulWidget {
 
 class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
   final int _currentDrawerIndex = 4;
+  final bool _isEdit = false;
 
   @override
   Widget build(BuildContext context) {
@@ -186,7 +188,22 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
             children: [
               BakingUpLongActionButton(title: 'Cancel', color: greyColor),
               const SizedBox(width: 8),
-              BakingUpLongActionButton(title: 'Save', color: lightGreenColor)
+              BakingUpLongActionButton(
+                title: 'Save',
+                color: lightGreenColor,
+                dialogParams: BakingUpDialogParams(
+                  title: _isEdit
+                      ? 'Confirm Ingredient Changes?'
+                      : 'Confirm Adding Ingredient?',
+                  imgUrl: 'assets/icons/warning.png',
+                  content: _isEdit
+                      ? 'You\'re about to save edited ingredient to the warehouse.'
+                      : 'Are you sure to add a new ingredient to the warehouse?',
+                  grayButtonTitle: 'Cancel',
+                  secondButtonTitle: 'Confirm',
+                  secondButtonColor: lightGreenColor,
+                ),
+              )
             ],
           )
         ],
