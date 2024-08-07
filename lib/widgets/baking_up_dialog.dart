@@ -60,13 +60,17 @@ class BakingUpDialog extends StatelessWidget {
               children: [
                 BakingUpLongActionButton(
                     title: grayButtonTitle, color: greyColor, width: 120),
-                const SizedBox(width: 8),
                 secondButtonTitle != null &&
                         secondButtonTitle?.isNotEmpty == true
-                    ? BakingUpLongActionButton(
-                        title: secondButtonTitle!,
-                        color: secondButtonColor ?? lightGreenColor,
-                        width: 120)
+                    ? Row(
+                        children: [
+                          const SizedBox(width: 8),
+                          BakingUpLongActionButton(
+                              title: secondButtonTitle!,
+                              color: secondButtonColor ?? lightGreenColor,
+                              width: 120),
+                        ],
+                      )
                     : Container()
               ],
             )
