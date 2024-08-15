@@ -17,6 +17,7 @@ const addEditIngredientRoute = '/addEditIngredient/';
 const addEditIngredientStockRoute = '/addEditIngredientStock/';
 const addEditRecipeRoute = '/addEditRecipe/';
 const addEditOrderRoute = '/addEditOrder/';
+const addEditRecipeIngredientRoute = '/addEditRecipeIngredient/';
 const stockRoute = '/stock/';
 const addEditStockRoute = '/addEditStock/';
 const settingsRoute = '/settings/';
