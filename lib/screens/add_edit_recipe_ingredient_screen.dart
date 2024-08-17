@@ -25,7 +25,8 @@ class _AddEditRecipeIngredientScreenState
       imgUrl: 'https://i.imgur.com/RLsjqFm.png',
       name: 'All-purpose flour',
       stock: 2,
-      quantity: '1.4 kg',
+      quantity: 1.4,
+      unit: 'kg',
       expirationStatus: ExpirationStatus.red,
     ),
     RecipeIngredientDetail(
@@ -33,7 +34,8 @@ class _AddEditRecipeIngredientScreenState
           'https://img.freepik.com/free-photo/world-diabetes-day-sugar-wooden-bowl-dark-surface_1150-26666.jpg',
       name: 'Sugar',
       stock: 1,
-      quantity: '1 kg',
+      quantity: 1,
+      unit: 'kg',
       expirationStatus: ExpirationStatus.green,
     ),
   ];
@@ -101,7 +103,8 @@ class RecipeIngredientDetail {
   final String imgUrl;
   final String name;
   final int stock;
-  final String quantity;
+  final double quantity;
+  final String unit;
   final ExpirationStatus expirationStatus;
 
   RecipeIngredientDetail({
@@ -109,6 +112,7 @@ class RecipeIngredientDetail {
     required this.name,
     required this.stock,
     required this.quantity,
+    required this.unit,
     required this.expirationStatus,
   });
 }
