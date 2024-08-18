@@ -6,12 +6,15 @@ class BakingUpLongActionButton extends StatelessWidget {
   final Color color;
   final double? width;
   final BakingUpDialogParams? dialogParams;
-  const BakingUpLongActionButton(
-      {super.key,
-      required this.title,
-      required this.color,
-      this.width,
-      this.dialogParams});
+  final VoidCallback? onClick;
+  const BakingUpLongActionButton({
+    super.key,
+    required this.title,
+    required this.color,
+    this.width,
+    this.dialogParams,
+    this.onClick,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +23,7 @@ class BakingUpLongActionButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(50),
       child: GestureDetector(
         onTap: () {
-          if (dialogParams != null) {
+          if (dialogParams != null && onClick == null) {
             showDialog(
               context: context,
               barrierColor: const Color(0xC7D9D9D9),
@@ -35,6 +38,8 @@ class BakingUpLongActionButton extends StatelessWidget {
                 );
               },
             );
+          } else if (onClick != null && dialogParams == null) {
+            onClick!();
           }
         },
         child: Container(

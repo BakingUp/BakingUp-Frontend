@@ -1,4 +1,5 @@
 // Importing libraries
+import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_page_two.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -6,7 +7,6 @@ import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_container.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_page_one.dart';
-
 
 class AddEditRecipeScreen extends StatefulWidget {
   const AddEditRecipeScreen({super.key});
@@ -17,6 +17,8 @@ class AddEditRecipeScreen extends StatefulWidget {
 
 class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
   final int _currentDrawerIndex = 5;
+  final bool _isEdit = true;
+  bool _isFirstPage = true;
 
   List<RecipeIngredient> recipeIngredients = [
     RecipeIngredient(
@@ -64,7 +66,24 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
       ),
       body: AddEditRecipeContainer(
         children: [
-          AddEditRecipePageOne(recipeIngredients: recipeIngredients),
+          if (_isFirstPage) ...[
+            AddEditRecipePageOne(
+                recipeIngredients: recipeIngredients,
+                onClick: () {
+                  setState(() {
+                    _isFirstPage = false;
+                  });
+                }),
+          ] else ...[
+            AddEditRecipePageTwo(
+              onClick: () {
+                setState(() {
+                  _isFirstPage = true;
+                });
+              },
+              isEdit: _isEdit,
+            ),
+          ]
         ],
       ),
     );

@@ -11,7 +11,9 @@ import 'package:flutter/material.dart';
 
 class AddEditRecipePageOne extends StatelessWidget {
   final List<RecipeIngredient> recipeIngredients;
-  const AddEditRecipePageOne({super.key, required this.recipeIngredients});
+  final VoidCallback onClick;
+  const AddEditRecipePageOne(
+      {super.key, required this.recipeIngredients, required this.onClick});
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +172,8 @@ class AddEditRecipePageOne extends StatelessWidget {
           children: [
             BakingUpLongActionButton(title: 'Cancel', color: greyColor),
             const SizedBox(width: 8),
-            BakingUpLongActionButton(title: 'Next', color: lightRedColor)
+            BakingUpLongActionButton(
+                title: 'Next', color: lightRedColor, onClick: onClick),
           ],
         )
       ],
