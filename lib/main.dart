@@ -62,7 +62,7 @@ class _MainAppState extends State<MainApp> {
                 builder: (context) => const WarehouseScreen());
           case recipeDetailRoute:
             return MaterialPageRoute(
-                builder: (context) => const ReceipeDetailScreen());
+                builder: (context) => const RecipeDetailScreen());
           case ingredientDetailRoute:
             return MaterialPageRoute(
                 builder: (context) => const IngredientDetailScreen());
