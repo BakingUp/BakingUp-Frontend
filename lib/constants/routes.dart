@@ -22,3 +22,4 @@ const stockRoute = '/stock/';
 const addEditStockRoute = '/addEditStock/';
 const settingsRoute = '/settings/';
 const stockDetailRoute = '/stockDetail/';
+const stockDetailInformationRoute = '/stockDetailInformation/';

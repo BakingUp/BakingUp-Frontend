@@ -19,6 +19,7 @@ import 'package:bakingup_frontend/screens/recipe_detail_screen.dart';
 import 'package:bakingup_frontend/screens/register_screen.dart';
 import 'package:bakingup_frontend/screens/reset_password_screen.dart';
 import 'package:bakingup_frontend/screens/setting_screen.dart';
+import 'package:bakingup_frontend/screens/stock_detail_information_screen.dart';
 import 'package:bakingup_frontend/screens/stock_detail_screen.dart';
 import 'package:bakingup_frontend/screens/stock_screen.dart';
 import 'package:bakingup_frontend/screens/warehouse_screen.dart';
@@ -109,6 +110,9 @@ class _MainAppState extends State<MainApp> {
           case stockDetailRoute:
             return MaterialPageRoute(
                 builder: (context) => const StockDetailScreen());
+          case stockDetailInformationRoute:
+            return MaterialPageRoute(
+                builder: (context) => const StockDetailInformationScreen());
           default:
             return null;
         }
