@@ -57,7 +57,7 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
       ),
       body: AddEditIngredientContainer(
         children: [
-          const AddEditIngredientTitle(title: "Ingredient Information"),
+          const AddEditIngredientTitle(title: "Adding Ingredient"),
           const AddEditIngredientImageUploader(),
           const SizedBox(height: 16),
           Row(
@@ -188,22 +188,22 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
             children: [
               BakingUpLongActionButton(title: 'Cancel', color: greyColor),
               const SizedBox(width: 8),
-              BakingUpLongActionButton(
-                title: 'Save',
-                color: lightGreenColor,
-                dialogParams: BakingUpDialogParams(
-                  title: _isEdit
-                      ? 'Confirm Ingredient Changes?'
-                      : 'Confirm Adding Ingredient?',
-                  imgUrl: 'assets/icons/warning.png',
-                  content: _isEdit
-                      ? 'You\'re about to save edited ingredient to the warehouse.'
-                      : 'Are you sure to add a new ingredient to the warehouse?',
-                  grayButtonTitle: 'Cancel',
-                  secondButtonTitle: 'Confirm',
-                  secondButtonColor: lightGreenColor,
-                ),
-              )
+              _isEdit
+                  ? BakingUpLongActionButton(
+                      title: 'Save', color: lightGreenColor)
+                  : BakingUpLongActionButton(
+                      title: 'Save',
+                      color: lightGreenColor,
+                      dialogParams: BakingUpDialogParams(
+                        title: 'Confirm Adding Ingredient?',
+                        imgUrl: 'assets/icons/warning.png',
+                        content:
+                            'Are you sure to add a new ingredient to the warehouse?',
+                        grayButtonTitle: 'Cancel',
+                        secondButtonTitle: 'Confirm',
+                        secondButtonColor: lightGreenColor,
+                      ),
+                    )
             ],
           )
         ],
