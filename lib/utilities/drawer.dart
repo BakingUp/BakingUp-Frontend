@@ -248,7 +248,7 @@ class BakingUpDrawer extends StatelessWidget {
             ),
             onTap: () {
               Navigator.of(context)
-                  .pushNamedAndRemoveUntil(stockRoute, (route) => false);
+                  .pushNamedAndRemoveUntil(addEditStockRoute, (route) => false);
             },
           ),
           ListTile(

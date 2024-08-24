@@ -269,7 +269,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                         ),
                       ],
                     ),
-                    const RecipeDetailScaleButton()
+                    RecipeDetailScaleButton(servings: servings)
                   ],
                 ),
               ],
