@@ -43,7 +43,7 @@ class StockDetailInformationNote extends StatelessWidget {
           const SizedBox(height: 4.0),
           Row(
             mainAxisAlignment:
-                MainAxisAlignment.end, // Align the second row to the right
+                MainAxisAlignment.end,
             children: [
               Text(
                 createdAt,

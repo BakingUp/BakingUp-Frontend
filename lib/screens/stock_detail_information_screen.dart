@@ -149,14 +149,3 @@ class _StockDetailInformationScreenState
     );
   }
 }
-
-// Temporary class to simulate the data
-class StockInformationNote {
-  final String stockNote;
-  final String noteCreatedAt;
-
-  StockInformationNote({
-    required this.stockNote,
-    required this.noteCreatedAt,
-  });
-}

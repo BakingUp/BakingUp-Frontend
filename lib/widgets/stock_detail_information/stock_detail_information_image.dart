@@ -17,7 +17,7 @@ class StockDetailInformationImage extends StatelessWidget {
         stockUrl,
         width: MediaQuery.of(context)
             .size
-            .width, // Make the image take all the width
+            .width,
         fit: BoxFit.cover,
       ),
     );
