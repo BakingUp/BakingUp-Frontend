@@ -9,7 +9,6 @@ import 'package:bakingup_frontend/widgets/add_edit_recipe_ingredient/add_edit_re
 import 'package:bakingup_frontend/widgets/baking_up_filter_two_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_search_bar.dart';
 
-
 class AddEditRecipeIngredientScreen extends StatefulWidget {
   const AddEditRecipeIngredientScreen({super.key});
 
