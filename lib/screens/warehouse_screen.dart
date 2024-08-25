@@ -1,3 +1,4 @@
+import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/enum/expiration_status.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
@@ -64,18 +65,11 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
   ];
   @override
   Widget build(BuildContext context) {
-    // String title;
-    // switch (tabIndex) {
-    //   case 1:
-    //     title = 'Recipes';
-    //     break;
-    //   case 2:
-    //     title = 'Ingredients';
-    //   default:
-    //     title = 'Recipes';
-    // }
     return Scaffold(
+        backgroundColor: backgroundColor,
         appBar: AppBar(
+          backgroundColor: backgroundColor,
+          scrolledUnderElevation: 0,
           title: const Text(
             "Warehouse",
             style: TextStyle(
@@ -136,7 +130,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                   ),
                 ),
                 const SizedBox(height: 25),
-                Container(
+                Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
                     children: [

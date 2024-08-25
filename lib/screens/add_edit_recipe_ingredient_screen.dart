@@ -1,4 +1,5 @@
 // Importing libraries
+import 'package:flutter/material.dart';
 // Importing files
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/enum/expiration_status.dart';
@@ -7,7 +8,7 @@ import 'package:bakingup_frontend/widgets/add_edit_recipe_ingredient/add_edit_re
 import 'package:bakingup_frontend/widgets/add_edit_recipe_ingredient/add_edit_recipe_ingredient_detail.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_two_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_search_bar.dart';
-import 'package:flutter/material.dart';
+
 
 class AddEditRecipeIngredientScreen extends StatefulWidget {
   const AddEditRecipeIngredientScreen({super.key});
@@ -26,7 +27,7 @@ class _AddEditRecipeIngredientScreenState
       stock: 2,
       quantity: 1.4,
       unit: 'kg',
-      expirationStatus: ExpirationStatus.black,
+      expirationStatus: ExpirationStatus.red,
     ),
     RecipeIngredientDetail(
       imgUrl:

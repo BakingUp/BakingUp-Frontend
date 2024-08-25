@@ -69,7 +69,7 @@ class WarehouseRecipesItem extends StatelessWidget {
                                   : Icons.star_border,
                               color: i < recipeList[index].star
                                   ? orangeColor
-                                  : whiteColor,
+                                  : greyColor,
                               size: 12,
                             ),
                           const SizedBox(width: 1),
