@@ -19,6 +19,7 @@ class WarehouseScreen extends StatefulWidget {
 class _WarehouseScreenState extends State<WarehouseScreen> {
   int tabIndex = 1;
   final int _currentDrawerIndex = 3;
+
   List<IngredientItem> ingredientList = [
     IngredientItem(
       imgUrl: 'https://i.imgur.com/RLsjqFm.png',
@@ -38,6 +39,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
       expirationStatus: ExpirationStatus.green,
     ),
   ];
+
   List<RecipeItem> recipeList = [
     RecipeItem(
         imgUrl:
@@ -63,6 +65,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
         score: 3,
         star: 4),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,12 +102,12 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
           currentDrawerIndex: _currentDrawerIndex,
         ),
         body: Container(
-            padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
+            margin: const EdgeInsets.only(top: 15),
             child: Column(
               children: [
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 40, vertical: 0),
+                      const EdgeInsets.symmetric(horizontal: 60, vertical: 0),
                   child: Row(
                     children: [
                       BakingUpTabButton(
@@ -131,7 +134,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                 ),
                 const SizedBox(height: 25),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
                   child: Row(
                     children: [
                       if (tabIndex == 1)
@@ -147,13 +150,10 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(
-                  height: 25,
-                ),
                 if (tabIndex == 1)
                   Expanded(
                       child: ListView.builder(
-                          padding: const EdgeInsets.all(0),
+                          padding: const EdgeInsets.fromLTRB(20, 25, 20, 0),
                           itemCount: recipeList.length,
                           itemBuilder: (context, index) {
                             return WarehouseRecipesItem(
@@ -162,7 +162,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                 if (tabIndex == 2)
                   Expanded(
                     child: ListView.builder(
-                      padding: const EdgeInsets.all(0),
+                      padding: const EdgeInsets.fromLTRB(20, 25, 20, 0),
                       itemCount: ingredientList.length,
                       itemBuilder: (context, index) {
                         return WarehouseIngredientsItem(
