@@ -134,7 +134,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                 ),
                 const SizedBox(height: 25),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  padding: const EdgeInsets.fromLTRB(40, 0, 40, 15),
                   child: Row(
                     children: [
                       if (tabIndex == 1)
@@ -153,7 +153,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                 if (tabIndex == 1)
                   Expanded(
                       child: ListView.builder(
-                          padding: const EdgeInsets.fromLTRB(20, 25, 20, 0),
+                          padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
                           itemCount: recipeList.length,
                           itemBuilder: (context, index) {
                             return WarehouseRecipesItem(
@@ -162,7 +162,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                 if (tabIndex == 2)
                   Expanded(
                     child: ListView.builder(
-                      padding: const EdgeInsets.fromLTRB(20, 25, 20, 0),
+                      padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
                       itemCount: ingredientList.length,
                       itemBuilder: (context, index) {
                         return WarehouseIngredientsItem(
