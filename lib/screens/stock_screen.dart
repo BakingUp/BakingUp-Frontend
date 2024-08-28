@@ -91,7 +91,7 @@ class _StockScreenState extends State<StockScreen> {
           child: Column(
             children: [
               const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 40),
+                padding: EdgeInsets.fromLTRB(40, 0, 40, 15),
                 child: Row(
                   children: [
                     BakingUpSearchBar(
@@ -104,7 +104,7 @@ class _StockScreenState extends State<StockScreen> {
               ),
               Expanded(
                   child: ListView.builder(
-                padding: const EdgeInsets.fromLTRB(20, 30, 20, 0),
+                padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
                 itemCount: stockList.length,
                 itemBuilder: (context, index) {
                   return StockBox(stockList: stockList, index: index);
