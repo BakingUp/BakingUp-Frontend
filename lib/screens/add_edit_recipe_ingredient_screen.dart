@@ -1,5 +1,6 @@
 // Importing libraries
 import 'package:flutter/material.dart';
+
 // Importing files
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/enum/expiration_status.dart';
