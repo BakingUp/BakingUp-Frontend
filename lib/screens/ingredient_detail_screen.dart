@@ -1,19 +1,20 @@
 // Importing libraries
-import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_detail_container.dart';
-import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_detail_edit_stock_button.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
 import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_circular_back_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_button.dart';
+import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_stock_detail_list.dart';
+import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_detail_container.dart';
+import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_detail_ingredient_name.dart';
+import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_detail_notify_me.dart';
+import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_detail_quantity.dart';
+import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_detail_stock.dart';
 import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_detail_back_button_container.dart';
 import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_detail_image.dart';
 import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_detail_image_container.dart';
-import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_stock_detail.dart';
-import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/enum/expiration_status.dart';
-import 'package:bakingup_frontend/utilities/regex.dart';
 
 class IngredientDetailScreen extends StatefulWidget {
   const IngredientDetailScreen({super.key});
@@ -28,6 +29,7 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
   double quantity = 1.4;
   String unit = 'kg';
   double ingredientLessThan = 3;
+  bool isLoading = false;
   List<IngredientStock> ingredientStocks = [
     IngredientStock(
         stockId: '1',
@@ -68,6 +70,7 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
           IngredientDetailImageContainer(
             child: IngredientDetailImage(
               ingredientUrl: ingredientUrl,
+              isLoading: isLoading,
             ),
           ),
           const IngredientDetailBackButtonContainer(
@@ -97,17 +100,9 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
                       ],
                     ),
                   ),
-                  Expanded(
-                    child: ListView.builder(
-                      padding: const EdgeInsets.all(0),
-                      itemCount: ingredientStocks.length,
-                      itemBuilder: (context, index) {
-                        return IngredientStockDetail(
-                          ingredientStocks: ingredientStocks,
-                          index: index,
-                        );
-                      },
-                    ),
+                  IngredientStockDetailList(
+                    ingredientStocks: ingredientStocks,
+                    isLoading: isLoading,
                   ),
                 ],
               ),
@@ -123,62 +118,34 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
                   children: [
                     Column(
                       children: [
-                        Row(
-                          children: [
-                            Text(
-                              ingredientName,
-                              style: TextStyle(
-                                color: blackColor,
-                                fontFamily: 'Inter',
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 24,
-                              ),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.only(right: 10.0),
-                            ),
-                            const IngredientStockDetailEditStockButton(),
-                          ],
+                        IngredientDetailIngredientName(
+                          ingredientName: ingredientName,
+                          isLoading: isLoading,
                         ),
-                        const Padding(padding: EdgeInsets.only(bottom: 8.0)),
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 8.0),
+                        ),
                       ],
                     ),
                     const BakingUpCircularAddButton(),
                   ],
                 ),
-                Text(
-                  'Quantity: ${quantity.toString().replaceAll(removeTrailingZeros, '')} $unit',
-                  style: TextStyle(
-                    color: blackColor,
-                    fontFamily: 'Inter',
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w300,
-                    fontSize: 13,
-                  ),
+                IngredientDetailQuantity(
+                  quantity: quantity,
+                  unit: unit,
+                  isLoading: isLoading,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      '${ingredientStocks.length} ${ingredientStocks.length > 1 ? "stocks" : "stock"}',
-                      style: TextStyle(
-                        color: blackColor,
-                        fontFamily: 'Inter',
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.w300,
-                        fontSize: 13,
-                      ),
+                    IngredientDetailStock(
+                      ingredientStocksNumber: ingredientStocks.length,
+                      isLoading: isLoading,
                     ),
-                    Text(
-                      'Notify me : < ${ingredientLessThan.toString().replaceAll(removeTrailingZeros, '')} $unit',
-                      style: TextStyle(
-                        color: blackColor,
-                        fontFamily: 'Inter',
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.w300,
-                        fontSize: 13,
-                      ),
+                    IngredientDetailNotifyMe(
+                      ingredientLessThan: ingredientLessThan,
+                      unit: unit,
+                      isLoading: isLoading,
                     ),
                   ],
                 )
