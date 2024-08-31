@@ -8,8 +8,13 @@ environment:
   flutter: ^3.22.2
 
 dependencies:
+  build_runner: ^2.4.11
+  dio: ^5.6.0
   flutter:
     sdk: flutter
+  flutter_dotenv: ^5.1.0
+  json_annotation: ^4.9.0
+  json_serializable: ^6.8.0
   shimmer: ^3.0.0
 
 dev_dependencies:
@@ -22,3 +27,4 @@ flutter:
 
   assets:
     - assets/icons/
+    - .env

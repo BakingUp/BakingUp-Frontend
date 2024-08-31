@@ -24,9 +24,15 @@ import 'package:bakingup_frontend/screens/stock_detail_information_screen.dart';
 import 'package:bakingup_frontend/screens/stock_detail_screen.dart';
 import 'package:bakingup_frontend/screens/stock_screen.dart';
 import 'package:bakingup_frontend/screens/warehouse_screen.dart';
+import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
+  await NetworkService.instance.initClient();
+
   runApp(const MainApp());
 }
 
