@@ -33,6 +33,7 @@ class IngredientStockDetailList extends StatelessWidget {
                 return IngredientStockDetail(
                   ingredientStocks: ingredientStocks,
                   index: index,
+                  isLoading: isLoading,
                 );
               },
             ),

@@ -3,13 +3,19 @@ import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/enum/expiration_status.dart';
 import 'package:bakingup_frontend/screens/ingredient_detail_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 class IngredientStockDetail extends StatelessWidget {
   final List<IngredientStock> ingredientStocks;
   final int index;
+  final bool isLoading;
 
-  const IngredientStockDetail(
-      {super.key, required this.ingredientStocks, required this.index});
+  const IngredientStockDetail({
+    super.key,
+    required this.ingredientStocks,
+    required this.index,
+    required this.isLoading,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -34,53 +40,69 @@ class IngredientStockDetail extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
+          Stack(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(13),
-                child: Image.network(
-                  ingredientStocks[index].stockUrl,
+              Shimmer.fromColors(
+                baseColor: greyColor,
+                highlightColor: whiteColor,
+                child: Container(
                   width: 80,
                   height: 50,
-                  fit: BoxFit.cover,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(13),
+                    color: Colors.white,
+                  ),
                 ),
               ),
-              const Padding(padding: EdgeInsets.only(right: 12.0)),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
                 children: [
-                  Text(
-                    'Price: ${ingredientStocks[index].price}',
-                    style: TextStyle(
-                      color: blackColor,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 10,
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(13),
+                    child: Image.network(
+                      ingredientStocks[index].stockUrl,
+                      width: 80,
+                      height: 50,
+                      fit: BoxFit.cover,
                     ),
                   ),
-                  Text(
-                    'Quantity: ${ingredientStocks[index].quantity}',
-                    style: TextStyle(
-                      color: blackColor,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w300,
-                      fontSize: 10,
-                    ),
-                  ),
-                  Text(
-                    'Expiration Date: ${ingredientStocks[index].expirationDate}',
-                    style: TextStyle(
-                      color: ingredientStocks[index].expirationStatus ==
-                              ExpirationStatus.black
-                          ? redColor
-                          : blackColor,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w300,
-                      fontSize: 10,
-                    ),
+                  const Padding(padding: EdgeInsets.only(right: 12.0)),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Price: ${ingredientStocks[index].price}',
+                        style: TextStyle(
+                          color: blackColor,
+                          fontFamily: 'Inter',
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 10,
+                        ),
+                      ),
+                      Text(
+                        'Quantity: ${ingredientStocks[index].quantity}',
+                        style: TextStyle(
+                          color: blackColor,
+                          fontFamily: 'Inter',
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.w300,
+                          fontSize: 10,
+                        ),
+                      ),
+                      Text(
+                        'Expiration Date: ${ingredientStocks[index].expirationDate}',
+                        style: TextStyle(
+                          color: ingredientStocks[index].expirationStatus ==
+                                  ExpirationStatus.black
+                              ? redColor
+                              : blackColor,
+                          fontFamily: 'Inter',
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.w300,
+                          fontSize: 10,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
