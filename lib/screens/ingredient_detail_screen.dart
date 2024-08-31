@@ -1,4 +1,6 @@
 // Importing libraries
+import 'package:bakingup_frontend/models/ingredient_detail.dart';
+import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -14,7 +16,6 @@ import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_detail_st
 import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_detail_back_button_container.dart';
 import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_detail_image.dart';
 import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_detail_image_container.dart';
-import 'package:bakingup_frontend/enum/expiration_status.dart';
 
 class IngredientDetailScreen extends StatefulWidget {
   const IngredientDetailScreen({super.key});
@@ -24,42 +25,53 @@ class IngredientDetailScreen extends StatefulWidget {
 }
 
 class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
-  String ingredientUrl = 'https://i.imgur.com/RLsjqFm.png';
-  String ingredientName = 'All-purpose flour';
-  double quantity = 1.4;
-  String unit = 'kg';
-  double ingredientLessThan = 3;
-  bool isLoading = false;
-  List<IngredientStock> ingredientStocks = [
-    IngredientStock(
-        stockId: '1',
-        stockUrl: 'https://i.imgur.com/RLsjqFm.png',
-        price: '37/kg',
-        quantity: '1 kg',
-        expirationDate: '29/06/2024',
-        expirationStatus: ExpirationStatus.red),
-    IngredientStock(
-        stockId: '2',
-        stockUrl: 'https://i.imgur.com/RLsjqFm.png',
-        price: '37/kg',
-        quantity: '1 kg',
-        expirationDate: '29/06/2024',
-        expirationStatus: ExpirationStatus.green),
-    IngredientStock(
-        stockId: '2',
-        stockUrl: 'https://i.imgur.com/RLsjqFm.png',
-        price: '37/kg',
-        quantity: '1 kg',
-        expirationDate: '29/06/2024',
-        expirationStatus: ExpirationStatus.yellow),
-    IngredientStock(
-        stockId: '3',
-        stockUrl: 'https://i.imgur.com/RLsjqFm.png',
-        price: '37/kg',
-        quantity: '1 kg',
-        expirationDate: '29/06/2024',
-        expirationStatus: ExpirationStatus.black),
-  ];
+  String ingredientId = '1';
+  String ingredientUrl =
+      'https://img.freepik.com/free-photo/gray-painted-background_53876-94041.jpg';
+  String ingredientName = '';
+  double quantity = 0.0;
+  String unit = '';
+  double ingredientLessThan = 0.0;
+  bool isLoading = true;
+  bool isError = true;
+  List<IngredientStock> ingredientStocks = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchIngredientDetails();
+  }
+
+  Future<void> _fetchIngredientDetails() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final response = await NetworkService.instance.get(
+        '/api/ingredient/$ingredientId',
+      );
+      final ingredientDetailResponse =
+          IngredientDetailResponse.fromJson(response);
+      final data = ingredientDetailResponse.data;
+      setState(() {
+        ingredientUrl = data.ingredientUrl.first;
+        ingredientName = data.ingredientName;
+        quantity = double.parse(data.ingredientQuantity.split(' ').first);
+        unit = data.ingredientQuantity.split(' ').last;
+        ingredientLessThan = data.ingredientLessThan.toDouble();
+        ingredientStocks = data.stocks;
+      });
+    } catch (e) {
+      setState(() {
+        isError = true;
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -156,23 +168,4 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
       ),
     );
   }
-}
-
-// Temporary class to simulate the data
-class IngredientStock {
-  final String stockId;
-  final String stockUrl;
-  final String price;
-  final String quantity;
-  final String expirationDate;
-  final ExpirationStatus expirationStatus;
-
-  IngredientStock({
-    required this.stockId,
-    required this.stockUrl,
-    required this.price,
-    required this.quantity,
-    required this.expirationDate,
-    required this.expirationStatus,
-  });
 }

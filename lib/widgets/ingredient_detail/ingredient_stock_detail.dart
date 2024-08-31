@@ -1,7 +1,7 @@
+import 'package:bakingup_frontend/models/ingredient_detail.dart';
 import 'package:bakingup_frontend/widgets/ingredient_detail/expiration_status_indicator.dart';
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/enum/expiration_status.dart';
-import 'package:bakingup_frontend/screens/ingredient_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
