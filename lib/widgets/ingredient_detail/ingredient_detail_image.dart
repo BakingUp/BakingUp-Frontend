@@ -29,13 +29,20 @@ class IngredientDetailImage extends StatelessWidget {
           ),
         ),
         if (isLoading == false) ...[
-          Image.network(
-            ingredientUrl!,
-            width: MediaQuery.of(context)
-                .size
-                .width, // Make the image take all the width
-            fit: BoxFit.cover,
-          ),
+          if (ingredientUrl != '') ...[
+            Image.network(
+              ingredientUrl!,
+              width: MediaQuery.of(context).size.width,
+              fit: BoxFit.cover,
+            ),
+          ] else ...[
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height -
+                  (MediaQuery.of(context).size.width / 0.8),
+              color: greyColor,
+            )
+          ]
         ]
       ],
     );

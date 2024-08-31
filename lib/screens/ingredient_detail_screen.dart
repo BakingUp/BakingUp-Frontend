@@ -27,7 +27,7 @@ class IngredientDetailScreen extends StatefulWidget {
 class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
   String ingredientId = '1';
   String ingredientUrl =
-      'https://img.freepik.com/free-photo/gray-painted-background_53876-94041.jpg';
+      '';
   String ingredientName = '';
   double quantity = 0.0;
   String unit = '';
