@@ -1,6 +1,7 @@
 import 'package:bakingup_frontend/screens/add_edit_recipe_screen.dart';
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 class RecipeDetailIngredientDetail extends StatelessWidget {
   final List<RecipeIngredient> recipeIngredients;
@@ -13,49 +14,65 @@ class RecipeDetailIngredientDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(12.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Stack(
         children: [
-          Row(
-            children: [
-              ClipRRect(
+          Shimmer.fromColors(
+            baseColor: greyColor,
+            highlightColor: whiteColor,
+            child: Container(
+              width: 80,
+              height: 50,
+              decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(13),
-                child: Image.network(
-                  recipeIngredients[index].imgUrl,
-                  width: 80,
-                  height: 50,
-                  fit: BoxFit.cover,
-                ),
+                color: Colors.white,
               ),
-              const Padding(padding: EdgeInsets.only(right: 12.0)),
-              Text(
-                recipeIngredients[index].name,
-                style: TextStyle(
-                  color: blackColor,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 16,
-                  overflow: TextOverflow.visible,
-                ),
-              ),
-            ],
+            ),
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                recipeIngredients[index].quantity,
-                style: TextStyle(
-                  color: blackColor,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 16,
-                ),
+              Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(13),
+                    child: Image.network(
+                      recipeIngredients[index].imgUrl,
+                      width: 80,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  const Padding(padding: EdgeInsets.only(right: 12.0)),
+                  Text(
+                    recipeIngredients[index].name,
+                    style: TextStyle(
+                      color: blackColor,
+                      fontFamily: 'Inter',
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16,
+                      overflow: TextOverflow.visible,
+                    ),
+                  ),
+                ],
               ),
-              const Padding(padding: EdgeInsets.only(right: 8.0)),
+              Row(
+                children: [
+                  Text(
+                    recipeIngredients[index].quantity,
+                    style: TextStyle(
+                      color: blackColor,
+                      fontFamily: 'Inter',
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const Padding(padding: EdgeInsets.only(right: 8.0)),
+                ],
+              )
             ],
-          )
+          ),
         ],
       ),
     );
