@@ -16,7 +16,10 @@ import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_instructio
 import 'package:bakingup_frontend/widgets/baking_up_circular_edit_button.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_cost_section.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_edit_button_container.dart';
-import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_recipe_name.dart';
+import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_recipe_score.dart';
+import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_servings.dart';
+import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_total_time.dart';
 
 class RecipeDetailScreen extends StatefulWidget {
   const RecipeDetailScreen({super.key});
@@ -30,7 +33,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       'https://images.immediate.co.uk/production/volatile/sites/30/2021/09/butter-cookies-262c4fd.jpg';
   String recipeName = 'Butter Cookies';
   int servings = 36;
-  String unit = '1 hr 40 mins';
+  String totalTime = '1 hr 40 mins';
   int star = 4;
   int score = 10;
   int tabIndex = 1;
@@ -79,6 +82,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       quantity: "454 g",
     ),
   ];
+  final bool isLoading = true;
 
   @override
   Widget build(BuildContext context) {
@@ -177,15 +181,19 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   ),
                   if (tabIndex == 1)
                     RecipeDetailIngredientsSection(
-                        recipeIngredients: recipeIngredients),
+                      recipeIngredients: recipeIngredients,
+                      isLoading: isLoading,
+                    ),
                   if (tabIndex == 2)
                     RecipeDetailInstructionsSection(
                       instructionUrl: instructionUrl,
                       instructions: instructions,
+                      isLoading: isLoading,
                     ),
                   if (tabIndex == 3)
                     RecipeDetailCostSection(
                       rawMaterials: rawMaterials,
+                      isLoading: isLoading,
                     ),
                 ],
               ),
@@ -201,41 +209,21 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   children: [
                     Column(
                       children: [
-                        Text(
-                          recipeName,
-                          style: TextStyle(
-                            color: blackColor,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 24,
-                          ),
+                        RecipeDetailRecipeName(
+                          recipeName: recipeName,
+                          isLoading: isLoading,
                         ),
-                        const Padding(padding: EdgeInsets.only(bottom: 8.0)),
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 8.0),
+                        ),
                       ],
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0),
-                      child: Row(
-                        children: [
-                          for (int i = 0; i < 5; i++)
-                            Icon(
-                              i < star ? Icons.star : Icons.star_border,
-                              color: i < star ? orangeColor : greyColor,
-                              size: 16,
-                            ),
-                          const SizedBox(width: 5.0),
-                          Text(
-                            "($score)",
-                            style: TextStyle(
-                              color: blackColor,
-                              fontFamily: 'Inter',
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
+                      child: RecipeDetailRecipeScore(
+                        score: score,
+                        star: star,
+                        isLoading: isLoading,
                       ),
                     ),
                   ],
@@ -247,25 +235,13 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Total Time: $unit',
-                          style: TextStyle(
-                            color: blackColor,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w300,
-                            fontSize: 13,
-                          ),
+                        RecipeDetailTotalTime(
+                          totalTime: totalTime,
+                          isLoading: isLoading,
                         ),
-                        Text(
-                          'Servings: $servings',
-                          style: TextStyle(
-                            color: blackColor,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w300,
-                            fontSize: 13,
-                          ),
+                        RecipeDetailServings(
+                          servings: servings,
+                          isLoading: isLoading,
                         ),
                       ],
                     ),
