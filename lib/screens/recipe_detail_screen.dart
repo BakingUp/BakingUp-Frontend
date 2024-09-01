@@ -82,7 +82,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       quantity: "454 g",
     ),
   ];
-  final bool isLoading = true;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -108,6 +108,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
           RecipeDetailImageContainer(
             child: RecipeDetailImage(
               recipeUrl: recipeUrl,
+              isLoading: isLoading,
             ),
           ),
           const RecipeDetailEditButtonContainer(
