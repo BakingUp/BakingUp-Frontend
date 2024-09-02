@@ -8,12 +8,14 @@ import 'package:bakingup_frontend/widgets/baking_up_filter_button.dart';
 import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_back_button_container.dart';
 import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_image.dart';
 import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_image_container.dart';
-import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_detail.dart';
 import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_container.dart';
-import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_edit_stock_button.dart';
+import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_lst.dart';
+import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_notify_me.dart';
+import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_quantity.dart';
+import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_selling_price.dart';
+import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_stock_name.dart';
+import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_list.dart';
 import 'package:bakingup_frontend/enum/lst_status.dart';
-import 'package:bakingup_frontend/constants/colors.dart';
-import 'package:bakingup_frontend/utilities/regex.dart';
 
 class StockDetailScreen extends StatefulWidget {
   const StockDetailScreen({super.key});
@@ -56,6 +58,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
       lstStatus: LSTStatus.black,
     ),
   ];
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +69,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
           StockDetailImageContainer(
             child: StockDetailImage(
               stockUrl: stockUrl,
+              isLoading: isLoading,
             ),
           ),
           const StockDetailBackButtonContainer(
@@ -95,17 +99,9 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                       ],
                     ),
                   ),
-                  Expanded(
-                    child: ListView.builder(
-                      padding: const EdgeInsets.all(0),
-                      itemCount: stockDetails.length,
-                      itemBuilder: (context, index) {
-                        return StockDetailDetail(
-                          stockDetails: stockDetails,
-                          index: index,
-                        );
-                      },
-                    ),
+                  StockDetailList(
+                    stockDetails: stockDetails,
+                    isLoading: isLoading,
                   ),
                 ],
               ),
@@ -121,25 +117,13 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                   children: [
                     Column(
                       children: [
-                        Row(
-                          children: [
-                            Text(
-                              stockName,
-                              style: TextStyle(
-                                color: blackColor,
-                                fontFamily: 'Inter',
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 24,
-                              ),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.only(right: 10.0),
-                            ),
-                            const StockDetailEditStockButton(),
-                          ],
+                        StockDetailStockName(
+                          stockName: stockName,
+                          isLoading: isLoading,
                         ),
-                        const Padding(padding: EdgeInsets.only(bottom: 8.0)),
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 8.0),
+                        ),
                       ],
                     ),
                     const BakingUpCircularAddButton(),
@@ -150,51 +134,23 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Quantity: ${quantity.toString()}',
-                          style: TextStyle(
-                            color: blackColor,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w300,
-                            fontSize: 13,
-                          ),
-                        ),
-                        Text(
-                          'Selling price : ${price.toString().replaceAll(removeTrailingZeros, '')} ฿',
-                          style: TextStyle(
-                            color: blackColor,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w300,
-                            fontSize: 13,
-                          ),
-                        ),
+                        StockDetailQuantity(
+                            quantity: quantity, isLoading: isLoading),
+                        StockDetailSellingPrice(
+                            price: price, isLoading: isLoading),
                       ],
                     ),
                     const SizedBox(width: 30),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'LST: ${lst.toString()}',
-                          style: TextStyle(
-                            color: blackColor,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w300,
-                            fontSize: 13,
-                          ),
+                        StockDetailLst(
+                          lst: lst,
+                          isLoading: isLoading,
                         ),
-                        Text(
-                          'Notify me : < ${ingredientLessThan.toString().replaceAll(removeTrailingZeros, '')} unit',
-                          style: TextStyle(
-                            color: blackColor,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w300,
-                            fontSize: 13,
-                          ),
+                        StockDetailNotifyMe(
+                          ingredientLessThan: ingredientLessThan,
+                          isLoading: isLoading,
                         ),
                       ],
                     ),
