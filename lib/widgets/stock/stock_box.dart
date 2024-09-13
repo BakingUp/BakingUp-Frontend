@@ -1,10 +1,9 @@
 import 'package:bakingup_frontend/constants/colors.dart';
-import 'package:bakingup_frontend/enum/expiration_status.dart';
-import 'package:bakingup_frontend/screens/stock_screen.dart';
+import 'package:bakingup_frontend/models/stock.dart';
 import 'package:flutter/material.dart';
 
 class StockBox extends StatelessWidget {
-  final List<StockItem> stockList;
+  final List<StockItemData> stockList;
   final int index;
 
   const StockBox({super.key, required this.stockList, required this.index});
@@ -36,7 +35,7 @@ class StockBox extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(13),
                     child: Image.network(
-                      stockList[index].imgUrl,
+                      stockList[index].stockUrl,
                       width: 90,
                       height: 60,
                       fit: BoxFit.cover,
@@ -47,7 +46,7 @@ class StockBox extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        stockList[index].name,
+                        stockList[index].stockName,
                         style: TextStyle(
                           color: blackColor,
                           fontFamily: 'Inter',
@@ -73,7 +72,7 @@ class StockBox extends StatelessWidget {
                         padding: EdgeInsets.only(bottom: 1.0),
                       ),
                       Text(
-                        'Selling price: ${stockList[index].sellingPrice}',
+                        'Selling price: ${stockList[index].sellingPrice % 1 == 0 ? stockList[index].sellingPrice.ceil() : stockList[index].sellingPrice}',
                         style: TextStyle(
                           color: blackColor,
                           fontFamily: 'Inter',
@@ -94,14 +93,11 @@ class StockBox extends StatelessWidget {
                   borderRadius: const BorderRadius.only(
                       bottomRight: Radius.circular(13),
                       topRight: Radius.circular(13)),
-                  color: stockList[index].expirationStatus ==
-                          ExpirationStatus.black
+                  color: stockList[index].lstStatus == "black"
                       ? blackColor
-                      : stockList[index].expirationStatus ==
-                              ExpirationStatus.red
+                      : stockList[index].lstStatus == "red"
                           ? redColor
-                          : stockList[index].expirationStatus ==
-                                  ExpirationStatus.yellow
+                          : stockList[index].lstStatus == "yellow"
                               ? yellowColor
                               : greenColor),
             ),

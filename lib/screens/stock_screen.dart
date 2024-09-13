@@ -1,5 +1,7 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/enum/expiration_status.dart';
+import 'package:bakingup_frontend/models/stock.dart';
+import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_two_button.dart';
@@ -16,6 +18,9 @@ class StockScreen extends StatefulWidget {
 
 class _StockScreenState extends State<StockScreen> {
   final int _currentDrawerIndex = 9;
+  bool isLoading = false;
+  bool isError = false;
+  List<StockItemData> stocks = [];
   List<StockItem> stockList = [
     StockItem(
         imgUrl:
@@ -49,6 +54,35 @@ class _StockScreenState extends State<StockScreen> {
         sellingPrice: 190,
         expirationStatus: ExpirationStatus.black)
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchStockList();
+  }
+
+  Future<void> _fetchStockList() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final response = await NetworkService.instance
+          .get('/api/stock/getAllStocks?user_id=1');
+
+      final stockResponse = StockListResponse.fromJson(response);
+      final data = stockResponse.data;
+      setState(() {
+        stocks = data.stocks;
+      });
+    } catch (e) {
+      isError = true;
+    } finally {
+      setState(() {
+        isLoading = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,9 +139,9 @@ class _StockScreenState extends State<StockScreen> {
               Expanded(
                   child: ListView.builder(
                 padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
-                itemCount: stockList.length,
+                itemCount: stocks.length,
                 itemBuilder: (context, index) {
-                  return StockBox(stockList: stockList, index: index);
+                  return StockBox(stockList: stocks, index: index);
                 },
               ))
             ],
