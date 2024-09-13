@@ -1,10 +1,11 @@
 import 'package:bakingup_frontend/constants/colors.dart';
-import 'package:bakingup_frontend/screens/warehouse_screen.dart';
+import 'package:bakingup_frontend/enum/expiration_status.dart';
+import 'package:bakingup_frontend/models/warehouse.dart';
 import 'package:bakingup_frontend/widgets/ingredient_detail/expiration_status_indicator.dart';
 import 'package:flutter/material.dart';
 
 class WarehouseIngredientsItem extends StatelessWidget {
-  final List<IngredientItem> ingredientList;
+  final List<IngredientItemData> ingredientList;
   final int index;
 
   const WarehouseIngredientsItem(
@@ -36,7 +37,7 @@ class WarehouseIngredientsItem extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(13),
                   child: Image.network(
-                    ingredientList[index].imgUrl,
+                    ingredientList[index].ingredientUrl,
                     width: 90,
                     height: 60,
                     fit: BoxFit.cover,
@@ -47,7 +48,7 @@ class WarehouseIngredientsItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      ingredientList[index].name,
+                      ingredientList[index].ingredientName,
                       style: TextStyle(
                         color: blackColor,
                         fontFamily: 'Inter',
@@ -60,7 +61,7 @@ class WarehouseIngredientsItem extends StatelessWidget {
                       padding: EdgeInsets.only(bottom: 5.0),
                     ),
                     Text(
-                      'Quantity: ${ingredientList[index].quantity} ${ingredientList[index].unit}',
+                      'Quantity: ${ingredientList[index].quantity} ${ingredientList[index].quantity}',
                       style: TextStyle(
                         color: blackColor,
                         fontFamily: 'Inter',
@@ -89,7 +90,13 @@ class WarehouseIngredientsItem extends StatelessWidget {
             Row(
               children: [
                 ExpirationStatusIndicator(
-                    status: ingredientList[index].expirationStatus),
+                    status: ingredientList[index].expirationStatus == "black"
+                        ? ExpirationStatus.black
+                        : ingredientList[index].expirationStatus == "red"
+                            ? ExpirationStatus.red
+                            : ingredientList[index].expirationStatus == "yellow"
+                                ? ExpirationStatus.yellow
+                                : ExpirationStatus.green),
                 const Padding(padding: EdgeInsets.only(right: 20.0)),
               ],
             )
