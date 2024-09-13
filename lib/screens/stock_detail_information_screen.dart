@@ -7,19 +7,17 @@ import 'package:bakingup_frontend/widgets/stock_detail_information/stock_detail_
 import 'package:bakingup_frontend/widgets/stock_detail_information/stock_detail_information_title.dart';
 import 'package:bakingup_frontend/widgets/stock_detail_information/stock_detail_information_note.dart';
 import 'package:bakingup_frontend/widgets/stock_detail_information/stock_detail_information_container.dart';
+import 'package:bakingup_frontend/widgets/stock_detail_information/stock_detail_information_bakery_quantity.dart';
+import 'package:bakingup_frontend/widgets/stock_detail_information/stock_detail_information_bakery_recipe.dart';
+import 'package:bakingup_frontend/widgets/stock_detail_information/stock_detail_information_bakery_sell_by_date.dart';
+import 'package:shimmer/shimmer.dart';
 
-class StockDetailInformationScreen extends StatefulWidget {
+class StockDetailInformationScreen extends StatelessWidget {
   const StockDetailInformationScreen({super.key});
 
-  @override
-  State<StockDetailInformationScreen> createState() =>
-      _StockDetailInformationScreenState();
-}
-
-class _StockDetailInformationScreenState
-    extends State<StockDetailInformationScreen> {
   final String note = "For order #3";
   final String createdAt = "03/03/2024";
+  final bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -49,101 +47,43 @@ class _StockDetailInformationScreenState
       body: StockDetailInformationContainer(
         children: [
           const StockDetailInformationTitle(title: "Bakery Stock Information"),
-          const StockDetailInformationImage(),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
+          Stack(
             children: [
-              const Text(
-                'Bakery Recipe',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
+              Shimmer.fromColors(
+                baseColor: greyColor,
+                highlightColor: whiteColor,
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.width / 2,
+                  margin: const EdgeInsets.all(12.0),
+                  color: Colors.white,
                 ),
               ),
-              const SizedBox(width: 16),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                decoration: BoxDecoration(
-                  color: lightGreyColor,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: const Text(
-                  "Butter Cookie",
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontFamily: 'Inter',
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              )
-            ],
-          ),
-          const SizedBox(height: 16),
-          const Row(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Column(
                 children: [
-                  Text(
-                    'Quantity:',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
+                  StockDetailInformationImage(isLoading: isLoading),
+                  const SizedBox(height: 16),
+                  StockDetailInformationBakeryRecipe(isLoading: isLoading),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      StockDetailInformationBakeryQuantity(isLoading: isLoading)
+                    ],
                   ),
-                  SizedBox(width: 8),
-                  Text(
-                    '10',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
+                  const SizedBox(height: 16),
+                  StockDetailInformationBakerySellByDate(isLoading: isLoading),
+                  const SizedBox(height: 50),
+                  const StockDetailInformationTitle(title: "Note:"),
+                  const SizedBox(height: 16),
+                  StockDetailInformationNote(
+                    note: note,
+                    createdAt: createdAt,
+                    isLoading: isLoading,
                   ),
                 ],
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Sell-By Date:',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              SizedBox(width: 8),
-              Text(
-                '29/03/2024',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 50),
-          const StockDetailInformationTitle(title: "Note:"),
-          const SizedBox(height: 16),
-          StockDetailInformationNote(note: note, createdAt: createdAt),
         ],
       ),
     );
