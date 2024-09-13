@@ -1,5 +1,6 @@
 import 'package:bakingup_frontend/constants/colors.dart';
-import 'package:bakingup_frontend/enum/expiration_status.dart';
+import 'package:bakingup_frontend/models/warehouse.dart';
+import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_two_button.dart';
@@ -19,52 +20,70 @@ class WarehouseScreen extends StatefulWidget {
 class _WarehouseScreenState extends State<WarehouseScreen> {
   int tabIndex = 1;
   final int _currentDrawerIndex = 3;
+  bool isLoading = true;
+  bool isError = true;
+  List<RecipeItemData> recipes = [];
+  List<IngredientItemData> ingredients = [];
 
-  List<IngredientItem> ingredientList = [
-    IngredientItem(
-      imgUrl: 'https://i.imgur.com/RLsjqFm.png',
-      name: 'All-purpose flour',
-      stock: 2,
-      quantity: 1.4,
-      unit: 'kg',
-      expirationStatus: ExpirationStatus.red,
-    ),
-    IngredientItem(
-      imgUrl:
-          'https://img.freepik.com/free-photo/world-diabetes-day-sugar-wooden-bowl-dark-surface_1150-26666.jpg',
-      name: 'Sugar',
-      stock: 1,
-      quantity: 1,
-      unit: 'kg',
-      expirationStatus: ExpirationStatus.green,
-    ),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _fetchRecipeList();
+  }
 
-  List<RecipeItem> recipeList = [
-    RecipeItem(
-        imgUrl:
-            'https://divascancook.com/wp-content/uploads/2023/12/butter-cookies.jpg',
-        name: 'Butter Cookies',
-        totalTime: '1 hr 40 mins',
-        servingAmount: 36,
-        score: 10,
-        star: 4),
-    RecipeItem(
-        imgUrl: 'https://bakerjo.co.uk/wp-content/uploads/2022/08/IMG_3525.jpg',
-        name: 'Carrot Cake',
-        totalTime: '2 hr 40 mins',
-        servingAmount: 1,
-        score: 9,
-        star: 4),
-    RecipeItem(
-        imgUrl:
-            'https://www.inspiredtaste.net/wp-content/uploads/2024/01/Brownies-Recipe-Video.jpg',
-        name: 'Chocolate Brownie',
-        totalTime: '1 hr 50 mins',
-        servingAmount: 24,
-        score: 3,
-        star: 4),
-  ];
+  Future<void> _fetchRecipeList() async {
+    setState(() {
+      isLoading = true;
+      isError = false;
+    });
+
+    try {
+      final response = await NetworkService.instance
+          .get('/api/recipe/getAllRecipes?user_id=1');
+
+      final recipeListResponse = RecipeListResponse.fromJson(response);
+      final data = recipeListResponse.data;
+      setState(() {
+        recipes = data.recipeList;
+      });
+
+      setState(() {});
+    } catch (e) {
+      setState(() {
+        isError = true;
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _fetchIngredientList() async {
+    setState(() {
+      isLoading = true;
+      isError = false;
+    });
+
+    try {
+      final response = await NetworkService.instance
+          .get('/api/ingredient/getAllIngredients?user_id=1');
+
+      final ingredientListResponse = IngredietnListResponse.fromJson(response);
+      final data = ingredientListResponse.data;
+      setState(() {
+        ingredients = data.ingredientList;
+      });
+    } catch (e) {
+      setState(() {
+        isError = true;
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,6 +135,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                           onClick: () {
                             setState(() {
                               tabIndex = 1;
+                              _fetchRecipeList();
                             });
                           }),
                       const SizedBox(
@@ -127,6 +147,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                           onClick: () {
                             setState(() {
                               tabIndex = 2;
+                              _fetchIngredientList();
                             });
                           })
                     ],
@@ -154,58 +175,23 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                   Expanded(
                       child: ListView.builder(
                           padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
-                          itemCount: recipeList.length,
+                          itemCount: recipes.length,
                           itemBuilder: (context, index) {
                             return WarehouseRecipesItem(
-                                recipeList: recipeList, index: index);
+                                recipeList: recipes, index: index);
                           })),
                 if (tabIndex == 2)
                   Expanded(
                     child: ListView.builder(
                       padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
-                      itemCount: ingredientList.length,
+                      itemCount: ingredients.length,
                       itemBuilder: (context, index) {
                         return WarehouseIngredientsItem(
-                            ingredientList: ingredientList, index: index);
+                            ingredientList: ingredients, index: index);
                       },
                     ),
                   ),
               ],
             )));
   }
-}
-
-class RecipeItem {
-  final String imgUrl;
-  final String name;
-  final String totalTime;
-  final int servingAmount;
-  final int score;
-  final int star;
-
-  RecipeItem(
-      {required this.imgUrl,
-      required this.name,
-      required this.totalTime,
-      required this.servingAmount,
-      required this.score,
-      required this.star});
-}
-
-class IngredientItem {
-  final String imgUrl;
-  final String name;
-  final int stock;
-  final double quantity;
-  final String unit;
-  final ExpirationStatus expirationStatus;
-
-  IngredientItem({
-    required this.imgUrl,
-    required this.name,
-    required this.stock,
-    required this.quantity,
-    required this.unit,
-    required this.expirationStatus,
-  });
 }
