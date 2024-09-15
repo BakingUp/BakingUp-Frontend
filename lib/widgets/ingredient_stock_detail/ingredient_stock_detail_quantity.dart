@@ -4,9 +4,11 @@ import 'package:shimmer/shimmer.dart';
 
 class IngredientStockDetailQuantity extends StatelessWidget {
   final bool isLoading;
+  final String ingredientQuantity;
   const IngredientStockDetailQuantity({
     super.key,
     required this.isLoading,
+    required this.ingredientQuantity,
   });
 
   @override
@@ -26,11 +28,11 @@ class IngredientStockDetailQuantity extends StatelessWidget {
               ),
             ],
           )
-        : const Row(
+        : Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Quantity:',
                 style: TextStyle(
                   fontSize: 16,
@@ -39,10 +41,10 @@ class IngredientStockDetailQuantity extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(
-                '1 kg.',
-                style: TextStyle(
+                ingredientQuantity,
+                style: const TextStyle(
                   fontSize: 16,
                   fontFamily: 'Inter',
                   fontStyle: FontStyle.normal,

@@ -1,4 +1,12 @@
 // Importing libraries
+import 'package:flutter/material.dart';
+
+// Importing files
+import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_container.dart';
+import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_title.dart';
+import 'package:bakingup_frontend/models/ingredient_stock_detail.dart';
+import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_brand.dart';
 import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_edit_button.dart';
 import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_expiration_date.dart';
@@ -8,16 +16,11 @@ import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_sto
 import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_price.dart';
 import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_quantity.dart';
 import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_supplier.dart';
-import 'package:flutter/material.dart';
-
-// Importing files
-import 'package:bakingup_frontend/constants/colors.dart';
-import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_container.dart';
-import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_title.dart';
 import 'package:shimmer/shimmer.dart';
 
 class IngredientStockDetailScreen extends StatefulWidget {
-  const IngredientStockDetailScreen({super.key});
+  final String? ingredientStockId;
+  const IngredientStockDetailScreen({super.key, this.ingredientStockId});
 
   @override
   State<IngredientStockDetailScreen> createState() =>
@@ -26,21 +29,57 @@ class IngredientStockDetailScreen extends StatefulWidget {
 
 class _IngredientStockDetailScreenState
     extends State<IngredientStockDetailScreen> {
-  List<IngredientStockDetailNote> ingredientStockDetailNotes = [
-    IngredientStockDetailNote(
-      ingredientNote: "This ingredient is used for making bread.",
-      noteCreatedAt: "03/03/2024",
-    ),
-    IngredientStockDetailNote(
-      ingredientNote: "This ingredient is used for making cake.",
-      noteCreatedAt: "06/03/2024",
-    ),
-    IngredientStockDetailNote(
-      ingredientNote: "This ingredient is used for making cookies.",
-      noteCreatedAt: "09/03/2024",
-    ),
-  ];
-  bool isLoading = false;
+  bool isLoading = true;
+  bool isError = false;
+  String ingredientStockDetailUrl = '';
+  String ingredientEngName = '';
+  String ingredientThaiName = '';
+  String ingredientBrand = '';
+  String ingredientQuantity = '';
+  String ingredientPrice = '';
+  String ingredientSupplier = '';
+  String dayBeforeExpire = '';
+  List<IngredientStockDetailNote> ingredientStockDetailNotes = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchIngredientStockDetails();
+  }
+
+  Future<void> _fetchIngredientStockDetails() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final response = await NetworkService.instance.get(
+        '/api/ingredient/getIngredientStockDetail?ingredient_stock_id=${widget.ingredientStockId}',
+      );
+      final ingredientStockDetailResponse =
+          IngredientStockDetailResponse.fromJson(response);
+      final data = ingredientStockDetailResponse.data;
+      setState(() {
+        ingredientStockDetailUrl = data.ingredientStockUrl;
+        ingredientEngName = data.ingredientEngName;
+        ingredientThaiName = data.ingredientThaiName;
+        ingredientBrand = data.ingredientBrand;
+        ingredientQuantity = data.ingredientQuantity;
+        ingredientPrice = data.ingredientPrice;
+        ingredientSupplier = data.ingredientSupplier;
+        dayBeforeExpire = data.dayBeforeExpire;
+        ingredientStockDetailNotes = data.notes ?? [];
+      });
+    } catch (e) {
+      setState(() {
+        isError = true;
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +101,9 @@ class _IngredientStockDetailScreenState
           builder: (context) {
             return IconButton(
               icon: const Icon(Icons.arrow_back_ios),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pop(context);
+              },
             );
           },
         ),
@@ -90,33 +131,61 @@ class _IngredientStockDetailScreenState
               ),
               Column(
                 children: [
-                  IngredientStockDetailImage(isLoading: isLoading),
+                  IngredientStockDetailImage(
+                    isLoading: isLoading,
+                    ingredientStockDetailUrl: ingredientStockDetailUrl,
+                  ),
                   const SizedBox(height: 16),
-                  IngredientStockDetailIngredientName(isLoading: isLoading),
+                  IngredientStockDetailIngredientName(
+                    isLoading: isLoading,
+                    ingredientEngName: ingredientEngName,
+                    ingredientThaiName: ingredientThaiName,
+                  ),
                   const SizedBox(height: 16),
-                  IngredientStockDetailBrand(isLoading: isLoading),
+                  IngredientStockDetailBrand(
+                    isLoading: isLoading,
+                    ingredientBrand: ingredientBrand,
+                  ),
                   const SizedBox(height: 16),
                   Row(
                     children: [
-                      IngredientStockDetailQuantity(isLoading: isLoading),
+                      IngredientStockDetailQuantity(
+                        isLoading: isLoading,
+                        ingredientQuantity: ingredientQuantity,
+                      ),
                       const SizedBox(width: 50),
-                      IngredientStockDetailPrice(isLoading: isLoading),
+                      IngredientStockDetailPrice(
+                        isLoading: isLoading,
+                        ingredientPrice: ingredientPrice,
+                      ),
                     ],
                   ),
                   const SizedBox(height: 16),
                   const IngredientStockDetailTitle(
                       title: "Additional Information"),
                   const SizedBox(height: 16),
-                  IngredientStockDetailSupplier(isLoading: isLoading),
-                  const SizedBox(height: 16),
-                  IngredientStockDetailExpirationDate(isLoading: isLoading),
-                  const SizedBox(height: 50),
-                  const IngredientStockDetailTitle(title: "Note:"),
-                  const SizedBox(height: 16),
-                  IngredientStockDetailNoteList(
-                    ingredientStockDetailNotes: ingredientStockDetailNotes,
+                  IngredientStockDetailSupplier(
                     isLoading: isLoading,
-                  )
+                    ingredientSupplier: ingredientSupplier,
+                  ),
+                  const SizedBox(height: 16),
+                  IngredientStockDetailExpirationDate(
+                    isLoading: isLoading,
+                    dayBeforeExpire: dayBeforeExpire,
+                  ),
+                  const SizedBox(height: 50),
+                  if (ingredientStockDetailNotes.isNotEmpty)
+                    Column(
+                      children: [
+                        const IngredientStockDetailTitle(title: "Note:"),
+                        const SizedBox(height: 16),
+                        IngredientStockDetailNoteList(
+                          ingredientStockDetailNotes:
+                              ingredientStockDetailNotes,
+                          isLoading: isLoading,
+                        )
+                      ],
+                    )
                 ],
               ),
             ],
@@ -125,15 +194,4 @@ class _IngredientStockDetailScreenState
       ),
     );
   }
-}
-
-// Temporary class to simulate the data
-class IngredientStockDetailNote {
-  final String ingredientNote;
-  final String noteCreatedAt;
-
-  IngredientStockDetailNote({
-    required this.ingredientNote,
-    required this.noteCreatedAt,
-  });
 }

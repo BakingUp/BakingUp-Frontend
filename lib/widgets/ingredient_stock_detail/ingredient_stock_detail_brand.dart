@@ -4,9 +4,11 @@ import 'package:shimmer/shimmer.dart';
 
 class IngredientStockDetailBrand extends StatelessWidget {
   final bool isLoading;
+  final String ingredientBrand;
   const IngredientStockDetailBrand({
     super.key,
     required this.isLoading,
+    required this.ingredientBrand,
   });
 
   @override
@@ -26,11 +28,11 @@ class IngredientStockDetailBrand extends StatelessWidget {
               ),
             ],
           )
-        : const Row(
+        : Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
+              const Text(
                 'Brand:',
                 style: TextStyle(
                   fontSize: 16,
@@ -39,10 +41,10 @@ class IngredientStockDetailBrand extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(
-                'KITE',
-                style: TextStyle(
+                ingredientBrand,
+                style: const TextStyle(
                   fontSize: 16,
                   fontFamily: 'Inter',
                   fontStyle: FontStyle.normal,

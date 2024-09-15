@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -25,6 +27,7 @@ class NetworkService {
   }) async {
     try {
       final response = await _dio.get(url, queryParameters: queryParameters);
+      log(response.toString());
       return response.data;
     } on DioException catch (e) {
       final data = Map<String, dynamic>.from(e.response?.data);

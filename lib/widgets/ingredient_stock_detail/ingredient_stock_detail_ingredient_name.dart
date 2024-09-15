@@ -4,9 +4,13 @@ import 'package:shimmer/shimmer.dart';
 
 class IngredientStockDetailIngredientName extends StatelessWidget {
   final bool isLoading;
+  final String ingredientEngName;
+  final String ingredientThaiName;
   const IngredientStockDetailIngredientName({
     super.key,
     required this.isLoading,
+    required this.ingredientEngName,
+    required this.ingredientThaiName,
   });
 
   @override
@@ -51,9 +55,9 @@ class IngredientStockDetailIngredientName extends StatelessWidget {
                       margin: const EdgeInsets.only(top: 3.0),
                     ),
                   )
-                : const Text(
-                    'All purpose flour',
-                    style: TextStyle(
+                : Text(
+                    ingredientEngName,
+                    style: const TextStyle(
                       fontSize: 16,
                       fontFamily: 'Inter',
                       fontStyle: FontStyle.normal,
@@ -72,9 +76,9 @@ class IngredientStockDetailIngredientName extends StatelessWidget {
                       margin: const EdgeInsets.only(top: 7.0),
                     ),
                   )
-                : const Text(
-                    'แป้งอเนกประสงค์',
-                    style: TextStyle(
+                : Text(
+                    ingredientThaiName,
+                    style: const TextStyle(
                       fontSize: 16,
                       fontFamily: 'Inter',
                       fontStyle: FontStyle.normal,

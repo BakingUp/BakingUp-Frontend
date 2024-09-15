@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 
 class IngredientStockDetailImage extends StatelessWidget {
   final bool isLoading;
+  final String ingredientStockDetailUrl;
   const IngredientStockDetailImage({
     super.key,
     required this.isLoading,
+    required this.ingredientStockDetailUrl,
   });
-  final ingredientUrl = "https://i.imgur.com/RLsjqFm.png";
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,7 @@ class IngredientStockDetailImage extends StatelessWidget {
       height: MediaQuery.of(context).size.width / 2,
       child: !isLoading
           ? Image.network(
-              ingredientUrl,
+              ingredientStockDetailUrl,
               width: MediaQuery.of(context).size.width,
               fit: BoxFit.cover,
             )
