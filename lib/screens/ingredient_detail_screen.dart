@@ -49,7 +49,7 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
 
     try {
       final response = await NetworkService.instance.get(
-        '/api/ingredient/$ingredientId',
+        '/api/ingredient/getIngredientDetail?ingredient_id=$ingredientId',
       );
       final ingredientDetailResponse =
           IngredientDetailResponse.fromJson(response);
