@@ -1,4 +1,4 @@
-import 'package:bakingup_frontend/screens/stock_detail_screen.dart';
+import 'package:bakingup_frontend/models/stock_detail.dart';
 import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_detail.dart';
 import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_detail_loading.dart';
 import 'package:flutter/material.dart';

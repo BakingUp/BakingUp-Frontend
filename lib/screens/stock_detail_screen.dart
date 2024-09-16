@@ -1,4 +1,8 @@
 // Importing libraries
+import 'dart:developer';
+
+import 'package:bakingup_frontend/models/stock_detail.dart';
+import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -25,40 +29,54 @@ class StockDetailScreen extends StatefulWidget {
 }
 
 class _StockDetailScreenState extends State<StockDetailScreen> {
-  String stockUrl =
-      'https://images.immediate.co.uk/production/volatile/sites/30/2021/09/butter-cookies-262c4fd.jpg';
-  String stockName = 'Butter Cookies';
-  int quantity = 30;
-  double ingredientLessThan = 10;
-  int lst = 3;
-  double price = 50;
-  List<StockDetail> stockDetails = [
-    StockDetail(
-      stockId: '1',
-      quantity: 10,
-      sellByDate: '29/06/2024',
-      lstStatus: LSTStatus.red,
-    ),
-    StockDetail(
-      stockId: '2',
-      quantity: 12,
-      sellByDate: '29/06/2024',
-      lstStatus: LSTStatus.green,
-    ),
-    StockDetail(
-      stockId: '3',
-      quantity: 14,
-      sellByDate: '29/06/2024',
-      lstStatus: LSTStatus.yellow,
-    ),
-    StockDetail(
-      stockId: '4',
-      quantity: 16,
-      sellByDate: '29/06/2024',
-      lstStatus: LSTStatus.black,
-    ),
-  ];
-  bool isLoading = false;
+  final String recipeId = '1';
+  String stockUrl = '';
+  String stockName = '';
+  int quantity = 0;
+  int stockLessThan = 0;
+  int lst = 0;
+  double price = 0.0;
+  List<StockDetail> stockDetails = [];
+  bool isLoading = true;
+  bool isError = false;
+
+    @override
+  void initState() {
+    super.initState();
+    _fetchStockDetails();
+  }
+
+  Future<void> _fetchStockDetails() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final response = await NetworkService.instance.get(
+        '/api/stock/getStockDetail?recipe_id=$recipeId',
+      );
+      final stockDetailResponse =
+          StockDetailResponse.fromJson(response);
+      final data = stockDetailResponse.data;
+      setState(() {
+        stockUrl = data.stockUrl.first;
+        stockName = data.stockName;
+        quantity = data.quantity;
+        lst = data.lst;
+        price = data.sellingPrice;
+        stockLessThan = data.stockLessThan;
+        stockDetails = data.stockDetails;
+      });
+    } catch (e) {
+      setState(() {
+        isError = true;
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +167,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                           isLoading: isLoading,
                         ),
                         StockDetailNotifyMe(
-                          ingredientLessThan: ingredientLessThan,
+                          stockLessThan: stockLessThan,
                           isLoading: isLoading,
                         ),
                       ],
@@ -163,19 +181,4 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
       ),
     );
   }
-}
-
-// Temporary class to simulate the data
-class StockDetail {
-  final String stockId;
-  final int quantity;
-  final String sellByDate;
-  final LSTStatus lstStatus;
-
-  StockDetail({
-    required this.stockId,
-    required this.quantity,
-    required this.sellByDate,
-    required this.lstStatus,
-  });
 }
