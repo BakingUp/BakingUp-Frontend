@@ -1,15 +1,17 @@
 import 'package:bakingup_frontend/models/auth/login_controller.dart';
+import 'package:bakingup_frontend/screens/home_screen.dart';
 import 'package:bakingup_frontend/screens/register_screen.dart';
 import 'package:bakingup_frontend/screens/reset_password_screen.dart';
-import 'package:bakingup_frontend/screens/verify_email_screen.dart';
+import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/widgets/baking_up_theme_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:bakingup_frontend/constants/colors.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
-  
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -19,12 +21,43 @@ class _LoginScreenState extends State<LoginScreen> {
   bool passwordVisible = true;
   String errorMessage = "";
   final LoginTextEditController _loginController = LoginTextEditController();
+  String? _fcmToken;
 
-  void navigate(String email) {
+  @override
+  void initState() {
+    super.initState();
+    _getFcmToken();
+  }
+
+  Future<void> _getFcmToken() async {
+    try {
+      FirebaseMessaging messaging = FirebaseMessaging.instance;
+      String? token = await messaging.getToken();
+      setState(() {
+        _fcmToken = token;
+      });
+      print("FCM Token: $_fcmToken");
+    } catch (e) {
+      print("Error retrieving FCM token: $e");
+    }
+  }
+
+  Future<void> postToken(String? token, String userId) async {
+    if (token != null) {
+      try {
+        await NetworkService.instance.post('/api/auth/addDeviceToken', data: {
+          "user_id": userId,
+          "device_token": token
+        });
+      } catch (e) {
+        print("Error post token: $e");
+      }
+    }
+  }
+
+  void navigate() {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => VerifyEmailScreen(email: email)));
+        context, MaterialPageRoute(builder: (context) => const HomeScreen()));
   }
 
   @override
@@ -129,9 +162,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             if (value == null || value.isEmpty) {
                               setState(() => errorMessage = "");
                               return 'Please enter password';
-                            } else if (value.length < 8) {
-                              setState(() => errorMessage = "");
-                              return "Password must be at least 8 characters long";
                             }
                             return null;
                           },
@@ -225,86 +255,101 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         CustomButton(
-                            color: "primary",
-                            text: "Login",
-                            onTap: () async {
-                              if (_formKey.currentState!.validate()) {
-                                try {
-                                  showDialog<String>(
-                                      context: context,
-                                      builder: (BuildContext context) =>
-                                          AlertDialog(
-                                            content: SizedBox(
-                                              height: 120,
-                                              child: Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 10),
-                                                child: Center(
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          CircularProgressIndicator(
-                                                            color:
-                                                                darkBeigeColor,
-                                                          ),
-                                                          const SizedBox(
-                                                            height: 10,
-                                                          ),
-                                                          const Text(
-                                                              "Loading..."),
-                                                        ],
-                                                      )
-                                                    ],
-                                                  ),
+                          color: "primary",
+                          text: "Login",
+                          onTap: () async {
+                            if (_formKey.currentState!.validate()) {
+                              try {
+                                showDialog<String>(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        AlertDialog(
+                                          content: SizedBox(
+                                            height: 120,
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 10),
+                                              child: Center(
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        CircularProgressIndicator(
+                                                          color: darkBeigeColor,
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        const Text(
+                                                            "Loading..."),
+                                                      ],
+                                                    )
+                                                  ],
                                                 ),
                                               ),
                                             ),
-                                          ));
-                                  await FirebaseAuth.instance
-                                      .signInWithEmailAndPassword(
-                                          email: _loginController.email,
-                                          password: _loginController.password);
-                                  navigate(_loginController.email);
-                                  debugPrint("Successfully login");
-                                } on FirebaseAuthException catch (e) {
-                                  Navigator.of(context).pop();
-                                  if (e.code == 'user-not-found') {
-                                    setState(() {
-                                      errorMessage = "User not found";
-                                    });
-                                    debugPrint('No user found for that email');
-                                  } else if (e.code == 'wrong-password') {
-                                    setState(() {
-                                      errorMessage = "Wrong password";
-                                    });
-                                    debugPrint(
-                                        'wrong password provided for that user');
-                                  }
+                                          ),
+                                        ));
+                                UserCredential userCredential = await FirebaseAuth.instance
+                                    .signInWithEmailAndPassword(
+                                        email: _loginController.email,
+                                        password: _loginController.password);
+                                
+                                String? userId = userCredential.user?.uid;
+                                if(userId != null){
+                                  debugPrint("Successfully logged in. UID: $userId");
+                                  await postToken(_fcmToken, userId);
+
+                                  navigate();
+                                }
+                              } on FirebaseAuthException catch (e) {
+                                Navigator.of(context).pop();
+                                if (e.code == 'user-not-found') {
+                                  setState(() {
+                                    errorMessage = "User not found";
+                                  });
+                                  debugPrint('No user found for that email');
+                                } else if (e.code == 'wrong-password') {
+                                  setState(() {
+                                    errorMessage = "Wrong password";
+                                  });
+                                  debugPrint(
+                                      'wrong password provided for that user');
                                 }
                               }
-                            },
-                            paddingHorizontal: const EdgeInsets.symmetric(horizontal: 60),
-                            )
+                            }
+                          },
+                          paddingHorizontal:
+                              const EdgeInsets.symmetric(horizontal: 60),
+                        )
                       ],
                     ),
-                    const SizedBox(height: 30,),
+                    const SizedBox(
+                      height: 30,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text("Dont't have an account? "),
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterScreen()));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const RegisterScreen()));
                           },
-                          child: Text("Create", style: TextStyle(fontWeight: FontWeight.bold, color: redColor),),
+                          child: Text(
+                            "Create",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, color: redColor),
+                          ),
                         )
                       ],
                     )

@@ -33,4 +33,25 @@ class NetworkService {
       rethrow;
     }
   }
+
+  Future<dynamic> post(
+    String url, {
+    Map<String, dynamic>? data, 
+    Map<String, dynamic>? queryParameters, 
+  }) async {
+    try {
+      final response = await _dio.post(
+        url,
+        data: data,
+        queryParameters: queryParameters,
+      );
+      return response.data;
+    } on DioException catch (e) {
+      final data = Map<String, dynamic>.from(e.response?.data ?? {});
+      throw Exception(data['message'] ?? "Error while posting data");
+    } catch (e) {
+      rethrow;
+    }
+  }
+  
 }
