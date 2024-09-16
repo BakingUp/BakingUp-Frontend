@@ -25,8 +25,6 @@ import 'package:bakingup_frontend/screens/stock_detail_screen.dart';
 import 'package:bakingup_frontend/screens/stock_screen.dart';
 import 'package:bakingup_frontend/screens/warehouse_screen.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -34,7 +32,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
   await NetworkService.instance.initClient();
-  await Firebase.initializeApp();
 
   runApp(const MainApp());
 }
@@ -47,32 +44,11 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  late Widget _initialScreen;
-
-  @override
-  void initState() {
-    super.initState();
-    _checkAuthState();
-  }
-
-  void _checkAuthState() {
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user == null) {
-        setState(() {
-          _initialScreen = const LoginScreen(); 
-        });
-      } else {
-        setState(() {
-          _initialScreen = const HomeScreen();
-        });
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: _initialScreen,
+      // Setting the initial routes
+      initialRoute: loginRoute,
       // Generating routes for each screen in the app
       onGenerateRoute: (settings) {
         switch (settings.name) {

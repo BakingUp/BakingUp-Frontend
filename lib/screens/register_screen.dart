@@ -1,7 +1,7 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/models/auth/register_controller.dart';
 import 'package:bakingup_frontend/screens/verify_email_screen.dart';
-import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:bakingup_frontend/utilities/caller.dart';
 import 'package:bakingup_frontend/widgets/auth/confirm_password_text_form_field.dart';
 import 'package:bakingup_frontend/widgets/auth/password_text_form_field.dart';
 import 'package:bakingup_frontend/widgets/auth/register_text_form_field.dart';
@@ -276,23 +276,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             email: _registerController.email,
                                             password:
                                                 _registerController.password);
-                                    final response = await NetworkService
-                                        .instance
-                                        .post('/api/auth/register', data: {
-                                      "user_id": userCredential.user?.uid,
-                                      "first_name": _registerController.firstname,
-                                      "last_name": _registerController.lastname,
-                                      "tel": _registerController.phoneNumber,
-                                      "store_name": _registerController.storeName
-                                    });
-                                    
+                                    // ไปดูว่าเจไดใช้อะไร
+                                    // final response = await Caller.dio
+                                    //     .post("/auth/register", data: {
+                                    //   "user_id": userCredential.user?.uid,
+                                    //   "username": _registerController.username,
+                                    //   "firstname":
+                                    //       _registerController.firstname,
+                                    //   "lastname": _registerController.lastname,
+                                    //   "email": _registerController.email
+                                    // });
                                     // SuccessAuth d =
                                     //     SuccessAuth.fromJson(response.data);
 
                                     // UserProvider.setKey(key: d.data);
 
-                                    debugPrint("register successful");
-                                    navigate();
+                                    // debugPrint("register successful");
+                                    // navigate();
                                   } on FirebaseAuthException catch (e) {
                                     Navigator.of(context).pop();
                                     if (e.code == 'email-already-in-use') {

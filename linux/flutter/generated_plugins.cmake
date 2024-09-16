@@ -3,7 +3,6 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  flutter_platform_alert
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
