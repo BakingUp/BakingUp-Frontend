@@ -1,15 +1,14 @@
 import 'package:bakingup_frontend/constants/colors.dart';
-import 'package:bakingup_frontend/utilities/regex.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class StockDetailNotifyMe extends StatelessWidget {
-  final double ingredientLessThan;
+  final int stockLessThan;
   final bool isLoading;
 
   const StockDetailNotifyMe({
     super.key,
-    required this.ingredientLessThan,
+    required this.stockLessThan,
     required this.isLoading,
   });
 
@@ -27,7 +26,7 @@ class StockDetailNotifyMe extends StatelessWidget {
             ),
           )
         : Text(
-            'Notify me : < ${ingredientLessThan.toString().replaceAll(removeTrailingZeros, '')} unit',
+            'Notify me : < ${stockLessThan.toString()} unit',
             style: TextStyle(
               color: blackColor,
               fontFamily: 'Inter',
