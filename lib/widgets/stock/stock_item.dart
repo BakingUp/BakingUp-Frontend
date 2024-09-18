@@ -1,12 +1,13 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/models/stock.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
-class StockBox extends StatelessWidget {
+class StockItem extends StatelessWidget {
   final List<StockItemData> stockList;
   final int index;
 
-  const StockBox({super.key, required this.stockList, required this.index});
+  const StockItem({super.key, required this.stockList, required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -32,14 +33,30 @@ class StockBox extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Row(
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(13),
-                    child: Image.network(
-                      stockList[index].stockUrl,
-                      width: 90,
-                      height: 60,
-                      fit: BoxFit.cover,
-                    ),
+                  Stack(
+                    children: [
+                      Shimmer.fromColors(
+                        baseColor: greyColor,
+                        highlightColor: whiteColor,
+                        child: Container(
+                          width: 90,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(13),
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(13),
+                        child: Image.network(
+                          stockList[index].stockUrl,
+                          width: 90,
+                          height: 60,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ],
                   ),
                   const Padding(padding: EdgeInsets.only(right: 16.0)),
                   Column(

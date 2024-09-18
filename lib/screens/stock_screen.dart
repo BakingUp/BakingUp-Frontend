@@ -5,7 +5,7 @@ import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_two_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_search_bar.dart';
-import 'package:bakingup_frontend/widgets/stock/stock_box.dart';
+import 'package:bakingup_frontend/widgets/stock/stock_list.dart';
 import 'package:flutter/material.dart';
 
 class StockScreen extends StatefulWidget {
@@ -20,6 +20,8 @@ class _StockScreenState extends State<StockScreen> {
   bool isLoading = false;
   bool isError = false;
   List<StockItemData> stocks = [];
+  List<StockItemData> filteredStocks = [];
+  final TextEditingController _searchStockController = TextEditingController();
 
   @override
   void initState() {
@@ -30,6 +32,8 @@ class _StockScreenState extends State<StockScreen> {
   Future<void> _fetchStockList() async {
     setState(() {
       isLoading = true;
+      isError = false;
+      _searchStockController.clear();
     });
 
     try {
@@ -40,14 +44,28 @@ class _StockScreenState extends State<StockScreen> {
       final data = stockResponse.data;
       setState(() {
         stocks = data.stocks;
+        filteredStocks = stocks;
       });
     } catch (e) {
       isError = true;
     } finally {
       setState(() {
-        isLoading = true;
+        isLoading = false;
       });
     }
+  }
+
+  void _filterStocks(String query) {
+    setState(() {
+      if (query == "") {
+        filteredStocks = stocks;
+      } else {
+        filteredStocks = stocks
+            .where((stock) =>
+                stock.stockName.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      }
+    });
   }
 
   @override
@@ -90,26 +108,21 @@ class _StockScreenState extends State<StockScreen> {
           margin: const EdgeInsets.only(top: 20),
           child: Column(
             children: [
-              const Padding(
-                padding: EdgeInsets.fromLTRB(40, 0, 40, 15),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(40, 0, 40, 15),
                 child: Row(
                   children: [
                     BakingUpSearchBar(
                       hintText: 'Search Bakery Stock',
+                      controller: _searchStockController,
+                      onChanged: _filterStocks,
                     ),
-                    SizedBox(width: 12),
-                    BakingUpFilterTwoButton()
+                    const SizedBox(width: 12),
+                    const BakingUpFilterTwoButton()
                   ],
                 ),
               ),
-              Expanded(
-                  child: ListView.builder(
-                padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
-                itemCount: stocks.length,
-                itemBuilder: (context, index) {
-                  return StockBox(stockList: stocks, index: index);
-                },
-              ))
+              StockList(stockList: filteredStocks, isLoading: isLoading)
             ],
           )),
     );
