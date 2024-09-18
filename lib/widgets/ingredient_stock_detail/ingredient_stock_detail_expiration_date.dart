@@ -4,9 +4,11 @@ import 'package:shimmer/shimmer.dart';
 
 class IngredientStockDetailExpirationDate extends StatelessWidget {
   final bool isLoading;
+  final String dayBeforeExpire;
   const IngredientStockDetailExpirationDate({
     super.key,
     required this.isLoading,
+    required this.dayBeforeExpire,
   });
 
   @override
@@ -26,11 +28,11 @@ class IngredientStockDetailExpirationDate extends StatelessWidget {
               ),
             ],
           )
-        : const Row(
+        : Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Expiration Date:',
                 style: TextStyle(
                   fontSize: 16,
@@ -39,10 +41,10 @@ class IngredientStockDetailExpirationDate extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(
-                '29/03/2024',
-                style: TextStyle(
+                dayBeforeExpire,
+                style: const TextStyle(
                   fontSize: 16,
                   fontFamily: 'Inter',
                   fontStyle: FontStyle.normal,
