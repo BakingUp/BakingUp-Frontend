@@ -6,8 +6,8 @@ import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_two_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_search_bar.dart';
 import 'package:bakingup_frontend/widgets/baking_up_tab_button.dart';
-import 'package:bakingup_frontend/widgets/warehouse/warehouse_ingredients_item.dart';
-import 'package:bakingup_frontend/widgets/warehouse/warehouse_recipes_item.dart';
+import 'package:bakingup_frontend/widgets/warehouse/warehouse_ingredient/warehouse_ingredient_list.dart';
+import 'package:bakingup_frontend/widgets/warehouse/warehouse_recipe/warehouse_recipes_list.dart';
 import 'package:flutter/material.dart';
 
 class WarehouseScreen extends StatefulWidget {
@@ -172,25 +172,11 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                   ),
                 ),
                 if (tabIndex == 1)
-                  Expanded(
-                      child: ListView.builder(
-                          padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
-                          itemCount: recipes.length,
-                          itemBuilder: (context, index) {
-                            return WarehouseRecipesItem(
-                                recipeList: recipes, index: index);
-                          })),
+                  WarehouseRecipeList(
+                      recipeList: recipes, isLoading: isLoading),
                 if (tabIndex == 2)
-                  Expanded(
-                    child: ListView.builder(
-                      padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
-                      itemCount: ingredients.length,
-                      itemBuilder: (context, index) {
-                        return WarehouseIngredientsItem(
-                            ingredientList: ingredients, index: index);
-                      },
-                    ),
-                  ),
+                  WarehouseIngredientList(
+                      ingredientList: ingredients, isLoading: isLoading),
               ],
             )));
   }
