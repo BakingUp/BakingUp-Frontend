@@ -8,6 +8,7 @@ import 'package:bakingup_frontend/widgets/baking_up_filter_modal_bottom.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_two_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_search_bar.dart';
 import 'package:bakingup_frontend/widgets/baking_up_tab_button.dart';
+import 'package:bakingup_frontend/widgets/warehouse/warehouse_ingredient/warehouse_ingredient_filter.dart';
 import 'package:bakingup_frontend/widgets/warehouse/warehouse_ingredient/warehouse_ingredient_list.dart';
 import 'package:bakingup_frontend/widgets/warehouse/warehouse_recipe/warehouse_recipes_list.dart';
 import 'package:flutter/material.dart';
