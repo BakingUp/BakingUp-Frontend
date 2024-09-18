@@ -6,6 +6,7 @@ import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_two_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_search_bar.dart';
 import 'package:bakingup_frontend/widgets/baking_up_tab_button.dart';
+import 'package:bakingup_frontend/widgets/warehouse/warehouse_ingredient/warehouse_ingredient_filter.dart';
 import 'package:bakingup_frontend/widgets/warehouse/warehouse_ingredient/warehouse_ingredient_list.dart';
 import 'package:bakingup_frontend/widgets/warehouse/warehouse_recipe/warehouse_recipes_list.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,11 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
   bool isError = true;
   List<RecipeItemData> recipes = [];
   List<IngredientItemData> ingredients = [];
+  List<RecipeItemData> filteredRecipes = [];
+  List<IngredientItemData> filteredIngredients = [];
+  final TextEditingController _searchRecipeController = TextEditingController();
+  final TextEditingController _searchIngredientController =
+      TextEditingController();
 
   @override
   void initState() {
@@ -35,6 +41,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
     setState(() {
       isLoading = true;
       isError = false;
+      _searchRecipeController.clear();
     });
 
     try {
@@ -45,6 +52,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
       final data = recipeListResponse.data;
       setState(() {
         recipes = data.recipeList;
+        filteredRecipes = recipes;
       });
 
       setState(() {});
@@ -63,6 +71,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
     setState(() {
       isLoading = true;
       isError = false;
+      _searchIngredientController.clear();
     });
 
     try {
@@ -73,6 +82,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
       final data = ingredientListResponse.data;
       setState(() {
         ingredients = data.ingredientList;
+        filteredIngredients = ingredients;
       });
     } catch (e) {
       setState(() {
@@ -83,6 +93,29 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
         isLoading = false;
       });
     }
+  }
+
+  void _filterRecipes(String query) {
+    setState(() {
+      if (query == "") {
+        filteredRecipes = recipes;
+      } else {
+        filteredRecipes = recipes
+            .where((recipe) =>
+                recipe.recipeName.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      }
+    });
+  }
+
+  void _filterIngredients(String query) {
+    setState(() {
+      filteredIngredients = ingredients
+          .where((ingredient) => ingredient.ingredientName
+              .toLowerCase()
+              .contains(query.toLowerCase()))
+          .toList();
+    });
   }
 
   @override
@@ -159,12 +192,16 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                   child: Row(
                     children: [
                       if (tabIndex == 1)
-                        const BakingUpSearchBar(
+                        BakingUpSearchBar(
                           hintText: 'Search Recipe',
+                          controller: _searchRecipeController,
+                          onChanged: _filterRecipes,
                         ),
                       if (tabIndex == 2)
-                        const BakingUpSearchBar(
+                        BakingUpSearchBar(
                           hintText: 'Search Ingredient',
+                          controller: _searchIngredientController,
+                          onChanged: _filterIngredients,
                         ),
                       const SizedBox(width: 12),
                       const BakingUpFilterTwoButton()
@@ -173,10 +210,11 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                 ),
                 if (tabIndex == 1)
                   WarehouseRecipeList(
-                      recipeList: recipes, isLoading: isLoading),
+                      recipeList: filteredRecipes, isLoading: isLoading),
                 if (tabIndex == 2)
                   WarehouseIngredientList(
-                      ingredientList: ingredients, isLoading: isLoading),
+                      ingredientList: filteredIngredients,
+                      isLoading: isLoading),
               ],
             )));
   }

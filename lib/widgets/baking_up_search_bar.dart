@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 
 class BakingUpSearchBar extends StatelessWidget {
   final String? hintText;
-  const BakingUpSearchBar({super.key, this.hintText});
+  final TextEditingController? controller;
+  final ValueChanged<String>? onChanged;
+  const BakingUpSearchBar(
+      {super.key, this.hintText, this.controller, this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -11,6 +14,8 @@ class BakingUpSearchBar extends StatelessWidget {
       child: SizedBox(
         height: 40,
         child: TextField(
+          controller: controller,
+          onChanged: onChanged,
           decoration: InputDecoration(
             hintText: hintText ?? 'Search',
             filled: true,
