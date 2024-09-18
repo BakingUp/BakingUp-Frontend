@@ -1,5 +1,4 @@
 import 'package:bakingup_frontend/constants/colors.dart';
-import 'package:bakingup_frontend/enum/expiration_status.dart';
 import 'package:bakingup_frontend/models/stock.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
@@ -21,39 +20,6 @@ class _StockScreenState extends State<StockScreen> {
   bool isLoading = false;
   bool isError = false;
   List<StockItemData> stocks = [];
-  List<StockItem> stockList = [
-    StockItem(
-        imgUrl:
-            'https://divascancook.com/wp-content/uploads/2023/12/butter-cookies.jpg',
-        name: 'Butter Cookies',
-        quantity: 30,
-        lst: 3,
-        sellingPrice: 50,
-        expirationStatus: ExpirationStatus.green),
-    StockItem(
-        imgUrl: 'https://bakerjo.co.uk/wp-content/uploads/2022/08/IMG_3525.jpg',
-        name: 'Carrot Cake',
-        quantity: 5,
-        lst: 3,
-        sellingPrice: 195,
-        expirationStatus: ExpirationStatus.yellow),
-    StockItem(
-        imgUrl:
-            'https://www.inspiredtaste.net/wp-content/uploads/2024/01/Brownies-Recipe-Video.jpg',
-        name: 'Chocolate Brownie',
-        quantity: 2,
-        lst: 3,
-        sellingPrice: 150,
-        expirationStatus: ExpirationStatus.red),
-    StockItem(
-        imgUrl:
-            'https://www.twopeasandtheirpod.com/wp-content/uploads/2018/04/Strawberry-Shortcake-5.jpg',
-        name: 'Strawberry Shortcake',
-        quantity: 0,
-        lst: 3,
-        sellingPrice: 190,
-        expirationStatus: ExpirationStatus.black)
-  ];
 
   @override
   void initState() {
@@ -148,21 +114,4 @@ class _StockScreenState extends State<StockScreen> {
           )),
     );
   }
-}
-
-class StockItem {
-  final String imgUrl;
-  final String name;
-  final int quantity;
-  final int lst;
-  final double sellingPrice;
-  final ExpirationStatus expirationStatus;
-
-  StockItem(
-      {required this.imgUrl,
-      required this.name,
-      required this.quantity,
-      required this.lst,
-      required this.sellingPrice,
-      required this.expirationStatus});
 }
