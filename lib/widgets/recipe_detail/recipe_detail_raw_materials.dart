@@ -1,14 +1,14 @@
 import 'package:bakingup_frontend/constants/colors.dart';
-import 'package:bakingup_frontend/screens/recipe_detail_screen.dart';
+import 'package:bakingup_frontend/models/recipe_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class RecipeDetailRawMaterials extends StatelessWidget {
-  final List<RawMaterial> rawMaterials;
+  final List<RecipeIngredient> recipeIngredients;
   final bool isLoading;
   const RecipeDetailRawMaterials({
     super.key,
-    required this.rawMaterials,
+    required this.recipeIngredients,
     required this.isLoading,
   });
 
@@ -18,7 +18,7 @@ class RecipeDetailRawMaterials extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.all(0),
-      itemCount: rawMaterials.length,
+      itemCount: recipeIngredients.length,
       itemBuilder: (context, index) {
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -49,7 +49,7 @@ class RecipeDetailRawMaterials extends StatelessWidget {
                         ),
                       )
                     : Text(
-                        rawMaterials[index].name,
+                        recipeIngredients[index].ingredientName,
                         style: TextStyle(
                           color: blackColor,
                           fontFamily: 'Inter',
@@ -74,7 +74,7 @@ class RecipeDetailRawMaterials extends StatelessWidget {
                         ),
                       )
                     : Text(
-                        "${rawMaterials[index].price} ฿",
+                        "${recipeIngredients[index].ingredientPrice} ฿",
                         style: TextStyle(
                           color: blackColor,
                           fontFamily: 'Inter',

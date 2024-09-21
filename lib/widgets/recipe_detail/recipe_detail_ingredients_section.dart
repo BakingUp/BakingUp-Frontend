@@ -1,4 +1,5 @@
-import 'package:bakingup_frontend/screens/add_edit_recipe_screen.dart';
+
+import 'package:bakingup_frontend/models/recipe_detail.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_ingredient_detail.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_ingredient_detail_loading.dart';
 import 'package:flutter/material.dart';

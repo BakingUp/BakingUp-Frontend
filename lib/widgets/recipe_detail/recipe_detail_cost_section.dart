@@ -1,5 +1,5 @@
 import 'package:bakingup_frontend/constants/colors.dart';
-import 'package:bakingup_frontend/screens/recipe_detail_screen.dart';
+import 'package:bakingup_frontend/models/recipe_detail.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_hidden_costs.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_labor_costs.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_price_detail.dart';
@@ -10,12 +10,12 @@ import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_title.dart
 import 'package:flutter/material.dart';
 
 class RecipeDetailCostSection extends StatelessWidget {
-  final List<RawMaterial> rawMaterials;
+  final List<RecipeIngredient> recipeIngredients;
   final bool isLoading;
 
   const RecipeDetailCostSection({
     super.key,
-    required this.rawMaterials,
+    required this.recipeIngredients,
     required this.isLoading,
   });
 
@@ -53,7 +53,7 @@ class RecipeDetailCostSection extends StatelessWidget {
               ],
             ),
             RecipeDetailRawMaterials(
-              rawMaterials: rawMaterials,
+              recipeIngredients: recipeIngredients,
               isLoading: isLoading,
             ),
             const SizedBox(height: 16),

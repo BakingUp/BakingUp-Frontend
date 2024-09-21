@@ -1,5 +1,5 @@
-import 'package:bakingup_frontend/screens/add_edit_recipe_screen.dart';
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/models/recipe_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -36,7 +36,7 @@ class RecipeDetailIngredientDetail extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(13),
                     child: Image.network(
-                      recipeIngredients[index].imgUrl,
+                      recipeIngredients[index].ingredientUrl,
                       width: 80,
                       height: 50,
                       fit: BoxFit.cover,
@@ -44,7 +44,7 @@ class RecipeDetailIngredientDetail extends StatelessWidget {
                   ),
                   const Padding(padding: EdgeInsets.only(right: 12.0)),
                   Text(
-                    recipeIngredients[index].name,
+                    recipeIngredients[index].ingredientName,
                     style: TextStyle(
                       color: blackColor,
                       fontFamily: 'Inter',
@@ -59,7 +59,7 @@ class RecipeDetailIngredientDetail extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    recipeIngredients[index].quantity,
+                    recipeIngredients[index].ingredientQuantity,
                     style: TextStyle(
                       color: blackColor,
                       fontFamily: 'Inter',
