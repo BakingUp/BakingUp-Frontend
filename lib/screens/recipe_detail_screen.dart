@@ -1,12 +1,8 @@
 // Importing libraries
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 
 // Importing files
 import 'package:bakingup_frontend/widgets/baking_up_circular_back_button.dart';
-import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_image_container.dart';
-import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_image.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_container.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_back_button_container.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_scale_button.dart';
@@ -21,6 +17,7 @@ import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_recipe_nam
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_recipe_score.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_servings.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_total_time.dart';
+import 'package:bakingup_frontend/widgets/baking_up_detail_image.dart';
 import 'package:bakingup_frontend/models/recipe_detail.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 
@@ -33,14 +30,14 @@ class RecipeDetailScreen extends StatefulWidget {
 
 class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
   String recipeId = '1';
-  String recipeUrl = '';
+  List<String> recipeUrl = [];
   String recipeName = '';
   int servings = 0;
   String totalTime = '';
   int star = 0;
   int score = 0;
   int tabIndex = 1;
-  String instructionUrl = "";
+  List<String> instructionUrls = [];
   List<String> instructionSteps = [];
   List<RecipeIngredient> recipeIngredients = [];
   bool isLoading = false;
@@ -65,17 +62,16 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       final data = recipeDetailResponse.data;
       setState(() {
         recipeName = data.recipeName;
-        recipeUrl = data.recipeUrl.first;
+        recipeUrl = data.recipeUrl;
         totalTime = data.totalTime;
         servings = data.servings;
         star = data.stars;
         score = data.numOfOrder;
         recipeIngredients = data.recipeIngredients;
-        instructionUrl = data.instructionUrl.first;
+        instructionUrls = data.instructionUrl;
         instructionSteps = data.instructionSteps;
       });
     } catch (e) {
-      log(e.toString());
       setState(() {
         isError = true;
       });
@@ -107,11 +103,9 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          RecipeDetailImageContainer(
-            child: RecipeDetailImage(
-              recipeUrl: recipeUrl,
-              isLoading: isLoading,
-            ),
+          BakingUpDetailImage(
+            imageUrl: recipeUrl,
+            isLoading: isLoading,
           ),
           const RecipeDetailEditButtonContainer(
             children: [
@@ -189,7 +183,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                     ),
                   if (tabIndex == 2)
                     RecipeDetailInstructionsSection(
-                      instructionUrl: instructionUrl,
+                      instructionUrls: instructionUrls,
                       instructionSteps: instructionSteps,
                       isLoading: isLoading,
                     ),
