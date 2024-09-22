@@ -1,6 +1,4 @@
 // Importing libraries
-import 'package:bakingup_frontend/models/ingredient_detail.dart';
-import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -14,8 +12,9 @@ import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_detail_no
 import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_detail_quantity.dart';
 import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_detail_stock.dart';
 import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_detail_back_button_container.dart';
-import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_detail_image.dart';
-import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_detail_image_container.dart';
+import 'package:bakingup_frontend/models/ingredient_detail.dart';
+import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:bakingup_frontend/widgets/baking_up_detail_image.dart';
 
 class IngredientDetailScreen extends StatefulWidget {
   const IngredientDetailScreen({super.key});
@@ -26,8 +25,7 @@ class IngredientDetailScreen extends StatefulWidget {
 
 class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
   String ingredientId = '1';
-  String ingredientUrl =
-      '';
+  List<String> ingredientUrl = [];
   String ingredientName = '';
   double quantity = 0.0;
   String unit = '';
@@ -55,7 +53,7 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
           IngredientDetailResponse.fromJson(response);
       final data = ingredientDetailResponse.data;
       setState(() {
-        ingredientUrl = data.ingredientUrl.first;
+        ingredientUrl = data.ingredientUrl;
         ingredientName = data.ingredientName;
         quantity = double.parse(data.ingredientQuantity.split(' ').first);
         unit = data.ingredientQuantity.split(' ').last;
@@ -79,11 +77,9 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          IngredientDetailImageContainer(
-            child: IngredientDetailImage(
-              ingredientUrl: ingredientUrl,
-              isLoading: isLoading,
-            ),
+          BakingUpDetailImage(
+            imageUrl: ingredientUrl,
+            isLoading: isLoading,
           ),
           const IngredientDetailBackButtonContainer(
             children: [
