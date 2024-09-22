@@ -5,12 +5,12 @@ import 'package:shimmer/shimmer.dart';
 
 class RecipeDetailInstructionsSection extends StatelessWidget {
   final String instructionUrl;
-  final List<String> instructions;
+  final List<String> instructionSteps;
   final bool isLoading;
   const RecipeDetailInstructionsSection({
     super.key,
     required this.instructionUrl,
-    required this.instructions,
+    required this.instructionSteps,
     required this.isLoading,
   });
 
@@ -46,7 +46,7 @@ class RecipeDetailInstructionsSection extends StatelessWidget {
                   ),
                   const SizedBox(height: 30),
                   RecipeDetailInstructions(
-                    instructions: instructions,
+                    instructionSteps: instructionSteps,
                     isLoading: isLoading,
                   ),
                 ],

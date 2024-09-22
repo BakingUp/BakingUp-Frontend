@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class RecipeDetailInstructions extends StatelessWidget {
-  final List<String> instructions;
+  final List<String> instructionSteps;
   final bool isLoading;
   const RecipeDetailInstructions({
     super.key,
-    required this.instructions,
+    required this.instructionSteps,
     required this.isLoading,
   });
 
@@ -55,7 +55,7 @@ class RecipeDetailInstructions extends StatelessWidget {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 padding: const EdgeInsets.all(0),
-                itemCount: instructions.length,
+                itemCount: instructionSteps.length,
                 itemBuilder: (context, index) {
                   return Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,7 +73,7 @@ class RecipeDetailInstructions extends StatelessWidget {
                       ),
                       Expanded(
                         child: Text(
-                          instructions[index],
+                          instructionSteps[index],
                           style: TextStyle(
                             color: blackColor,
                             fontFamily: 'Inter',
