@@ -60,12 +60,15 @@ class IngredientStockDetailData {
 
 @JsonSerializable()
 class IngredientStockDetailNote {
+  @JsonKey(name: 'ingredient_note_id')
+  final String ingredientNoteId;
   @JsonKey(name: 'ingredient_note')
   final String ingredientNote;
   @JsonKey(name: 'note_created_at')
   final String noteCreatedAt;
 
   IngredientStockDetailNote({
+    required this.ingredientNoteId,
     required this.ingredientNote,
     required this.noteCreatedAt,
   });

@@ -57,6 +57,7 @@ Map<String, dynamic> _$IngredientStockDetailDataToJson(
 IngredientStockDetailNote _$IngredientStockDetailNoteFromJson(
         Map<String, dynamic> json) =>
     IngredientStockDetailNote(
+      ingredientNoteId: json['ingredient_note_id'] as String,
       ingredientNote: json['ingredient_note'] as String,
       noteCreatedAt: json['note_created_at'] as String,
     );
@@ -64,6 +65,7 @@ IngredientStockDetailNote _$IngredientStockDetailNoteFromJson(
 Map<String, dynamic> _$IngredientStockDetailNoteToJson(
         IngredientStockDetailNote instance) =>
     <String, dynamic>{
+      'ingredient_note_id': instance.ingredientNoteId,
       'ingredient_note': instance.ingredientNote,
       'note_created_at': instance.noteCreatedAt,
     };

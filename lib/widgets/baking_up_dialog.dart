@@ -9,6 +9,8 @@ class BakingUpDialog extends StatelessWidget {
   final String grayButtonTitle;
   final String? secondButtonTitle;
   final Color? secondButtonColor;
+  final VoidCallback? grayButtonOnClick;
+  final VoidCallback? secondButtonOnClick;
   const BakingUpDialog({
     super.key,
     required this.title,
@@ -17,6 +19,8 @@ class BakingUpDialog extends StatelessWidget {
     required this.grayButtonTitle,
     this.secondButtonTitle,
     this.secondButtonColor,
+    this.grayButtonOnClick,
+    this.secondButtonOnClick,
   });
 
   @override
@@ -59,16 +63,22 @@ class BakingUpDialog extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 BakingUpLongActionButton(
-                    title: grayButtonTitle, color: greyColor, width: 120),
+                  title: grayButtonTitle,
+                  color: greyColor,
+                  width: 120,
+                  onClick: grayButtonOnClick,
+                ),
                 secondButtonTitle != null &&
                         secondButtonTitle?.isNotEmpty == true
                     ? Row(
                         children: [
                           const SizedBox(width: 8),
                           BakingUpLongActionButton(
-                              title: secondButtonTitle!,
-                              color: secondButtonColor ?? lightGreenColor,
-                              width: 120),
+                            title: secondButtonTitle!,
+                            color: secondButtonColor ?? lightGreenColor,
+                            width: 120,
+                            onClick: secondButtonOnClick,
+                          ),
                         ],
                       )
                     : Container()
@@ -88,6 +98,8 @@ class BakingUpDialogParams {
   final String grayButtonTitle;
   final String? secondButtonTitle;
   final Color? secondButtonColor;
+  final VoidCallback? grayButtonOnClick;
+  final VoidCallback? secondButtonOnClick;
 
   BakingUpDialogParams({
     required this.title,
@@ -96,5 +108,7 @@ class BakingUpDialogParams {
     required this.grayButtonTitle,
     this.secondButtonTitle,
     this.secondButtonColor,
+    this.grayButtonOnClick,
+    this.secondButtonOnClick,
   });
 }
