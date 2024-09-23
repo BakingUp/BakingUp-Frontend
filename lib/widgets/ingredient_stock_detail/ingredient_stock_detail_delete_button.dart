@@ -9,9 +9,9 @@ class IngredientStockDetailDeleteButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Image.asset('assets/icons/delete.png'),
-      onTap: () {
+      onTap: () async {
         if (dialogParams != null) {
-          showDialog(
+          await showDialog(
             context: context,
             barrierColor: const Color(0xC7D9D9D9),
             builder: (BuildContext context) {
@@ -22,6 +22,8 @@ class IngredientStockDetailDeleteButton extends StatelessWidget {
                 grayButtonTitle: dialogParams!.grayButtonTitle,
                 secondButtonTitle: dialogParams?.secondButtonTitle,
                 secondButtonColor: dialogParams?.secondButtonColor,
+                grayButtonOnClick: dialogParams?.grayButtonOnClick,
+                secondButtonOnClick: dialogParams?.secondButtonOnClick,
               );
             },
           );
