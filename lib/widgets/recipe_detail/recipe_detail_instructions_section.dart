@@ -1,15 +1,16 @@
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_instruction_images.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_instructions.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class RecipeDetailInstructionsSection extends StatelessWidget {
-  final String instructionUrl;
+  final List<String> instructionUrls;
   final List<String> instructionSteps;
   final bool isLoading;
   const RecipeDetailInstructionsSection({
     super.key,
-    required this.instructionUrl,
+    required this.instructionUrls,
     required this.instructionSteps,
     required this.isLoading,
   });
@@ -34,15 +35,9 @@ class RecipeDetailInstructionsSection extends StatelessWidget {
               ),
               Column(
                 children: [
-                  SizedBox(
-                    width: double.infinity,
-                    height: 200.0,
-                    child: !isLoading
-                        ? Image.network(
-                            instructionUrl,
-                            fit: BoxFit.cover,
-                          )
-                        : Container(),
+                  RecipeDetailInstructionImages(
+                    imageUrl: instructionUrls,
+                    isLoading: isLoading,
                   ),
                   const SizedBox(height: 30),
                   RecipeDetailInstructions(
