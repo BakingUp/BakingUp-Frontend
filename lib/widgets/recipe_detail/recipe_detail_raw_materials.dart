@@ -74,7 +74,9 @@ class RecipeDetailRawMaterials extends StatelessWidget {
                         ),
                       )
                     : Text(
-                        "${recipeIngredients[index].ingredientPrice} ฿",
+                        recipeIngredients[index].ingredientPrice == -1
+                            ? "- ฿"
+                            : "${recipeIngredients[index].ingredientPrice} ฿",
                         style: TextStyle(
                           color: blackColor,
                           fontFamily: 'Inter',
