@@ -1,8 +1,10 @@
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/enum/lst_status.dart';
 import 'package:bakingup_frontend/models/stock.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
+import 'package:bakingup_frontend/widgets/baking_up_filter_modal_bottom.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_two_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_search_bar.dart';
 import 'package:bakingup_frontend/widgets/stock/stock_list.dart';
@@ -22,6 +24,15 @@ class _StockScreenState extends State<StockScreen> {
   List<StockItemData> stocks = [];
   List<StockItemData> filteredStocks = [];
   final TextEditingController _searchStockController = TextEditingController();
+  final List<String> stockFilterList = [
+    'Stock Name',
+    'Quantity',
+    'LST',
+    'Selling Price',
+    'LST Status'
+  ];
+  String selectedStockFiltering = "Stock Name";
+  String selectedStockSorting = "Ascending Order";
 
   @override
   void initState() {
@@ -55,7 +66,7 @@ class _StockScreenState extends State<StockScreen> {
     }
   }
 
-  void _filterStocks(String query) {
+  void _searchStocks(String query) {
     setState(() {
       if (query == "") {
         filteredStocks = stocks;
@@ -66,6 +77,59 @@ class _StockScreenState extends State<StockScreen> {
             .toList();
       }
     });
+  }
+
+  void _filterStocks(
+      String selectingStockFiltering, String selectingStockSorting) {
+    setState(() {
+      selectedStockFiltering = selectingStockFiltering;
+      selectedStockSorting = selectingStockSorting;
+    });
+    if (selectedStockSorting == "Ascending Order") {
+      switch (selectingStockFiltering) {
+        case "Stock Name":
+          filteredStocks.sort((a, b) => a.stockName.compareTo(b.stockName));
+          break;
+        case "Quantity":
+          filteredStocks.sort((a, b) => a.quantity.compareTo(b.quantity));
+          break;
+        case "LST":
+          filteredStocks.sort((a, b) => a.lst.compareTo(b.lst));
+          break;
+        case "Selling Price":
+          filteredStocks
+              .sort((a, b) => a.sellingPrice.compareTo(b.sellingPrice));
+          break;
+        case "LST Status":
+          filteredStocks.sort((a, b) => convertLSTStatus(a.lstStatus)
+              .compareTo(convertLSTStatus(b.lstStatus)));
+          break;
+        default:
+          filteredStocks.sort((a, b) => a.stockName.compareTo(b.stockName));
+      }
+    } else {
+      switch (selectingStockFiltering) {
+        case "Stock Name":
+          filteredStocks.sort((a, b) => b.stockName.compareTo(a.stockName));
+          break;
+        case "Quantity":
+          filteredStocks.sort((a, b) => b.quantity.compareTo(a.quantity));
+          break;
+        case "LST":
+          filteredStocks.sort((a, b) => b.lst.compareTo(a.lst));
+          break;
+        case "Selling Price":
+          filteredStocks
+              .sort((a, b) => b.sellingPrice.compareTo(a.sellingPrice));
+          break;
+        case "LST Status":
+          filteredStocks.sort((a, b) => convertLSTStatus(b.lstStatus)
+              .compareTo(convertLSTStatus(a.lstStatus)));
+          break;
+        default:
+          filteredStocks.sort((a, b) => b.stockName.compareTo(a.stockName));
+      }
+    }
   }
 
   @override
@@ -115,10 +179,32 @@ class _StockScreenState extends State<StockScreen> {
                     BakingUpSearchBar(
                       hintText: 'Search Bakery Stock',
                       controller: _searchStockController,
-                      onChanged: _filterStocks,
+                      onChanged: _searchStocks,
                     ),
                     const SizedBox(width: 12),
-                    const BakingUpFilterTwoButton()
+                    GestureDetector(
+                        onTap: () {
+                          showModalBottomSheet<void>(
+                            context: context,
+                            backgroundColor: backgroundColor,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(40.0),
+                                topRight: Radius.circular(40.0),
+                              ),
+                            ),
+                            builder: (BuildContext context) {
+                              return BakingUpFilterModalBottom(
+                                optionsOne: stockFilterList,
+                                optionOneName: "Filter by",
+                                defaultFilteringValue: selectedStockFiltering,
+                                defaultSortingValue: selectedStockSorting,
+                                filterFunction: _filterStocks,
+                              );
+                            },
+                          );
+                        },
+                        child: const BakingUpFilterTwoButton())
                   ],
                 ),
               ),
