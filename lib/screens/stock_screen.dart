@@ -208,7 +208,11 @@ class _StockScreenState extends State<StockScreen> {
                   ],
                 ),
               ),
-              StockList(stockList: filteredStocks, isLoading: isLoading)
+              StockList(
+                stockList: filteredStocks,
+                isLoading: isLoading,
+                fetchStockListFunction: _fetchStockList,
+              )
             ],
           )),
     );

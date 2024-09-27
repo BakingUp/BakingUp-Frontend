@@ -34,6 +34,8 @@ class StockListData {
 
 @JsonSerializable()
 class StockItemData {
+  @JsonKey(name: 'stock_id')
+  final String stockID;
   @JsonKey(name: 'stock_name')
   final String stockName;
   @JsonKey(name: 'stock_url')
@@ -46,6 +48,7 @@ class StockItemData {
   final String lstStatus;
 
   StockItemData({
+    required this.stockID,
     required this.stockName,
     required this.stockUrl,
     required this.quantity,

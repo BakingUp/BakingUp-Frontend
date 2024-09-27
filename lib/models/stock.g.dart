@@ -34,6 +34,7 @@ Map<String, dynamic> _$StockListDataToJson(StockListData instance) =>
 
 StockItemData _$StockItemDataFromJson(Map<String, dynamic> json) =>
     StockItemData(
+      stockID: json['stock_id'] as String,
       stockName: json['stock_name'] as String,
       stockUrl: json['stock_url'] as String,
       quantity: (json['quantity'] as num).toInt(),
@@ -44,6 +45,7 @@ StockItemData _$StockItemDataFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$StockItemDataToJson(StockItemData instance) =>
     <String, dynamic>{
+      'stock_id': instance.stockID,
       'stock_name': instance.stockName,
       'stock_url': instance.stockUrl,
       'quantity': instance.quantity,
