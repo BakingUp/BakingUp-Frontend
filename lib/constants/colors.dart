@@ -15,3 +15,5 @@ Color lightGreenColor = const Color(0xFFC8E6C9);
 Color backgroundColor = const Color(0xFFFDFDFD);
 Color orangeColor = const Color(0xFFDC6E46);
 Color darkBeigeColor = const Color(0xFFE0C3B3);
+Color errorLightRedColor = const Color(0xFFF8C8C8);
+Color errorRedColor = const Color(0xFFD80808);

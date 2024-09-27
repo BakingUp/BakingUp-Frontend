@@ -3,7 +3,7 @@ import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_sto
 import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_note_detail_loading.dart';
 import 'package:flutter/material.dart';
 
-class IngredientStockDetailNoteList extends StatelessWidget {
+class IngredientStockDetailNoteList extends StatefulWidget {
   final List<IngredientStockDetailNote> ingredientStockDetailNotes;
   final bool isLoading;
   const IngredientStockDetailNoteList({
@@ -13,8 +13,15 @@ class IngredientStockDetailNoteList extends StatelessWidget {
   });
 
   @override
+  State<IngredientStockDetailNoteList> createState() =>
+      _IngredientStockDetailNoteListState();
+}
+
+class _IngredientStockDetailNoteListState
+    extends State<IngredientStockDetailNoteList> {
+  @override
   Widget build(BuildContext context) {
-    return isLoading
+    return widget.isLoading
         ? ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -28,12 +35,19 @@ class IngredientStockDetailNoteList extends StatelessWidget {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             padding: const EdgeInsets.all(0),
-            itemCount: ingredientStockDetailNotes.length,
+            itemCount: widget.ingredientStockDetailNotes.length,
             itemBuilder: (context, index) {
               return IngredientStockDetailNoteDetail(
-                ingredientStockDetailNotes: ingredientStockDetailNotes,
-                index: index,
-              );
+                  ingredientStockDetailNote:
+                      widget.ingredientStockDetailNotes[index],
+                  onDelete: () {
+                    setState(() {
+                      widget.ingredientStockDetailNotes.removeWhere((note) =>
+                          note.ingredientNoteId ==
+                          widget.ingredientStockDetailNotes[index]
+                              .ingredientNoteId);
+                    });
+                  });
             },
           );
   }
