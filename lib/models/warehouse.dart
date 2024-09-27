@@ -90,6 +90,8 @@ class RecipeListData {
 
 @JsonSerializable()
 class RecipeItemData {
+  @JsonKey(name: 'recipe_id')
+  final String recipeID;
   @JsonKey(name: 'recipe_name')
   final String recipeName;
   @JsonKey(name: 'recipe_img')
@@ -102,6 +104,7 @@ class RecipeItemData {
   final int numOfOrder;
 
   RecipeItemData({
+    required this.recipeID,
     required this.recipeName,
     required this.recipeImg,
     required this.totalTime,
