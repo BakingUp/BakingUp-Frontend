@@ -367,11 +367,16 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                 ),
                 if (tabIndex == 1)
                   WarehouseRecipeList(
-                      recipeList: filteredRecipes, isLoading: isLoading),
+                    recipeList: filteredRecipes,
+                    isLoading: isLoading,
+                    fetchRecipeListFunction: _fetchRecipeList,
+                  ),
                 if (tabIndex == 2)
                   WarehouseIngredientList(
-                      ingredientList: filteredIngredients,
-                      isLoading: isLoading),
+                    ingredientList: filteredIngredients,
+                    isLoading: isLoading,
+                    fetchIngredientListFunction: _fetchIngredientList,
+                  ),
               ],
             )));
   }
