@@ -82,6 +82,7 @@ Map<String, dynamic> _$RecipeListDataToJson(RecipeListData instance) =>
 
 RecipeItemData _$RecipeItemDataFromJson(Map<String, dynamic> json) =>
     RecipeItemData(
+      recipeID: json['recipe_id'] as String,
       recipeName: json['recipe_name'] as String,
       recipeImg: json['recipe_img'] as String,
       totalTime: json['total_time'] as String,
@@ -92,6 +93,7 @@ RecipeItemData _$RecipeItemDataFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$RecipeItemDataToJson(RecipeItemData instance) =>
     <String, dynamic>{
+      'recipe_id': instance.recipeID,
       'recipe_name': instance.recipeName,
       'recipe_img': instance.recipeImg,
       'total_time': instance.totalTime,
