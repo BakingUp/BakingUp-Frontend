@@ -329,10 +329,8 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                           onTap: () {
                             showModalBottomSheet<void>(
                               context: context,
-                              backgroundColor:
-                                  const Color.fromRGBO(253, 253, 253, 1),
+                              backgroundColor: backgroundColor,
                               shape: const RoundedRectangleBorder(
-                                // Adding shape property here
                                 borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(40.0),
                                   topRight: Radius.circular(40.0),

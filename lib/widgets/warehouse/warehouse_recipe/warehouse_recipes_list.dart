@@ -64,7 +64,7 @@ class WarehouseRecipeListState extends State<WarehouseRecipeList> {
                         padding: const EdgeInsets.only(left: 20),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(13),
-                          color: Colors.red,
+                          color: redColor,
                         ),
                         alignment: Alignment.centerLeft,
                         child: const Row(
