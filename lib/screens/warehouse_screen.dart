@@ -382,12 +382,20 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                       ],
                     ),
                   ),
-                  if (tabIndex == 1 && !noResult)
+                  if (tabIndex == 1 && !noResult && filteredRecipes.isNotEmpty)
                     WarehouseRecipeList(
                       recipeList: filteredRecipes,
                       isLoading: isLoading,
                     )
-                  else if (tabIndex == 1)
+                  else if (tabIndex == 1 && !noResult && !isLoading)
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height * 0.1),
+                      child: const BakingUpNoResult(
+                        message: "No results found",
+                      ),
+                    )
+                  else if (tabIndex == 1 && noResult)
                     Container(
                       margin: EdgeInsets.only(
                           top: MediaQuery.of(context).size.height * 0.1),
@@ -395,12 +403,22 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                         message: "You currently have no recipes",
                       ),
                     ),
-                  if (tabIndex == 2 && !noResult)
+                  if (tabIndex == 2 &&
+                      !noResult &&
+                      filteredIngredients.isNotEmpty)
                     WarehouseIngredientList(
                       ingredientList: filteredIngredients,
                       isLoading: isLoading,
                     )
-                  else if (tabIndex == 2)
+                  else if (tabIndex == 2 && !noResult && !isLoading)
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height * 0.1),
+                      child: const BakingUpNoResult(
+                        message: "No results found",
+                      ),
+                    )
+                  else if (tabIndex == 2 && noResult)
                     Container(
                       margin: EdgeInsets.only(
                           top: MediaQuery.of(context).size.height * 0.1),
