@@ -255,7 +255,8 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () {
-          FocusScope.of(context).unfocus();
+          ingredientSearchFocusNode.unfocus();
+          recipeSearchFocusNode.unfocus();
         },
         child: Scaffold(
           backgroundColor: backgroundColor,
