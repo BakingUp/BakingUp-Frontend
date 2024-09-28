@@ -6,16 +6,16 @@ part of 'warehouse.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-IngredietnListResponse _$IngredietnListResponseFromJson(
+IngredientListResponse _$IngredientListResponseFromJson(
         Map<String, dynamic> json) =>
-    IngredietnListResponse(
+    IngredientListResponse(
       status: (json['status'] as num).toInt(),
       message: json['message'] as String,
       data: IngredientListData.fromJson(json['data'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$IngredietnListResponseToJson(
-        IngredietnListResponse instance) =>
+Map<String, dynamic> _$IngredientListResponseToJson(
+        IngredientListResponse instance) =>
     <String, dynamic>{
       'status': instance.status,
       'message': instance.message,

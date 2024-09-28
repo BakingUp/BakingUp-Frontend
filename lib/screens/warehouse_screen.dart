@@ -47,6 +47,8 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
   String selectedRecipeSorting = "Ascending Order";
   String selectedIngredientFiltering = "Stock Name";
   String selectedIngredientSorting = "Ascending Order";
+  FocusNode recipeSearchFocusNode = FocusNode();
+  FocusNode ingredientSearchFocusNode = FocusNode();
   @override
   void initState() {
     super.initState();
@@ -96,7 +98,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
       final response = await NetworkService.instance
           .get('/api/ingredient/getAllIngredients?user_id=1');
 
-      final ingredientListResponse = IngredietnListResponse.fromJson(response);
+      final ingredientListResponse = IngredientListResponse.fromJson(response);
       final data = ingredientListResponse.data;
       setState(() {
         ingredients = data.ingredientList;
@@ -241,141 +243,146 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: backgroundColor,
-        appBar: AppBar(
+    return GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Scaffold(
           backgroundColor: backgroundColor,
-          scrolledUnderElevation: 0,
-          title: const Text(
-            "Warehouse",
-            style: TextStyle(
-                fontSize: 24,
-                fontFamily: 'Inter',
-                fontStyle: FontStyle.normal,
-                fontWeight: FontWeight.w500),
+          appBar: AppBar(
+            backgroundColor: backgroundColor,
+            scrolledUnderElevation: 0,
+            title: const Text(
+              "Warehouse",
+              style: TextStyle(
+                  fontSize: 24,
+                  fontFamily: 'Inter',
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.w500),
+            ),
+            leading: Builder(
+              builder: (context) {
+                return IconButton(
+                  icon: const Icon(Icons.menu),
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                );
+              },
+            ),
+            actions: const [
+              Padding(
+                padding: EdgeInsets.only(right: 14.0),
+                child: BakingUpCircularAddButton(),
+              )
+            ],
           ),
-          leading: Builder(
-            builder: (context) {
-              return IconButton(
-                icon: const Icon(Icons.menu),
-                onPressed: () {
-                  Scaffold.of(context).openDrawer();
-                },
-              );
-            },
+          drawer: BakingUpDrawer(
+            currentDrawerIndex: _currentDrawerIndex,
           ),
-          actions: const [
-            Padding(
-              padding: EdgeInsets.only(right: 14.0),
-              child: BakingUpCircularAddButton(),
-            )
-          ],
-        ),
-        drawer: BakingUpDrawer(
-          currentDrawerIndex: _currentDrawerIndex,
-        ),
-        body: Container(
-            margin: const EdgeInsets.only(top: 15),
-            child: Column(
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 60, vertical: 0),
-                  child: Row(
-                    children: [
-                      BakingUpTabButton(
-                          text: "Recipes",
-                          isSelected: tabIndex == 1,
-                          onClick: () {
-                            setState(() {
-                              tabIndex = 1;
-                              _fetchRecipeList();
-                            });
-                          }),
-                      const SizedBox(
-                        width: 40,
-                      ),
-                      BakingUpTabButton(
-                          text: "Ingredients",
-                          isSelected: tabIndex == 2,
-                          onClick: () {
-                            setState(() {
-                              tabIndex = 2;
-                              _fetchIngredientList();
-                            });
-                          })
-                    ],
+          body: Container(
+              margin: const EdgeInsets.only(top: 15),
+              child: Column(
+                children: [
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 60, vertical: 0),
+                    child: Row(
+                      children: [
+                        BakingUpTabButton(
+                            text: "Recipes",
+                            isSelected: tabIndex == 1,
+                            onClick: () {
+                              setState(() {
+                                tabIndex = 1;
+                                _fetchRecipeList();
+                              });
+                            }),
+                        const SizedBox(
+                          width: 40,
+                        ),
+                        BakingUpTabButton(
+                            text: "Ingredients",
+                            isSelected: tabIndex == 2,
+                            onClick: () {
+                              setState(() {
+                                tabIndex = 2;
+                                _fetchIngredientList();
+                              });
+                            })
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 25),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(40, 0, 40, 15),
-                  child: Row(
-                    children: [
-                      if (tabIndex == 1)
-                        BakingUpSearchBar(
-                          hintText: 'Search Recipe',
-                          controller: _searchRecipeController,
-                          onChanged: _searchRecipes,
-                        ),
-                      if (tabIndex == 2)
-                        BakingUpSearchBar(
-                          hintText: 'Search Ingredient',
-                          controller: _searchIngredientController,
-                          onChanged: _searchIngredients,
-                        ),
-                      const SizedBox(width: 12),
-                      GestureDetector(
-                          onTap: () {
-                            showModalBottomSheet<void>(
-                              context: context,
-                              backgroundColor: backgroundColor,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(40.0),
-                                  topRight: Radius.circular(40.0),
+                  const SizedBox(height: 25),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(40, 0, 40, 15),
+                    child: Row(
+                      children: [
+                        if (tabIndex == 1)
+                          BakingUpSearchBar(
+                            hintText: 'Search Recipe',
+                            controller: _searchRecipeController,
+                            onChanged: _searchRecipes,
+                            focusNode: recipeSearchFocusNode,
+                          ),
+                        if (tabIndex == 2)
+                          BakingUpSearchBar(
+                            hintText: 'Search Ingredient',
+                            controller: _searchIngredientController,
+                            onChanged: _searchIngredients,
+                            focusNode: ingredientSearchFocusNode,
+                          ),
+                        const SizedBox(width: 12),
+                        GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet<void>(
+                                context: context,
+                                backgroundColor: backgroundColor,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(40.0),
+                                    topRight: Radius.circular(40.0),
+                                  ),
                                 ),
-                              ),
-                              builder: (BuildContext context) {
-                                return tabIndex == 1
-                                    ? BakingUpFilterModalBottom(
-                                        optionsOne: recipeFilterList,
-                                        optionOneName: "Filter by",
-                                        defaultFilteringValue:
-                                            selectedRecipeFiltering,
-                                        defaultSortingValue:
-                                            selectedRecipeSorting,
-                                        filterFunction: _filterRecipe,
-                                      )
-                                    : BakingUpFilterModalBottom(
-                                        optionsOne: ingredientFilterList,
-                                        optionOneName: "Filter by",
-                                        defaultFilteringValue:
-                                            selectedIngredientFiltering,
-                                        defaultSortingValue:
-                                            selectedIngredientSorting,
-                                        filterFunction: _filterIngredient,
-                                      );
-                              },
-                            );
-                          },
-                          child: const BakingUpFilterTwoButton())
-                    ],
+                                builder: (BuildContext context) {
+                                  return tabIndex == 1
+                                      ? BakingUpFilterModalBottom(
+                                          optionsOne: recipeFilterList,
+                                          optionOneName: "Filter by",
+                                          defaultFilteringValue:
+                                              selectedRecipeFiltering,
+                                          defaultSortingValue:
+                                              selectedRecipeSorting,
+                                          filterFunction: _filterRecipe,
+                                        )
+                                      : BakingUpFilterModalBottom(
+                                          optionsOne: ingredientFilterList,
+                                          optionOneName: "Filter by",
+                                          defaultFilteringValue:
+                                              selectedIngredientFiltering,
+                                          defaultSortingValue:
+                                              selectedIngredientSorting,
+                                          filterFunction: _filterIngredient,
+                                        );
+                                },
+                              );
+                            },
+                            child: const BakingUpFilterTwoButton())
+                      ],
+                    ),
                   ),
-                ),
-                if (tabIndex == 1)
-                  WarehouseRecipeList(
-                    recipeList: filteredRecipes,
-                    isLoading: isLoading,
-                    fetchRecipeListFunction: _fetchRecipeList,
-                  ),
-                if (tabIndex == 2)
-                  WarehouseIngredientList(
-                    ingredientList: filteredIngredients,
-                    isLoading: isLoading,
-                    fetchIngredientListFunction: _fetchIngredientList,
-                  ),
-              ],
-            )));
+                  if (tabIndex == 1)
+                    WarehouseRecipeList(
+                      recipeList: filteredRecipes,
+                      isLoading: isLoading,
+                    ),
+                  if (tabIndex == 2)
+                    WarehouseIngredientList(
+                      ingredientList: filteredIngredients,
+                      isLoading: isLoading,
+                    ),
+                ],
+              )),
+        ));
   }
 }

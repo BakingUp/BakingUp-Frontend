@@ -3,17 +3,17 @@ import 'package:json_annotation/json_annotation.dart';
 part 'warehouse.g.dart';
 
 @JsonSerializable()
-class IngredietnListResponse {
+class IngredientListResponse {
   final int status;
   final String message;
   final IngredientListData data;
 
-  IngredietnListResponse(
+  IngredientListResponse(
       {required this.status, required this.message, required this.data});
 
-  factory IngredietnListResponse.fromJson(Map<String, dynamic> json) =>
-      _$IngredietnListResponseFromJson(json);
-  Map<String, dynamic> toJson() => _$IngredietnListResponseToJson(this);
+  factory IngredientListResponse.fromJson(Map<String, dynamic> json) =>
+      _$IngredientListResponseFromJson(json);
+  Map<String, dynamic> toJson() => _$IngredientListResponseToJson(this);
 }
 
 @JsonSerializable()

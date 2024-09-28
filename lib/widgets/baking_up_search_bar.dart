@@ -5,8 +5,13 @@ class BakingUpSearchBar extends StatelessWidget {
   final String? hintText;
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
+  final FocusNode? focusNode;
   const BakingUpSearchBar(
-      {super.key, this.hintText, this.controller, this.onChanged});
+      {super.key,
+      this.hintText,
+      this.controller,
+      this.onChanged,
+      this.focusNode});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +19,9 @@ class BakingUpSearchBar extends StatelessWidget {
       child: SizedBox(
         height: 40,
         child: TextField(
+          autofocus: false,
           controller: controller,
+          focusNode: focusNode,
           onChanged: onChanged,
           decoration: InputDecoration(
             hintText: hintText ?? 'Search',
@@ -25,13 +32,12 @@ class BakingUpSearchBar extends StatelessWidget {
               borderSide: BorderSide.none,
             ),
             prefixIcon: const Icon(Icons.search),
-            contentPadding: const EdgeInsets.only(
-                bottom: 40.0), // Adjust the vertical padding as needed
-            hintStyle: const TextStyle(
-                fontSize: 12.0), // Adjust the font size as needed
+            contentPadding: const EdgeInsets.only(bottom: 40.0),
+            hintStyle: const TextStyle(fontSize: 12.0),
           ),
         ),
       ),
     );
+    // );
   }
 }

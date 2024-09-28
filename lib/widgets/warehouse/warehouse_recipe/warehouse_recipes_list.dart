@@ -11,12 +11,11 @@ import 'package:flutter/material.dart';
 class WarehouseRecipeList extends StatefulWidget {
   final List<RecipeItemData> recipeList;
   final bool isLoading;
-  final Function fetchRecipeListFunction;
-  const WarehouseRecipeList(
-      {super.key,
-      required this.recipeList,
-      required this.isLoading,
-      required this.fetchRecipeListFunction});
+  const WarehouseRecipeList({
+    super.key,
+    required this.recipeList,
+    required this.isLoading,
+  });
 
   @override
   State<WarehouseRecipeList> createState() => WarehouseRecipeListState();
@@ -108,7 +107,6 @@ class WarehouseRecipeListState extends State<WarehouseRecipeList> {
                                           widget.recipeList[index].recipeID)
                                       .then((_) {
                                     Navigator.of(context).pop();
-                                    widget.fetchRecipeListFunction();
                                   }).catchError((error) {
                                     Navigator.of(context).pop();
                                     Navigator.of(context)
