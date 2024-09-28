@@ -6,6 +6,7 @@ import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_modal_bottom.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_two_button.dart';
+import 'package:bakingup_frontend/widgets/baking_up_no_result.dart';
 import 'package:bakingup_frontend/widgets/baking_up_search_bar.dart';
 import 'package:bakingup_frontend/widgets/baking_up_tab_button.dart';
 import 'package:bakingup_frontend/widgets/warehouse/warehouse_ingredient/warehouse_ingredient_list.dart';
@@ -49,6 +50,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
   String selectedIngredientSorting = "Ascending Order";
   FocusNode recipeSearchFocusNode = FocusNode();
   FocusNode ingredientSearchFocusNode = FocusNode();
+  bool noResult = false;
   @override
   void initState() {
     super.initState();
@@ -60,6 +62,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
       isLoading = true;
       isError = false;
       _searchRecipeController.clear();
+      noResult = false;
     });
 
     try {
@@ -73,6 +76,9 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
         filteredRecipes = recipes;
         selectedRecipeFiltering = "Recipe Name";
         selectedRecipeSorting = "Ascending Order";
+        if (recipeListResponse.status == 200 && recipes.isEmpty) {
+          noResult = true;
+        }
       });
 
       setState(() {});
@@ -92,6 +98,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
       isLoading = true;
       isError = false;
       _searchIngredientController.clear();
+      noResult = false;
     });
 
     try {
@@ -105,6 +112,9 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
         filteredIngredients = ingredients;
         selectedIngredientFiltering = "Stock Name";
         selectedIngredientSorting = "Ascending Order";
+        if (ingredientListResponse.status == 200 && ingredients.isEmpty) {
+          noResult = true;
+        }
       });
     } catch (e) {
       setState(() {
@@ -371,15 +381,31 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                       ],
                     ),
                   ),
-                  if (tabIndex == 1)
+                  if (tabIndex == 1 && !noResult)
                     WarehouseRecipeList(
                       recipeList: filteredRecipes,
                       isLoading: isLoading,
+                    )
+                  else if (tabIndex == 1)
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height * 0.1),
+                      child: const BakingUpNoResult(
+                        message: "You currently have no recipes",
+                      ),
                     ),
-                  if (tabIndex == 2)
+                  if (tabIndex == 2 && !noResult)
                     WarehouseIngredientList(
                       ingredientList: filteredIngredients,
                       isLoading: isLoading,
+                    )
+                  else if (tabIndex == 2)
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height * 0.1),
+                      child: const BakingUpNoResult(
+                        message: "You currently have no ingredients",
+                      ),
                     ),
                 ],
               )),
