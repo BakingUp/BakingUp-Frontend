@@ -6,6 +6,7 @@ import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_modal_bottom.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_two_button.dart';
+import 'package:bakingup_frontend/widgets/baking_up_no_result.dart';
 import 'package:bakingup_frontend/widgets/baking_up_search_bar.dart';
 import 'package:bakingup_frontend/widgets/stock/stock_list.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,8 @@ class _StockScreenState extends State<StockScreen> {
   ];
   String selectedStockFiltering = "Stock Name";
   String selectedStockSorting = "Ascending Order";
+  FocusNode stockSearchFocusNode = FocusNode();
+  bool noResult = false;
 
   @override
   void initState() {
@@ -45,6 +48,7 @@ class _StockScreenState extends State<StockScreen> {
       isLoading = true;
       isError = false;
       _searchStockController.clear();
+      noResult = false;
     });
 
     try {
@@ -56,6 +60,9 @@ class _StockScreenState extends State<StockScreen> {
       setState(() {
         stocks = data.stocks;
         filteredStocks = stocks;
+        if (stockResponse.status == 200 && stocks.isEmpty) {
+          noResult = true;
+        }
       });
     } catch (e) {
       isError = true;
@@ -134,87 +141,101 @@ class _StockScreenState extends State<StockScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: backgroundColor,
-      appBar: AppBar(
+    return GestureDetector(
+      onTap: () {
+        stockSearchFocusNode.unfocus();
+      },
+      child: Scaffold(
         backgroundColor: backgroundColor,
-        scrolledUnderElevation: 0,
-        title: const Text(
-          "Bakery Stock",
-          style: TextStyle(
-            fontSize: 24,
-            fontFamily: 'Inter',
-            fontStyle: FontStyle.normal,
-            fontWeight: FontWeight.w500,
+        appBar: AppBar(
+          backgroundColor: backgroundColor,
+          scrolledUnderElevation: 0,
+          title: const Text(
+            "Bakery Stock",
+            style: TextStyle(
+              fontSize: 24,
+              fontFamily: 'Inter',
+              fontStyle: FontStyle.normal,
+              fontWeight: FontWeight.w500,
+            ),
           ),
+          leading: Builder(
+            builder: (context) {
+              return IconButton(
+                icon: const Icon(Icons.menu),
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
+              );
+            },
+          ),
+          actions: const [
+            Padding(
+              padding: EdgeInsets.only(right: 14.0),
+              child: BakingUpCircularAddButton(),
+            )
+          ],
         ),
-        leading: Builder(
-          builder: (context) {
-            return IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-            );
-          },
+        drawer: BakingUpDrawer(
+          currentDrawerIndex: _currentDrawerIndex,
         ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 14.0),
-            child: BakingUpCircularAddButton(),
-          )
-        ],
-      ),
-      drawer: BakingUpDrawer(
-        currentDrawerIndex: _currentDrawerIndex,
-      ),
-      body: Container(
-          margin: const EdgeInsets.only(top: 20),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(40, 0, 40, 15),
-                child: Row(
-                  children: [
-                    BakingUpSearchBar(
-                      hintText: 'Search Bakery Stock',
-                      controller: _searchStockController,
-                      onChanged: _searchStocks,
-                    ),
-                    const SizedBox(width: 12),
-                    GestureDetector(
-                        onTap: () {
-                          showModalBottomSheet<void>(
-                            context: context,
-                            backgroundColor: backgroundColor,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(40.0),
-                                topRight: Radius.circular(40.0),
+        body: Container(
+            margin: const EdgeInsets.only(top: 20),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(40, 0, 40, 15),
+                  child: Row(
+                    children: [
+                      BakingUpSearchBar(
+                        hintText: 'Search Bakery Stock',
+                        controller: _searchStockController,
+                        onChanged: _searchStocks,
+                        focusNode: stockSearchFocusNode,
+                      ),
+                      const SizedBox(width: 12),
+                      GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet<void>(
+                              context: context,
+                              backgroundColor: backgroundColor,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(40.0),
+                                  topRight: Radius.circular(40.0),
+                                ),
                               ),
-                            ),
-                            builder: (BuildContext context) {
-                              return BakingUpFilterModalBottom(
-                                optionsOne: stockFilterList,
-                                optionOneName: "Filter by",
-                                defaultFilteringValue: selectedStockFiltering,
-                                defaultSortingValue: selectedStockSorting,
-                                filterFunction: _filterStocks,
-                              );
-                            },
-                          );
-                        },
-                        child: const BakingUpFilterTwoButton())
-                  ],
+                              builder: (BuildContext context) {
+                                return BakingUpFilterModalBottom(
+                                  optionsOne: stockFilterList,
+                                  optionOneName: "Filter by",
+                                  defaultFilteringValue: selectedStockFiltering,
+                                  defaultSortingValue: selectedStockSorting,
+                                  filterFunction: _filterStocks,
+                                );
+                              },
+                            );
+                          },
+                          child: const BakingUpFilterTwoButton())
+                    ],
+                  ),
                 ),
-              ),
-              StockList(
-                stockList: filteredStocks,
-                isLoading: isLoading,
-                fetchStockListFunction: _fetchStockList,
-              )
-            ],
-          )),
+                if (!noResult)
+                  StockList(
+                    stockList: filteredStocks,
+                    isLoading: isLoading,
+                  )
+                else
+                  Container(
+                    margin: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.height * 0.15),
+                    child: const BakingUpNoResult(
+                      message: "You currently have no stocks",
+                    ),
+                  ),
+              ],
+            )),
+      ),
     );
   }
 }

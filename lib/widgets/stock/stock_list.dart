@@ -11,12 +11,11 @@ import 'package:flutter/material.dart';
 class StockList extends StatefulWidget {
   final List<StockItemData> stockList;
   final bool isLoading;
-  final Function fetchStockListFunction;
-  const StockList(
-      {super.key,
-      required this.isLoading,
-      required this.stockList,
-      required this.fetchStockListFunction});
+  const StockList({
+    super.key,
+    required this.isLoading,
+    required this.stockList,
+  });
 
   @override
   State<StockList> createState() => _StockListState();
@@ -107,7 +106,6 @@ class _StockListState extends State<StockList> {
                                   _deleteStock(widget.stockList[index].stockID)
                                       .then((_) {
                                     Navigator.of(context).pop();
-                                    widget.fetchStockListFunction();
                                   }).catchError((error) {
                                     Navigator.of(context).pop();
                                     Navigator.of(context)
