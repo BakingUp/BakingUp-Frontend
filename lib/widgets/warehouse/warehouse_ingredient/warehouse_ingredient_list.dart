@@ -11,12 +11,11 @@ import 'package:flutter/material.dart';
 class WarehouseIngredientList extends StatefulWidget {
   final List<IngredientItemData> ingredientList;
   final bool isLoading;
-  final Function fetchIngredientListFunction;
-  const WarehouseIngredientList(
-      {super.key,
-      required this.ingredientList,
-      required this.isLoading,
-      required this.fetchIngredientListFunction});
+  const WarehouseIngredientList({
+    super.key,
+    required this.ingredientList,
+    required this.isLoading,
+  });
 
   @override
   State<WarehouseIngredientList> createState() =>
@@ -109,7 +108,6 @@ class _WarehouseIngredientListState extends State<WarehouseIngredientList> {
                                           .ingredientList[index].ingredientId)
                                       .then((_) {
                                     Navigator.of(context).pop();
-                                    widget.fetchIngredientListFunction();
                                   }).catchError((error) {
                                     Navigator.of(context).pop();
                                     Navigator.of(context)
