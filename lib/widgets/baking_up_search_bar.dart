@@ -23,6 +23,7 @@ class BakingUpSearchBar extends StatelessWidget {
           controller: controller,
           focusNode: focusNode,
           onChanged: onChanged,
+          cursorColor: blackColor,
           decoration: InputDecoration(
             hintText: hintText ?? 'Search',
             filled: true,
