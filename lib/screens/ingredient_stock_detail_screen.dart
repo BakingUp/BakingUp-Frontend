@@ -1,16 +1,26 @@
 // Importing libraries
-import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_edit_button.dart';
-import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_image.dart';
-import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_note_detail.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_container.dart';
 import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_title.dart';
+import 'package:bakingup_frontend/models/ingredient_stock_detail.dart';
+import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_brand.dart';
+import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_edit_button.dart';
+import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_expiration_date.dart';
+import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_image.dart';
+import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_ingredient_name.dart';
+import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_note_list.dart';
+import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_price.dart';
+import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_quantity.dart';
+import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_supplier.dart';
+import 'package:shimmer/shimmer.dart';
 
 class IngredientStockDetailScreen extends StatefulWidget {
-  const IngredientStockDetailScreen({super.key});
+  final String? ingredientStockId;
+  const IngredientStockDetailScreen({super.key, this.ingredientStockId});
 
   @override
   State<IngredientStockDetailScreen> createState() =>
@@ -19,20 +29,57 @@ class IngredientStockDetailScreen extends StatefulWidget {
 
 class _IngredientStockDetailScreenState
     extends State<IngredientStockDetailScreen> {
-  List<IngredientStockDetailNote> ingredientStockDetailNotes = [
-    IngredientStockDetailNote(
-      ingredientNote: "This ingredient is used for making bread.",
-      noteCreatedAt: "03/03/2024",
-    ),
-    IngredientStockDetailNote(
-      ingredientNote: "This ingredient is used for making cake.",
-      noteCreatedAt: "06/03/2024",
-    ),
-    IngredientStockDetailNote(
-      ingredientNote: "This ingredient is used for making cookies.",
-      noteCreatedAt: "09/03/2024",
-    ),
-  ];
+  bool isLoading = true;
+  bool isError = false;
+  String ingredientStockDetailUrl = '';
+  String ingredientEngName = '';
+  String ingredientThaiName = '';
+  String ingredientBrand = '';
+  String ingredientQuantity = '';
+  String ingredientPrice = '';
+  String ingredientSupplier = '';
+  String dayBeforeExpire = '';
+  List<IngredientStockDetailNote> ingredientStockDetailNotes = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchIngredientStockDetails();
+  }
+
+  Future<void> _fetchIngredientStockDetails() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final response = await NetworkService.instance.get(
+        '/api/ingredient/getIngredientStockDetail?ingredient_stock_id=${widget.ingredientStockId}',
+      );
+      final ingredientStockDetailResponse =
+          IngredientStockDetailResponse.fromJson(response);
+      final data = ingredientStockDetailResponse.data;
+      setState(() {
+        ingredientStockDetailUrl = data.ingredientStockUrl;
+        ingredientEngName = data.ingredientEngName;
+        ingredientThaiName = data.ingredientThaiName;
+        ingredientBrand = data.ingredientBrand;
+        ingredientQuantity = data.ingredientQuantity;
+        ingredientPrice = data.ingredientPrice;
+        ingredientSupplier = data.ingredientSupplier;
+        dayBeforeExpire = data.dayBeforeExpire;
+        ingredientStockDetailNotes = data.notes ?? [];
+      });
+    } catch (e) {
+      setState(() {
+        isError = true;
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +101,9 @@ class _IngredientStockDetailScreenState
           builder: (context) {
             return IconButton(
               icon: const Icon(Icons.arrow_back_ios),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pop(context);
+              },
             );
           },
         ),
@@ -68,213 +117,81 @@ class _IngredientStockDetailScreenState
               IngredientStockDetailEditButton(),
             ],
           ),
-          const IngredientStockDetailImage(),
-          const SizedBox(height: 16),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Stack(
             children: [
-              Text(
-                'Ingredient Name:',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
+              Shimmer.fromColors(
+                baseColor: greyColor,
+                highlightColor: whiteColor,
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.width / 2,
+                  margin: const EdgeInsets.all(12.0),
+                  color: Colors.white,
                 ),
               ),
-              SizedBox(width: 8),
               Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'All purpose flour',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
+                  IngredientStockDetailImage(
+                    isLoading: isLoading,
+                    ingredientStockDetailUrl: ingredientStockDetailUrl,
                   ),
-                  SizedBox(height: 8),
-                  Text(
-                    'แป้งอเนกประสงค์',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
+                  const SizedBox(height: 16),
+                  IngredientStockDetailIngredientName(
+                    isLoading: isLoading,
+                    ingredientEngName: ingredientEngName,
+                    ingredientThaiName: ingredientThaiName,
                   ),
+                  const SizedBox(height: 16),
+                  IngredientStockDetailBrand(
+                    isLoading: isLoading,
+                    ingredientBrand: ingredientBrand,
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      IngredientStockDetailQuantity(
+                        isLoading: isLoading,
+                        ingredientQuantity: ingredientQuantity,
+                      ),
+                      const SizedBox(width: 50),
+                      IngredientStockDetailPrice(
+                        isLoading: isLoading,
+                        ingredientPrice: ingredientPrice,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  const IngredientStockDetailTitle(
+                      title: "Additional Information"),
+                  const SizedBox(height: 16),
+                  IngredientStockDetailSupplier(
+                    isLoading: isLoading,
+                    ingredientSupplier: ingredientSupplier,
+                  ),
+                  const SizedBox(height: 16),
+                  IngredientStockDetailExpirationDate(
+                    isLoading: isLoading,
+                    dayBeforeExpire: dayBeforeExpire,
+                  ),
+                  const SizedBox(height: 50),
+                  if (ingredientStockDetailNotes.isNotEmpty)
+                    Column(
+                      children: [
+                        const IngredientStockDetailTitle(title: "Note:"),
+                        const SizedBox(height: 16),
+                        IngredientStockDetailNoteList(
+                          ingredientStockDetailNotes:
+                              ingredientStockDetailNotes,
+                          isLoading: isLoading,
+                        )
+                      ],
+                    )
                 ],
               ),
             ],
-          ),
-          const SizedBox(height: 16),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Brand:',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              SizedBox(width: 8),
-              Text(
-                'KITE',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          const Row(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Quantity:',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  Text(
-                    '1 kg.',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(width: 50),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Price:',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  Text(
-                    '36 ฿',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          const IngredientStockDetailTitle(title: "Additional Information"),
-          const SizedBox(height: 16),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Supplier:',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              SizedBox(width: 8),
-              Text(
-                '-',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Expiration Date:',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              SizedBox(width: 8),
-              Text(
-                '29/03/2024',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 50),
-          const IngredientStockDetailTitle(title: "Note:"),
-          const SizedBox(height: 16),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            padding: const EdgeInsets.all(0),
-            itemCount: ingredientStockDetailNotes.length,
-            itemBuilder: (context, index) {
-              return IngredientStockDetailNoteDetail(
-                ingredientStockDetailNotes: ingredientStockDetailNotes,
-                index: index,
-              );
-            },
           ),
         ],
       ),
     );
   }
-}
-
-// Temporary class to simulate the data
-class IngredientStockDetailNote {
-  final String ingredientNote;
-  final String noteCreatedAt;
-
-  IngredientStockDetailNote({
-    required this.ingredientNote,
-    required this.noteCreatedAt,
-  });
 }

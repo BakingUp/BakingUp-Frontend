@@ -33,4 +33,19 @@ class NetworkService {
       rethrow;
     }
   }
+
+  Future<dynamic> delete(
+    String url, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
+    try {
+      final response = await _dio.delete(url, queryParameters: queryParameters);
+      return response.data;
+    } on DioException catch (e) {
+      final data = Map<String, dynamic>.from(e.response?.data);
+      throw Exception(data['message'] ?? "Error while deleting data");
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

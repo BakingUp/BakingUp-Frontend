@@ -3,12 +3,9 @@ import 'package:flutter/material.dart';
 
 // Importing files
 import 'package:bakingup_frontend/widgets/baking_up_circular_back_button.dart';
-import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_image_container.dart';
-import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_image.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_container.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_back_button_container.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_scale_button.dart';
-import 'package:bakingup_frontend/screens/add_edit_recipe_screen.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_tab_button.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_title.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_ingredients_section.dart';
@@ -16,7 +13,13 @@ import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_instructio
 import 'package:bakingup_frontend/widgets/baking_up_circular_edit_button.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_cost_section.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_edit_button_container.dart';
-import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_recipe_name.dart';
+import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_recipe_score.dart';
+import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_servings.dart';
+import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_total_time.dart';
+import 'package:bakingup_frontend/widgets/baking_up_detail_image.dart';
+import 'package:bakingup_frontend/models/recipe_detail.dart';
+import 'package:bakingup_frontend/services/network_service.dart';
 
 class RecipeDetailScreen extends StatefulWidget {
   const RecipeDetailScreen({super.key});
@@ -26,59 +29,58 @@ class RecipeDetailScreen extends StatefulWidget {
 }
 
 class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
-  String recipeUrl =
-      'https://images.immediate.co.uk/production/volatile/sites/30/2021/09/butter-cookies-262c4fd.jpg';
-  String recipeName = 'Butter Cookies';
-  int servings = 36;
-  String unit = '1 hr 40 mins';
-  int star = 4;
-  int score = 10;
+  String recipeId = '1';
+  List<String> recipeUrl = [];
+  String recipeName = '';
+  int servings = 0;
+  String totalTime = '';
+  int star = 0;
+  int score = 0;
   int tabIndex = 1;
-  String instructionUrl =
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLTSzH9Swe-9qcnc00WSAUHJF8eksXx8EpkQ&s";
-  List<String> instructions = [
-    "Preheat oven to 350°F. Line a large baking sheet with parchment paper.",
-    "In a large bowl using a hand mixer on medium speed, cream together the butter and sugar until light and fluffy.",
-    "Add the egg yolks and vanilla. Mix until combined.",
-    "In a separate bowl whisk together the flour and salt.",
-    "Slowly add the flour mixture to the butter mixture. Mix on low until combined, scraping down the sides of the bowl as needed.",
-    "Working 1 tablespoon at a time, add milk until the mixture is sticky, thick, and well combined. Set aside.",
-    "This is a very thick batter, so you will need a heavy-duty piping bag, or you can use the double bag method. To do that you will need two piping bags, one fitted with a large star tip and one that has not been cut. Transfer the batter to the piping bag with no tip. Clip the tip of that bag and place it inside the second piping bag that is fitted with the star tip.",
-    "Pipe the batter into a circular pattern onto the lined baking sheet, leaving about 1 inch in between each cookie.",
-    "Bake 13-15 minutes, or until golden brown.",
-    "Allow the cookies to cool on the baking sheet for 10 minutes before transferring to a cooling rack. Let the cookies cool completely before decorating.",
-  ];
-  List<RawMaterial> rawMaterials = [
-    RawMaterial(name: "All-purpose flour", price: 37),
-    RawMaterial(name: "Sugar", price: 38),
-    RawMaterial(name: "Egg yolks", price: 39),
-    RawMaterial(name: "Butter", price: 40),
-  ];
-  List<RecipeIngredient> recipeIngredients = [
-    RecipeIngredient(
-      imgUrl: "https://i.imgur.com/RLsjqFm.png",
-      name: "All-purpose flour",
-      quantity: "250 g",
-    ),
-    RecipeIngredient(
-      imgUrl:
-          "https://img.freepik.com/free-photo/world-diabetes-day-sugar-wooden-bowl-dark-surface_1150-26666.jpg",
-      name: "Sugar",
-      quantity: "150 g",
-    ),
-    RecipeIngredient(
-      imgUrl:
-          "https://www.eatthis.com/wp-content/uploads/sites/4/2022/06/Egg-Yolk-2.jpg?quality=82&strip=all",
-      name: "Egg yolks",
-      quantity: "120 g",
-    ),
-    RecipeIngredient(
-      imgUrl:
-          "https://www.bhg.com/thmb/-luCrhu9Eh1C2u-oZXseX5tKAbk=/3000x0/filters:no_upscale():strip_icc()/bhg-how-many-grams-are-in-one-stick-of-butter-03-2c71be43bb20474384f7483c3827f8e7.jpg",
-      name: "Butter",
-      quantity: "454 g",
-    ),
-  ];
+  List<String> instructionUrls = [];
+  List<String> instructionSteps = [];
+  List<RecipeIngredient> recipeIngredients = [];
+  bool isLoading = false;
+  bool isError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchRecipeDetails();
+  }
+
+  Future<void> _fetchRecipeDetails() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final response = await NetworkService.instance.get(
+        '/api/recipe/getRecipeDetail?recipe_id=$recipeId',
+      );
+      final recipeDetailResponse = RecipeDetailResponse.fromJson(response);
+      final data = recipeDetailResponse.data;
+      setState(() {
+        recipeName = data.recipeName;
+        recipeUrl = data.recipeUrl;
+        totalTime = data.totalTime;
+        servings = data.servings;
+        star = data.stars;
+        score = data.numOfOrder;
+        recipeIngredients = data.recipeIngredients;
+        instructionUrls = data.instructionUrl;
+        instructionSteps = data.instructionSteps;
+      });
+    } catch (e) {
+      setState(() {
+        isError = true;
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,10 +103,9 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          RecipeDetailImageContainer(
-            child: RecipeDetailImage(
-              recipeUrl: recipeUrl,
-            ),
+          BakingUpDetailImage(
+            imageUrl: recipeUrl,
+            isLoading: isLoading,
           ),
           const RecipeDetailEditButtonContainer(
             children: [
@@ -177,15 +178,19 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   ),
                   if (tabIndex == 1)
                     RecipeDetailIngredientsSection(
-                        recipeIngredients: recipeIngredients),
+                      recipeIngredients: recipeIngredients,
+                      isLoading: isLoading,
+                    ),
                   if (tabIndex == 2)
                     RecipeDetailInstructionsSection(
-                      instructionUrl: instructionUrl,
-                      instructions: instructions,
+                      instructionUrls: instructionUrls,
+                      instructionSteps: instructionSteps,
+                      isLoading: isLoading,
                     ),
                   if (tabIndex == 3)
                     RecipeDetailCostSection(
-                      rawMaterials: rawMaterials,
+                      recipeIngredients: recipeIngredients,
+                      isLoading: isLoading,
                     ),
                 ],
               ),
@@ -201,41 +206,21 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                   children: [
                     Column(
                       children: [
-                        Text(
-                          recipeName,
-                          style: TextStyle(
-                            color: blackColor,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 24,
-                          ),
+                        RecipeDetailRecipeName(
+                          recipeName: recipeName,
+                          isLoading: isLoading,
                         ),
-                        const Padding(padding: EdgeInsets.only(bottom: 8.0)),
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 8.0),
+                        ),
                       ],
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0),
-                      child: Row(
-                        children: [
-                          for (int i = 0; i < 5; i++)
-                            Icon(
-                              i < star ? Icons.star : Icons.star_border,
-                              color: i < star ? orangeColor : greyColor,
-                              size: 16,
-                            ),
-                          const SizedBox(width: 5.0),
-                          Text(
-                            "($score)",
-                            style: TextStyle(
-                              color: blackColor,
-                              fontFamily: 'Inter',
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
+                      child: RecipeDetailRecipeScore(
+                        score: score,
+                        star: star,
+                        isLoading: isLoading,
                       ),
                     ),
                   ],
@@ -247,25 +232,13 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Total Time: $unit',
-                          style: TextStyle(
-                            color: blackColor,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w300,
-                            fontSize: 13,
-                          ),
+                        RecipeDetailTotalTime(
+                          totalTime: totalTime,
+                          isLoading: isLoading,
                         ),
-                        Text(
-                          'Servings: $servings',
-                          style: TextStyle(
-                            color: blackColor,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w300,
-                            fontSize: 13,
-                          ),
+                        RecipeDetailServings(
+                          servings: servings,
+                          isLoading: isLoading,
                         ),
                       ],
                     ),
@@ -279,15 +252,4 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       ),
     );
   }
-}
-
-// Temporary class to simulate the data
-class RawMaterial {
-  final String name;
-  final double price;
-
-  RawMaterial({
-    required this.name,
-    required this.price,
-  });
 }

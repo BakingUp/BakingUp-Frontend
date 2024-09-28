@@ -1,11 +1,19 @@
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_instruction_images.dart';
+import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_instructions.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 class RecipeDetailInstructionsSection extends StatelessWidget {
-  final String instructionUrl;
-  final List<String> instructions;
-  const RecipeDetailInstructionsSection(
-      {super.key, required this.instructionUrl, required this.instructions});
+  final List<String> instructionUrls;
+  final List<String> instructionSteps;
+  final bool isLoading;
+  const RecipeDetailInstructionsSection({
+    super.key,
+    required this.instructionUrls,
+    required this.instructionSteps,
+    required this.isLoading,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,61 +22,29 @@ class RecipeDetailInstructionsSection extends StatelessWidget {
       child: SizedBox(
         height: MediaQuery.of(context).size.height - 550,
         child: SingleChildScrollView(
-          child: Column(
+          child: Stack(
             children: [
-              ConstrainedBox(
-                constraints: const BoxConstraints(
-                  maxWidth: double.infinity,
-                  maxHeight: 200.0,
-                ),
-                child: SizedBox(
+              Shimmer.fromColors(
+                baseColor: greyColor,
+                highlightColor: whiteColor,
+                child: Container(
                   width: double.infinity,
-                  child: Image.network(
-                    instructionUrl,
-                    fit: BoxFit.cover,
-                  ),
+                  height: 200.0,
+                  color: Colors.white,
                 ),
               ),
-              const SizedBox(height: 30),
-              SizedBox(
-                width: double.infinity,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  padding: const EdgeInsets.all(0),
-                  itemCount: instructions.length,
-                  itemBuilder: (context, index) {
-                    return Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "• ",
-                          style: TextStyle(
-                            color: blackColor,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w900,
-                            fontSize: 13,
-                            overflow: TextOverflow.visible,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            instructions[index],
-                            style: TextStyle(
-                              color: blackColor,
-                              fontFamily: 'Inter',
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 13,
-                              overflow: TextOverflow.visible,
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
+              Column(
+                children: [
+                  RecipeDetailInstructionImages(
+                    imageUrl: instructionUrls,
+                    isLoading: isLoading,
+                  ),
+                  const SizedBox(height: 30),
+                  RecipeDetailInstructions(
+                    instructionSteps: instructionSteps,
+                    isLoading: isLoading,
+                  ),
+                ],
               ),
             ],
           ),

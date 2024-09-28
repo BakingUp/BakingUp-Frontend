@@ -1,6 +1,6 @@
 import 'package:bakingup_frontend/enum/lst_status.dart';
-import 'package:bakingup_frontend/screens/stock_detail_screen.dart';
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/models/stock_detail.dart';
 import 'package:bakingup_frontend/widgets/stock_detail/lst_status_indicator.dart';
 import 'package:flutter/material.dart';
 

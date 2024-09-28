@@ -6,14 +6,16 @@ import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_circular_back_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_button.dart';
 import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_back_button_container.dart';
-import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_image.dart';
-import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_image_container.dart';
-import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_detail.dart';
 import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_container.dart';
-import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_edit_stock_button.dart';
-import 'package:bakingup_frontend/enum/lst_status.dart';
-import 'package:bakingup_frontend/constants/colors.dart';
-import 'package:bakingup_frontend/utilities/regex.dart';
+import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_lst.dart';
+import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_notify_me.dart';
+import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_quantity.dart';
+import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_selling_price.dart';
+import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_stock_name.dart';
+import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_list.dart';
+import 'package:bakingup_frontend/widgets/baking_up_detail_image.dart';
+import 'package:bakingup_frontend/models/stock_detail.dart';
+import 'package:bakingup_frontend/services/network_service.dart';
 
 class StockDetailScreen extends StatefulWidget {
   const StockDetailScreen({super.key});
@@ -23,39 +25,53 @@ class StockDetailScreen extends StatefulWidget {
 }
 
 class _StockDetailScreenState extends State<StockDetailScreen> {
-  String stockUrl =
-      'https://images.immediate.co.uk/production/volatile/sites/30/2021/09/butter-cookies-262c4fd.jpg';
-  String stockName = 'Butter Cookies';
-  int quantity = 30;
-  double ingredientLessThan = 10;
-  int lst = 3;
-  double price = 50;
-  List<StockDetail> stockDetails = [
-    StockDetail(
-      stockId: '1',
-      quantity: 10,
-      sellByDate: '29/06/2024',
-      lstStatus: LSTStatus.red,
-    ),
-    StockDetail(
-      stockId: '2',
-      quantity: 12,
-      sellByDate: '29/06/2024',
-      lstStatus: LSTStatus.green,
-    ),
-    StockDetail(
-      stockId: '3',
-      quantity: 14,
-      sellByDate: '29/06/2024',
-      lstStatus: LSTStatus.yellow,
-    ),
-    StockDetail(
-      stockId: '4',
-      quantity: 16,
-      sellByDate: '29/06/2024',
-      lstStatus: LSTStatus.black,
-    ),
-  ];
+  final String recipeId = '1';
+  List<String> stockUrl = [];
+  String stockName = '';
+  int quantity = 0;
+  int stockLessThan = 0;
+  int lst = 0;
+  double price = 0.0;
+  List<StockDetail> stockDetails = [];
+  bool isLoading = true;
+  bool isError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchStockDetails();
+  }
+
+  Future<void> _fetchStockDetails() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final response = await NetworkService.instance.get(
+        '/api/stock/getStockDetail?recipe_id=$recipeId',
+      );
+      final stockDetailResponse = StockDetailResponse.fromJson(response);
+      final data = stockDetailResponse.data;
+      setState(() {
+        stockUrl = data.stockUrl;
+        stockName = data.stockName;
+        quantity = data.quantity;
+        lst = data.lst;
+        price = data.sellingPrice;
+        stockLessThan = data.stockLessThan;
+        stockDetails = data.stockDetails;
+      });
+    } catch (e) {
+      setState(() {
+        isError = true;
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,10 +79,9 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          StockDetailImageContainer(
-            child: StockDetailImage(
-              stockUrl: stockUrl,
-            ),
+          BakingUpDetailImage(
+            imageUrl: stockUrl,
+            isLoading: isLoading,
           ),
           const StockDetailBackButtonContainer(
             children: [
@@ -95,17 +110,9 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                       ],
                     ),
                   ),
-                  Expanded(
-                    child: ListView.builder(
-                      padding: const EdgeInsets.all(0),
-                      itemCount: stockDetails.length,
-                      itemBuilder: (context, index) {
-                        return StockDetailDetail(
-                          stockDetails: stockDetails,
-                          index: index,
-                        );
-                      },
-                    ),
+                  StockDetailList(
+                    stockDetails: stockDetails,
+                    isLoading: isLoading,
                   ),
                 ],
               ),
@@ -121,25 +128,13 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                   children: [
                     Column(
                       children: [
-                        Row(
-                          children: [
-                            Text(
-                              stockName,
-                              style: TextStyle(
-                                color: blackColor,
-                                fontFamily: 'Inter',
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 24,
-                              ),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.only(right: 10.0),
-                            ),
-                            const StockDetailEditStockButton(),
-                          ],
+                        StockDetailStockName(
+                          stockName: stockName,
+                          isLoading: isLoading,
                         ),
-                        const Padding(padding: EdgeInsets.only(bottom: 8.0)),
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 8.0),
+                        ),
                       ],
                     ),
                     const BakingUpCircularAddButton(),
@@ -150,51 +145,23 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Quantity: ${quantity.toString()}',
-                          style: TextStyle(
-                            color: blackColor,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w300,
-                            fontSize: 13,
-                          ),
-                        ),
-                        Text(
-                          'Selling price : ${price.toString().replaceAll(removeTrailingZeros, '')} ฿',
-                          style: TextStyle(
-                            color: blackColor,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w300,
-                            fontSize: 13,
-                          ),
-                        ),
+                        StockDetailQuantity(
+                            quantity: quantity, isLoading: isLoading),
+                        StockDetailSellingPrice(
+                            price: price, isLoading: isLoading),
                       ],
                     ),
                     const SizedBox(width: 30),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'LST: ${lst.toString()}',
-                          style: TextStyle(
-                            color: blackColor,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w300,
-                            fontSize: 13,
-                          ),
+                        StockDetailLst(
+                          lst: lst,
+                          isLoading: isLoading,
                         ),
-                        Text(
-                          'Notify me : < ${ingredientLessThan.toString().replaceAll(removeTrailingZeros, '')} unit',
-                          style: TextStyle(
-                            color: blackColor,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w300,
-                            fontSize: 13,
-                          ),
+                        StockDetailNotifyMe(
+                          stockLessThan: stockLessThan,
+                          isLoading: isLoading,
                         ),
                       ],
                     ),
@@ -207,19 +174,4 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
       ),
     );
   }
-}
-
-// Temporary class to simulate the data
-class StockDetail {
-  final String stockId;
-  final int quantity;
-  final String sellByDate;
-  final LSTStatus lstStatus;
-
-  StockDetail({
-    required this.stockId,
-    required this.quantity,
-    required this.sellByDate,
-    required this.lstStatus,
-  });
 }
