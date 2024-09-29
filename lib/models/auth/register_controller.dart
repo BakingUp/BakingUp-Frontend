@@ -24,8 +24,8 @@ class RegisterTextEditController {
   String get confirmPassword => confirmPasswordController.text;
   set confirmPassword(String value) => confirmPasswordController.text = value;
 
-  String get phoneNumber => passwordController.text;
-  set phoneNumber(String value) => passwordController.text = value;
+  String get phoneNumber => phoneNumberController.text;
+  set phoneNumber(String value) => phoneNumberController.text = value;
 
   String get storeName => storeNameController.text;
   set storeName(String value) => storeNameController.text = value;

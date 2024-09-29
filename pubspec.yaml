@@ -20,15 +20,31 @@ dependencies:
   json_serializable: ^6.8.0
   shimmer: ^3.0.0
   smooth_page_indicator: ^1.2.0+3
+  flutter_native_splash: ^2.4.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
 
+flutter_native_splash:
+  android: true
+  ios: true
+  web: false
+
+  color: "#E0C3B3"
+  image: assets/icons/logo640.png
+
+  android_12:
+    color: "#E0C3B3"
+    image: assets/icons/logo640.png
+  android_gravity: center
+  ios_content_mode: center
+
 flutter:
   uses-material-design: true
 
   assets:
     - assets/icons/
+    - assets/icons/logo640.png
     - .env

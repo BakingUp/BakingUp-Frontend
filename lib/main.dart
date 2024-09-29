@@ -1,4 +1,5 @@
 import 'package:bakingup_frontend/constants/routes.dart';
+import 'package:bakingup_frontend/firebase_options.dart';
 import 'package:bakingup_frontend/screens/add_edit_ingredient_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_ingredient_stock_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_order_screen.dart';
@@ -11,25 +12,29 @@ import 'package:bakingup_frontend/screens/change_password_screen.dart';
 import 'package:bakingup_frontend/screens/home_screen.dart';
 import 'package:bakingup_frontend/screens/ingredient_detail_screen.dart';
 import 'package:bakingup_frontend/screens/ingredient_stock_detail_screen.dart';
-import 'package:bakingup_frontend/screens/login_screen.dart';
+import 'package:bakingup_frontend/screens/auth/login_screen.dart';
 import 'package:bakingup_frontend/screens/notification_screen.dart';
 import 'package:bakingup_frontend/screens/order_detail_screen.dart';
 import 'package:bakingup_frontend/screens/order_screen.dart';
 import 'package:bakingup_frontend/screens/profile_screen.dart';
 import 'package:bakingup_frontend/screens/recipe_detail_screen.dart';
-import 'package:bakingup_frontend/screens/register_screen.dart';
-import 'package:bakingup_frontend/screens/reset_password_screen.dart';
+import 'package:bakingup_frontend/screens/auth/register_screen.dart';
+import 'package:bakingup_frontend/screens/auth/forgot_password_screen.dart';
 import 'package:bakingup_frontend/screens/setting_screen.dart';
 import 'package:bakingup_frontend/screens/stock_detail_information_screen.dart';
 import 'package:bakingup_frontend/screens/stock_detail_screen.dart';
 import 'package:bakingup_frontend/screens/stock_screen.dart';
+import 'package:bakingup_frontend/screens/auth/verify_email_screen.dart';
 import 'package:bakingup_frontend/screens/warehouse_screen.dart';
+import 'package:bakingup_frontend/services/auth/auth_gate.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await dotenv.load(fileName: ".env");
   await NetworkService.instance.initClient();
 
@@ -48,7 +53,7 @@ class _MainAppState extends State<MainApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       // Setting the initial routes
-      initialRoute: loginRoute,
+      home: const AuthGate(),
       // Generating routes for each screen in the app
       onGenerateRoute: (settings) {
         switch (settings.name) {
@@ -57,9 +62,14 @@ class _MainAppState extends State<MainApp> {
           case registerRoute:
             return MaterialPageRoute(
                 builder: (context) => const RegisterScreen());
-          case resetPasswordRoute:
+          //test
+          case VerifyEmailRoute:
             return MaterialPageRoute(
-                builder: (context) => const ResetPasswordScreen());
+                builder: (context) => const VerifyEmailScreen());
+          //test
+          case forgotPasswordRoute:
+            return MaterialPageRoute(
+                builder: (context) => const ForgotPasswordScreen());
           case changePasswordRoute:
             return MaterialPageRoute(
                 builder: (context) => const ChangePasswordScreen());

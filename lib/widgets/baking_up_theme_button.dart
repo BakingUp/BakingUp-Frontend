@@ -25,8 +25,8 @@ class CustomButton extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 7,
+              spreadRadius: 1,
+              blurRadius: 2,
               offset: const Offset(0, 3), // changes position of shadow
             ),
           ],
@@ -47,7 +47,7 @@ class CustomButton extends StatelessWidget {
               ? Colors.grey[300]
               : color == "primary"
                   ? null
-                  : Theme.of(context).colorScheme.tertiary,
+                  : greyColor,
         ),
         child: Center(
           child: Container(

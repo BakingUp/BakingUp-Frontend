@@ -36,9 +36,13 @@ class _PasswordTextFormFieldState extends State<PasswordTextFormField> {
       obscureText: passwordVisible,
       decoration: InputDecoration(
           border: const OutlineInputBorder(
-            borderRadius: BorderRadius.all(Radius.circular(25)),
+            borderRadius: BorderRadius.all(Radius.circular(10)),
           ),
           hintText: widget.hintText,
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: darkBrownColor, width: 2),
+            borderRadius: BorderRadius.circular(10),
+          ),
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
           suffixIcon: IconButton(
@@ -48,7 +52,9 @@ class _PasswordTextFormFieldState extends State<PasswordTextFormField> {
                 });
               },
               icon: Icon(
-                  passwordVisible ? Icons.visibility : Icons.visibility_off, color: darkBeigeColor,))),
+                passwordVisible ? Icons.visibility : Icons.visibility_off,
+                color: darkBeigeColor,
+              ))),
     );
   }
 }
