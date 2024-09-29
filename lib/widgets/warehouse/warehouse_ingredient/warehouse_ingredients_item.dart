@@ -93,7 +93,7 @@ class WarehouseIngredientsItem extends StatelessWidget {
                           padding: EdgeInsets.only(bottom: 1.0),
                         ),
                         Text(
-                          '${ingredientList[index].stock} ${ingredientList[index].stock > 0 ? "stocks" : "stock"}',
+                          '${ingredientList[index].stock} ${ingredientList[index].stock == 0 ? "stocks" : ingredientList[index].stock == 1 ? "stock" : "stocks"}',
                           style: TextStyle(
                             color: blackColor,
                             fontFamily: 'Inter',
