@@ -16,11 +16,17 @@ class IngredientStockDetailImage extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.width / 2,
       child: !isLoading
-          ? Image.network(
-              ingredientStockDetailUrl,
-              width: MediaQuery.of(context).size.width,
-              fit: BoxFit.cover,
-            )
+          ? ingredientStockDetailUrl.isEmpty
+              ? Image.asset(
+                  'assets/icons/no-image.jpg',
+                  width: MediaQuery.of(context).size.width,
+                  fit: BoxFit.cover,
+                )
+              : Image.network(
+                  ingredientStockDetailUrl,
+                  width: MediaQuery.of(context).size.width,
+                  fit: BoxFit.cover,
+                )
           : Container(),
     );
   }

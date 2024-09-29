@@ -53,12 +53,12 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
           IngredientDetailResponse.fromJson(response);
       final data = ingredientDetailResponse.data;
       setState(() {
-        ingredientUrl = data.ingredientUrl;
+        ingredientUrl = data.ingredientUrl ?? [];
         ingredientName = data.ingredientName;
         quantity = double.parse(data.ingredientQuantity.split(' ').first);
         unit = data.ingredientQuantity.split(' ').last;
         ingredientLessThan = data.ingredientLessThan.toDouble();
-        ingredientStocks = data.stocks;
+        ingredientStocks = data.stocks ?? [];
       });
     } catch (e) {
       setState(() {
@@ -99,15 +99,17 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
               ),
               child: Column(
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.all(20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        BakingUpFilterButton(),
-                      ],
+                  if (ingredientStocks.isNotEmpty) ...[
+                    const Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          BakingUpFilterButton(),
+                        ],
+                      ),
                     ),
-                  ),
+                  ],
                   IngredientStockDetailList(
                     ingredientStocks: ingredientStocks,
                     isLoading: isLoading,

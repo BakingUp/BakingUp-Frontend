@@ -29,18 +29,18 @@ class IngredientDetailData {
   @JsonKey(name: 'stock_amount')
   final int stockAmount;
   @JsonKey(name: 'ingredient_url')
-  final List<String> ingredientUrl;
+  final List<String>? ingredientUrl;
   @JsonKey(name: 'ingredient_less_than')
   final int ingredientLessThan;
-  final List<IngredientStock> stocks;
+  final List<IngredientStock>? stocks;
 
   IngredientDetailData({
     required this.ingredientName,
     required this.ingredientQuantity,
     required this.stockAmount,
-    required this.ingredientUrl,
+    this.ingredientUrl,
     required this.ingredientLessThan,
-    required this.stocks,
+    this.stocks,
   });
 
   factory IngredientDetailData.fromJson(Map<String, dynamic> json) =>
