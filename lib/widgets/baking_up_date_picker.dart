@@ -13,7 +13,9 @@ class BakingUpDatePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<DateTime> selectedDates = [];
+    List<DateTime> selectedDates = [
+      dates[0],
+    ];
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.6,
@@ -23,8 +25,9 @@ class BakingUpDatePicker extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
                 borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(40),
-                    topRight: Radius.circular(40)),
+                  topLeft: Radius.circular(40),
+                  topRight: Radius.circular(40),
+                ),
                 color: whiteColor),
             child: Column(
               children: [
@@ -32,13 +35,16 @@ class BakingUpDatePicker extends StatelessWidget {
                   children: [
                     const Align(
                       alignment: Alignment.center,
-                      child: Text(
-                        "Select a date",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontFamily: 'Inter',
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w500,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 5),
+                        child: Text(
+                          "Select a date",
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontFamily: 'Inter',
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
@@ -64,63 +70,66 @@ class BakingUpDatePicker extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: CalendarDatePicker2(
-              config: CalendarDatePicker2Config(
-                weekdayLabels: const [
-                  'Sun',
-                  'Mon',
-                  'Tue',
-                  'Wed',
-                  'Thu',
-                  'Fri',
-                  'Sat',
-                ],
-                calendarViewMode: CalendarDatePicker2Mode.scroll,
-                weekdayLabelTextStyle: TextStyle(
-                  color: darkGreyColor,
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w500,
+            child: Material(
+              color: Colors.transparent,
+              child: CalendarDatePicker2(
+                config: CalendarDatePicker2Config(
+                  weekdayLabels: const [
+                    'Sun',
+                    'Mon',
+                    'Tue',
+                    'Wed',
+                    'Thu',
+                    'Fri',
+                    'Sat',
+                  ],
+                  calendarViewMode: CalendarDatePicker2Mode.scroll,
+                  weekdayLabelTextStyle: TextStyle(
+                    color: darkGreyColor,
+                    fontSize: 16,
+                    fontFamily: 'Inter',
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  dayTextStyle: TextStyle(
+                    color: darkGreyColor,
+                    fontSize: 16,
+                    fontFamily: 'Inter',
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  yearTextStyle: TextStyle(
+                    color: darkGreyColor,
+                    fontSize: 16,
+                    fontFamily: 'Inter',
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  controlsTextStyle: TextStyle(
+                    color: blackColor,
+                    fontSize: 16,
+                    fontFamily: 'Inter',
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  selectedDayTextStyle: TextStyle(
+                    color: greenColor,
+                    fontSize: 16,
+                    fontFamily: 'Inter',
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  centerAlignModePicker: true,
+                  hideScrollViewMonthWeekHeader: true,
+                  hideScrollViewTopHeaderDivider: true,
+                  selectedDayHighlightColor: lightGreenColor,
+                  daySplashColor: greyColor,
                 ),
-                dayTextStyle: TextStyle(
-                  color: darkGreyColor,
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w500,
-                ),
-                yearTextStyle: TextStyle(
-                  color: darkGreyColor,
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w500,
-                ),
-                controlsTextStyle: TextStyle(
-                  color: blackColor,
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w500,
-                ),
-                selectedDayTextStyle: TextStyle(
-                  color: greenColor,
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w500,
-                ),
-                centerAlignModePicker: true,
-                hideScrollViewMonthWeekHeader: true,
-                hideScrollViewTopHeaderDivider: true,
-                selectedDayHighlightColor: lightGreenColor,
-                daySplashColor: greyColor,
+                value: dates,
+                onValueChanged: (value) {
+                  selectedDates = value;
+                },
               ),
-              value: dates,
-              onValueChanged: (value) {
-                selectedDates = value;
-              },
             ),
           ),
           const SizedBox(height: 20),
