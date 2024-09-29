@@ -25,7 +25,7 @@ class WarehouseRecipeListState extends State<WarehouseRecipeList> {
   Future<void> _deleteRecipe(String recipeId) async {
     showDialog(
       context: context,
-      barrierColor: const Color(0xC7D9D9D9),
+      barrierColor: greyColor,
       builder: (BuildContext context) {
         return const BakingUpLoadingDialog();
       },
