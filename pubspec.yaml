@@ -9,6 +9,7 @@ environment:
 
 dependencies:
   build_runner: ^2.4.11
+  calendar_date_picker2: ^1.1.7
   dio: ^5.6.0
   flutter:
     sdk: flutter
