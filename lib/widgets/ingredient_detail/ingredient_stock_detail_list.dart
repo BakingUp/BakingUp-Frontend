@@ -32,7 +32,7 @@ class IngredientStockDetailList extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     BakingUpNoResult(
-                        message: "This ingredient currently has no stock."),
+                        message: "This ingredient currently has no stocks."),
                     SizedBox(
                       height: 60,
                     ),
