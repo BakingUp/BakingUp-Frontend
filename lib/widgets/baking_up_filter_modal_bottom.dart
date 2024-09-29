@@ -57,13 +57,16 @@ class _WarehouseIngredientFilterState extends State<BakingUpFilterModalBottom> {
                     children: [
                       const Align(
                         alignment: Alignment.center,
-                        child: Text(
-                          "Filters",
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w500,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 5),
+                          child: Text(
+                            "Filters",
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontFamily: 'Inter',
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                         ),
                       ),
