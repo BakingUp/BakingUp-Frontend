@@ -307,6 +307,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                               setState(() {
                                 tabIndex = 1;
                                 _fetchRecipeList();
+                                ingredientSearchFocusNode.unfocus();
                               });
                             }),
                         const SizedBox(
@@ -319,6 +320,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                               setState(() {
                                 tabIndex = 2;
                                 _fetchIngredientList();
+                                recipeSearchFocusNode.unfocus();
                               });
                             })
                       ],
@@ -346,6 +348,8 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                         const SizedBox(width: 12),
                         GestureDetector(
                             onTap: () {
+                              ingredientSearchFocusNode.unfocus();
+                              recipeSearchFocusNode.unfocus();
                               showModalBottomSheet<void>(
                                 context: context,
                                 backgroundColor: backgroundColor,
