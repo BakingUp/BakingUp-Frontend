@@ -220,12 +220,20 @@ class _StockScreenState extends State<StockScreen> {
                     ],
                   ),
                 ),
-                if (!noResult)
+                if (!noResult && filteredStocks.isNotEmpty)
                   StockList(
                     stockList: filteredStocks,
                     isLoading: isLoading,
                   )
-                else
+                else if (!noResult && !isLoading && filteredStocks.isEmpty)
+                  Container(
+                    margin: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.height * 0.15),
+                    child: const BakingUpNoResult(
+                      message: "No results found",
+                    ),
+                  )
+                else if (noResult)
                   Container(
                     margin: EdgeInsets.only(
                         top: MediaQuery.of(context).size.height * 0.15),
