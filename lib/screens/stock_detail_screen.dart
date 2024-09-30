@@ -121,10 +121,16 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        BakingUpFilterButton(),
+                        BakingUpNoResult(
+                            message:
+                                "This stock currently has no stock batchs."),
+                        SizedBox(
+                          height: 60,
+                        ),
                       ],
                     ),
-                  ),
+                  )
+                ] else ...[
                   StockDetailList(
                     stockDetails: stockDetails,
                     isLoading: isLoading,
