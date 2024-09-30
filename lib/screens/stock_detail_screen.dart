@@ -101,16 +101,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                 color: Colors.white,
               ),
               child: Column(children: [
-                const Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      BakingUpFilterButton(),
-                    ],
-                  ),
-                ),
-                if (stockDetails.isEmpty) ...[
+                if (stockDetails.isEmpty && !isLoading) ...[
                   const Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -125,6 +116,15 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                     ),
                   )
                 ] else ...[
+                  const Padding(
+                    padding: EdgeInsets.all(20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        BakingUpFilterButton(),
+                      ],
+                    ),
+                  ),
                   StockDetailList(
                     stockDetails: stockDetails,
                     isLoading: isLoading,
