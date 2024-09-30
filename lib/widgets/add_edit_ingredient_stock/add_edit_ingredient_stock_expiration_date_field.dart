@@ -1,4 +1,5 @@
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/widgets/baking_up_date_picker.dart';
 import 'package:flutter/material.dart';
 
 class AddEditIngredientStockExpirationDateField extends StatefulWidget {
@@ -12,19 +13,33 @@ class AddEditIngredientStockExpirationDateField extends StatefulWidget {
 class AddEditIngredientStockExpirationDateFieldState
     extends State<AddEditIngredientStockExpirationDateField> {
   final TextEditingController _controller = TextEditingController();
+  List<DateTime> dates = [
+    DateTime.now(),
+  ];
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
+  void showDatePickerBottomSheet(BuildContext context, Color backgroundColor) {
+    showModalBottomSheet<void>(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      backgroundColor: backgroundColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(40.0),
+          topRight: Radius.circular(40.0),
+        ),
+      ),
+      builder: (BuildContext builder) {
+        return BakingUpDatePicker(
+          dates: dates,
+          onDateApply: (List<DateTime> newDates) {
+            setState(() {
+              dates = newDates;
+            });
+            _controller.text =
+                "${newDates[0].day}/${newDates[0].month}/${newDates[0].year}";
+          },
+        );
+      },
     );
-    if (picked != null) {
-      setState(() {
-        _controller.text = "${picked.month}/${picked.day}/${picked.year}";
-      });
-    }
   }
 
   @override
@@ -35,7 +50,7 @@ class AddEditIngredientStockExpirationDateFieldState
       child: TextField(
         controller: _controller,
         readOnly: true,
-        onTap: () => _selectDate(context),
+        onTap: () => showDatePickerBottomSheet(context, backgroundColor),
         style: const TextStyle(
           fontSize: 12,
           fontFamily: 'Inter',
@@ -61,7 +76,8 @@ class AddEditIngredientStockExpirationDateFieldState
           ),
           suffixIcon: IconButton(
             icon: Icon(Icons.calendar_today, color: darkGreyColor),
-            onPressed: () => _selectDate(context),
+            onPressed: () =>
+                showDatePickerBottomSheet(context, backgroundColor),
           ),
         ),
       ),
