@@ -24,14 +24,15 @@ Map<String, dynamic> _$StockDetailResponseToJson(
 StockDetailData _$StockDetailDataFromJson(Map<String, dynamic> json) =>
     StockDetailData(
       stockName: json['stock_name'] as String,
-      stockUrl:
-          (json['stock_url'] as List<dynamic>).map((e) => e as String).toList(),
+      stockUrl: (json['stock_url'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
       quantity: (json['quantity'] as num).toInt(),
       lst: (json['lst'] as num).toInt(),
       sellingPrice: (json['selling_price'] as num).toDouble(),
       stockLessThan: (json['stock_less_than'] as num).toInt(),
-      stockDetails: (json['stock_details'] as List<dynamic>)
-          .map((e) => StockDetail.fromJson(e as Map<String, dynamic>))
+      stockDetails: (json['stock_details'] as List<dynamic>?)
+          ?.map((e) => StockDetail.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

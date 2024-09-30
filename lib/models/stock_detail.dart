@@ -25,7 +25,7 @@ class StockDetailData {
   @JsonKey(name: 'stock_name')
   final String stockName;
   @JsonKey(name: 'stock_url')
-  final List<String> stockUrl;
+  final List<String>? stockUrl;
   final int quantity;
   final int lst;
   @JsonKey(name: 'selling_price')
@@ -33,16 +33,16 @@ class StockDetailData {
   @JsonKey(name: 'stock_less_than')
   final int stockLessThan;
   @JsonKey(name: 'stock_details')
-  final List<StockDetail> stockDetails;
+  final List<StockDetail>? stockDetails;
 
   StockDetailData({
     required this.stockName,
-    required this.stockUrl,
+    this.stockUrl,
     required this.quantity,
     required this.lst,
     required this.sellingPrice,
     required this.stockLessThan,
-    required this.stockDetails,
+    this.stockDetails,
   });
 
   factory StockDetailData.fromJson(Map<String, dynamic> json) =>
