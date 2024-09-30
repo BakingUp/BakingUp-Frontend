@@ -52,6 +52,8 @@ class StockDetailData {
 
 @JsonSerializable()
 class StockDetail {
+  @JsonKey(name: 'stock_detail_id')
+  final String stockDetailId;
   @JsonKey(name: 'created_at')
   final String createdAt;
   @JsonKey(name: 'lst_status')
@@ -61,6 +63,7 @@ class StockDetail {
   final String sellByDate;
 
   StockDetail({
+    required this.stockDetailId,
     required this.createdAt,
     required this.lstStatus,
     required this.quantity,
