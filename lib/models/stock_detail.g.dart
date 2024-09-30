@@ -48,6 +48,7 @@ Map<String, dynamic> _$StockDetailDataToJson(StockDetailData instance) =>
     };
 
 StockDetail _$StockDetailFromJson(Map<String, dynamic> json) => StockDetail(
+      stockDetailId: json['stock_detail_id'] as String,
       createdAt: json['created_at'] as String,
       lstStatus: $enumDecode(_$LSTStatusEnumMap, json['lst_status']),
       quantity: (json['quantity'] as num).toInt(),
@@ -56,6 +57,7 @@ StockDetail _$StockDetailFromJson(Map<String, dynamic> json) => StockDetail(
 
 Map<String, dynamic> _$StockDetailToJson(StockDetail instance) =>
     <String, dynamic>{
+      'stock_detail_id': instance.stockDetailId,
       'created_at': instance.createdAt,
       'lst_status': _$LSTStatusEnumMap[instance.lstStatus]!,
       'quantity': instance.quantity,
