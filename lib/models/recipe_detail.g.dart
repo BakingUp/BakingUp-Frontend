@@ -26,21 +26,21 @@ RecipeDetailData _$RecipeDetailDataFromJson(Map<String, dynamic> json) =>
     RecipeDetailData(
       status: (json['status'] as num).toInt(),
       recipeName: json['recipe_name'] as String,
-      recipeUrl: (json['recipe_url'] as List<dynamic>)
-          .map((e) => e as String)
+      recipeUrl: (json['recipe_url'] as List<dynamic>?)
+          ?.map((e) => e as String)
           .toList(),
       totalTime: json['total_time'] as String,
       servings: (json['servings'] as num).toInt(),
       stars: (json['stars'] as num).toInt(),
       numOfOrder: (json['num_of_order'] as num).toInt(),
-      recipeIngredients: (json['recipe_ingredients'] as List<dynamic>)
-          .map((e) => RecipeIngredient.fromJson(e as Map<String, dynamic>))
+      recipeIngredients: (json['recipe_ingredients'] as List<dynamic>?)
+          ?.map((e) => RecipeIngredient.fromJson(e as Map<String, dynamic>))
           .toList(),
-      instructionUrl: (json['instruction_url'] as List<dynamic>)
-          .map((e) => e as String)
+      instructionUrl: (json['instruction_url'] as List<dynamic>?)
+          ?.map((e) => e as String)
           .toList(),
-      instructionSteps: (json['instruction_steps'] as List<dynamic>)
-          .map((e) => e as String)
+      instructionSteps: (json['instruction_steps'] as List<dynamic>?)
+          ?.map((e) => e as String)
           .toList(),
     );
 
