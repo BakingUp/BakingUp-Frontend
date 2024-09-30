@@ -68,15 +68,27 @@ class IngredientStockDetail extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(13),
-                      child: Image.network(
-                        ingredientStocks[index].stockUrl,
-                        width: 80,
-                        height: 50,
-                        fit: BoxFit.cover,
+                    if (ingredientStocks[index].stockUrl.isNotEmpty) ...[
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(13),
+                        child: Image.network(
+                          ingredientStocks[index].stockUrl,
+                          width: 80,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                    ),
+                    ] else ...[
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(13),
+                        child: Image.asset(
+                          'assets/icons/no-image.jpg',
+                          width: 80,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ],
                     const Padding(padding: EdgeInsets.only(right: 12.0)),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

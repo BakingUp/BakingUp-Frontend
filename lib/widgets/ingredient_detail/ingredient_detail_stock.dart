@@ -26,7 +26,7 @@ class IngredientDetailStock extends StatelessWidget {
             ),
           )
         : Text(
-            '$ingredientStocksNumber ${ingredientStocksNumber > 1 ? "stocks" : "stock"}',
+            '$ingredientStocksNumber ${ingredientStocksNumber == 1 ? "stock" : "stocks"}',
             style: TextStyle(
               color: blackColor,
               fontFamily: 'Inter',
