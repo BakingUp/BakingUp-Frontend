@@ -1,22 +1,21 @@
 // Importing libraries
-import 'package:bakingup_frontend/widgets/baking_up_no_result.dart';
-import 'package:flutter/material.dart';
-
+import 'package:bakingup_frontend/models/stock_detail.dart';
+import 'package:bakingup_frontend/services/network_service.dart';
 // Importing files
 import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_circular_back_button.dart';
+import 'package:bakingup_frontend/widgets/baking_up_detail_image.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_button.dart';
+import 'package:bakingup_frontend/widgets/baking_up_no_result.dart';
 import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_back_button_container.dart';
 import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_container.dart';
+import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_list.dart';
 import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_lst.dart';
 import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_notify_me.dart';
 import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_quantity.dart';
 import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_selling_price.dart';
 import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_stock_name.dart';
-import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_list.dart';
-import 'package:bakingup_frontend/widgets/baking_up_detail_image.dart';
-import 'package:bakingup_frontend/models/stock_detail.dart';
-import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:flutter/material.dart';
 
 class StockDetailScreen extends StatefulWidget {
   const StockDetailScreen({super.key});
@@ -121,16 +120,10 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        BakingUpNoResult(
-                            message:
-                                "This stock currently has no stock batchs."),
-                        SizedBox(
-                          height: 60,
-                        ),
+                        BakingUpFilterButton(),
                       ],
                     ),
-                  )
-                ] else ...[
+                  ),
                   StockDetailList(
                     stockDetails: stockDetails,
                     isLoading: isLoading,
