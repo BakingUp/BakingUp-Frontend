@@ -22,14 +22,14 @@ import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/widgets/baking_up_no_result.dart';
 
 class RecipeDetailScreen extends StatefulWidget {
-  const RecipeDetailScreen({super.key});
+  final String? recipeId;
+  const RecipeDetailScreen({super.key, this.recipeId});
 
   @override
   State<RecipeDetailScreen> createState() => _RecipeDetailScreenState();
 }
 
 class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
-  String recipeId = '1';
   List<String> recipeUrl = [];
   String recipeName = '';
   int servings = 0;
@@ -56,7 +56,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
 
     try {
       final response = await NetworkService.instance.get(
-        '/api/recipe/getRecipeDetail?recipe_id=$recipeId',
+        '/api/recipe/getRecipeDetail?recipe_id=${widget.recipeId}',
       );
       final recipeDetailResponse = RecipeDetailResponse.fromJson(response);
       final data = recipeDetailResponse.data;

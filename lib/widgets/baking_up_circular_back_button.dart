@@ -9,7 +9,9 @@ class BakingUpCircularBackButton extends StatelessWidget {
     return FloatingActionButton(
       heroTag: 'back',
       backgroundColor: beigeColor.withOpacity(0.76),
-      onPressed: () {},
+      onPressed: () {
+        Navigator.pop(context);
+      },
       elevation: 5,
       shape: const CircleBorder(),
       mini: true,
