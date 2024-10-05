@@ -60,7 +60,9 @@ class _AddEditRecipeIngredientScreenState
           builder: (context) {
             return IconButton(
               icon: const Icon(Icons.arrow_back_ios),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pop(context);
+              },
             );
           },
         ),

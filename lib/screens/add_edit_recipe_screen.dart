@@ -53,9 +53,9 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
         leading: Builder(
           builder: (context) {
             return IconButton(
-              icon: const Icon(Icons.menu),
+              icon: const Icon(Icons.arrow_back_ios),
               onPressed: () {
-                Scaffold.of(context).openDrawer();
+                Navigator.pop(context);
               },
             );
           },
