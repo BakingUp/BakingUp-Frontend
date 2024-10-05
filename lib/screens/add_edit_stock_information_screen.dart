@@ -1,4 +1,5 @@
 // Importing libraries
+import 'package:bakingup_frontend/widgets/add_edit_stock_information/add_edit_stock_information_text_field.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -7,7 +8,6 @@ import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/add_edit_stock_information/add_edit_stock_information_container.dart';
 import 'package:bakingup_frontend/widgets/add_edit_stock_information/add_edit_stock_information_title.dart';
 import 'package:bakingup_frontend/widgets/add_edit_stock_information/add_edit_stock_information_sell_by_date_field.dart';
-import 'package:bakingup_frontend/widgets/add_edit_stock_information/add_edit_stock_information_cooking_time_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_stock_information/add_edit_stock_information_note_text_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_stock_information/add_edit_stock_information_ingredient.dart';
 import 'package:bakingup_frontend/widgets/add_edit_stock_information/add_edit_stock_information_quantity_field.dart';
@@ -66,9 +66,9 @@ class _AddEditStockInformationScreenState
         leading: Builder(
           builder: (context) {
             return IconButton(
-              icon: const Icon(Icons.menu),
+              icon: const Icon(Icons.arrow_back_ios),
               onPressed: () {
-                Scaffold.of(context).openDrawer();
+                Navigator.pop(context);
               },
             );
           },
@@ -146,9 +146,11 @@ class _AddEditStockInformationScreenState
             ],
           ),
           const SizedBox(height: 16.0),
-          const Row(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
+              const Text(
                 'Cooking Time',
                 style: TextStyle(
                   fontSize: 16,
@@ -157,8 +159,40 @@ class _AddEditStockInformationScreenState
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              SizedBox(width: 8),
-              AddEditStockInformationCookingTimeField(),
+              Text(
+                '*',
+                style: TextStyle(
+                  color: redColor,
+                  fontSize: 20,
+                  fontFamily: 'Inter',
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              const SizedBox(width: 16),
+              const AddEditStockInformationTextField(label: "Hr", width: 46),
+              const SizedBox(width: 16),
+              const Text(
+                'hrs.',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontFamily: 'Inter',
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              const SizedBox(width: 16),
+              const AddEditStockInformationTextField(label: "Min", width: 46),
+              const SizedBox(width: 16),
+              const Text(
+                'mins.',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontFamily: 'Inter',
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 50.0),
@@ -270,8 +304,6 @@ class _AddEditStockInformationScreenState
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              BakingUpLongActionButton(title: 'Cancel', color: greyColor),
-              const SizedBox(width: 8),
               BakingUpLongActionButton(
                 title: 'Confirm',
                 color: lightGreenColor,
