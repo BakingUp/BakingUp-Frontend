@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 class StockDetailInformationImage extends StatelessWidget {
   final bool isLoading;
+  final String stockUrl;
   const StockDetailInformationImage({
     super.key,
     required this.isLoading,
+    required this.stockUrl,
   });
-  final stockUrl =
-      "https://images.immediate.co.uk/production/volatile/sites/30/2021/09/butter-cookies-262c4fd.jpg";
 
   @override
   Widget build(BuildContext context) {
