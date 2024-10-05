@@ -19,14 +19,14 @@ import 'package:bakingup_frontend/models/stock_detail.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 
 class StockDetailScreen extends StatefulWidget {
-  const StockDetailScreen({super.key});
+  final String? recipeId;
+  const StockDetailScreen({super.key, this.recipeId});
 
   @override
   State<StockDetailScreen> createState() => _StockDetailScreenState();
 }
 
 class _StockDetailScreenState extends State<StockDetailScreen> {
-  final String recipeId = '1';
   List<String> stockUrl = [];
   String stockName = '';
   int quantity = 0;
@@ -50,7 +50,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
 
     try {
       final response = await NetworkService.instance.get(
-        '/api/stock/getStockDetail?recipe_id=$recipeId',
+        '/api/stock/getStockDetail?recipe_id=${widget.recipeId}',
       );
       final stockDetailResponse = StockDetailResponse.fromJson(response);
       final data = stockDetailResponse.data;
