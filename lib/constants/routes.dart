@@ -2,7 +2,7 @@
 
 const loginRoute = '/login/';
 const registerRoute = '/register/';
-const VerifyEmailRoute = '/verifyEmail/';
+const verifyEmailRoute = '/verifyEmail/';
 const forgotPasswordRoute = '/forgotPassword/';
 const changePasswordRoute = '/changePassword/';
 const homeRoute = '/home/';

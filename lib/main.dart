@@ -19,12 +19,10 @@ import 'package:bakingup_frontend/screens/order_screen.dart';
 import 'package:bakingup_frontend/screens/profile_screen.dart';
 import 'package:bakingup_frontend/screens/recipe_detail_screen.dart';
 import 'package:bakingup_frontend/screens/auth/register_screen.dart';
-import 'package:bakingup_frontend/screens/auth/forgot_password_screen.dart';
 import 'package:bakingup_frontend/screens/setting_screen.dart';
 import 'package:bakingup_frontend/screens/stock_detail_information_screen.dart';
 import 'package:bakingup_frontend/screens/stock_detail_screen.dart';
 import 'package:bakingup_frontend/screens/stock_screen.dart';
-import 'package:bakingup_frontend/screens/auth/verify_email_screen.dart';
 import 'package:bakingup_frontend/screens/warehouse_screen.dart';
 import 'package:bakingup_frontend/services/auth/auth_gate.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
@@ -62,14 +60,6 @@ class _MainAppState extends State<MainApp> {
           case registerRoute:
             return MaterialPageRoute(
                 builder: (context) => const RegisterScreen());
-          //test
-          case VerifyEmailRoute:
-            return MaterialPageRoute(
-                builder: (context) => const VerifyEmailScreen());
-          //test
-          case forgotPasswordRoute:
-            return MaterialPageRoute(
-                builder: (context) => const ForgotPasswordScreen());
           case changePasswordRoute:
             return MaterialPageRoute(
                 builder: (context) => const ChangePasswordScreen());
