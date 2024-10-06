@@ -12,10 +12,12 @@ dependencies:
   firebase_auth: ^4.16.0
   firebase_core: ^2.32.0
   flutter_platform_alert: ^0.5.3
+  calendar_date_picker2: ^1.1.7
   dio: ^5.6.0
   flutter:
     sdk: flutter
   flutter_dotenv: ^5.1.0
+  image_picker: ^1.1.2
   json_annotation: ^4.9.0
   json_serializable: ^6.8.0
   shimmer: ^3.0.0

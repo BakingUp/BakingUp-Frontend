@@ -28,12 +28,12 @@ IngredientDetailData _$IngredientDetailDataFromJson(
       ingredientName: json['ingredient_name'] as String,
       ingredientQuantity: json['ingredient_quantity'] as String,
       stockAmount: (json['stock_amount'] as num).toInt(),
-      ingredientUrl: (json['ingredient_url'] as List<dynamic>)
-          .map((e) => e as String)
+      ingredientUrl: (json['ingredient_url'] as List<dynamic>?)
+          ?.map((e) => e as String)
           .toList(),
       ingredientLessThan: (json['ingredient_less_than'] as num).toInt(),
-      stocks: (json['stocks'] as List<dynamic>)
-          .map((e) => IngredientStock.fromJson(e as Map<String, dynamic>))
+      stocks: (json['stocks'] as List<dynamic>?)
+          ?.map((e) => IngredientStock.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

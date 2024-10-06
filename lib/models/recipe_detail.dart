@@ -25,7 +25,7 @@ class RecipeDetailData {
   @JsonKey(name: 'recipe_name')
   final String recipeName;
   @JsonKey(name: 'recipe_url')
-  final List<String> recipeUrl;
+  final List<String>? recipeUrl;
   @JsonKey(name: 'total_time')
   final String totalTime;
   final int servings;
@@ -33,23 +33,23 @@ class RecipeDetailData {
   @JsonKey(name: 'num_of_order')
   final int numOfOrder;
   @JsonKey(name: 'recipe_ingredients')
-  final List<RecipeIngredient> recipeIngredients;
+  final List<RecipeIngredient>? recipeIngredients;
   @JsonKey(name: 'instruction_url')
-  final List<String> instructionUrl;
+  final List<String>? instructionUrl;
   @JsonKey(name: 'instruction_steps')
-  final List<String> instructionSteps;
+  final List<String>? instructionSteps;
 
   RecipeDetailData({
     required this.status,
     required this.recipeName,
-    required this.recipeUrl,
+    this.recipeUrl,
     required this.totalTime,
     required this.servings,
     required this.stars,
     required this.numOfOrder,
-    required this.recipeIngredients,
-    required this.instructionUrl,
-    required this.instructionSteps,
+    this.recipeIngredients,
+    this.instructionUrl,
+    this.instructionSteps,
   });
 
   factory RecipeDetailData.fromJson(Map<String, dynamic> json) =>

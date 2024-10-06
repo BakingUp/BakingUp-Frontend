@@ -44,9 +44,9 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
         leading: Builder(
           builder: (context) {
             return IconButton(
-              icon: const Icon(Icons.menu),
+              icon: const Icon(Icons.arrow_back_ios),
               onPressed: () {
-                Scaffold.of(context).openDrawer();
+                Navigator.pop(context);
               },
             );
           },
@@ -197,8 +197,6 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              BakingUpLongActionButton(title: 'Cancel', color: greyColor),
-              const SizedBox(width: 8),
               _isEdit
                   ? BakingUpLongActionButton(
                       title: 'Confirm',

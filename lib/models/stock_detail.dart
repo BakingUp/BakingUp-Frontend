@@ -25,7 +25,7 @@ class StockDetailData {
   @JsonKey(name: 'stock_name')
   final String stockName;
   @JsonKey(name: 'stock_url')
-  final List<String> stockUrl;
+  final List<String>? stockUrl;
   final int quantity;
   final int lst;
   @JsonKey(name: 'selling_price')
@@ -33,16 +33,16 @@ class StockDetailData {
   @JsonKey(name: 'stock_less_than')
   final int stockLessThan;
   @JsonKey(name: 'stock_details')
-  final List<StockDetail> stockDetails;
+  final List<StockDetail>? stockDetails;
 
   StockDetailData({
     required this.stockName,
-    required this.stockUrl,
+    this.stockUrl,
     required this.quantity,
     required this.lst,
     required this.sellingPrice,
     required this.stockLessThan,
-    required this.stockDetails,
+    this.stockDetails,
   });
 
   factory StockDetailData.fromJson(Map<String, dynamic> json) =>
@@ -52,6 +52,8 @@ class StockDetailData {
 
 @JsonSerializable()
 class StockDetail {
+  @JsonKey(name: 'stock_detail_id')
+  final String stockDetailId;
   @JsonKey(name: 'created_at')
   final String createdAt;
   @JsonKey(name: 'lst_status')
@@ -61,6 +63,7 @@ class StockDetail {
   final String sellByDate;
 
   StockDetail({
+    required this.stockDetailId,
     required this.createdAt,
     required this.lstStatus,
     required this.quantity,

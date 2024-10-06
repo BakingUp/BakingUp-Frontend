@@ -33,15 +33,27 @@ class RecipeDetailIngredientDetail extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(13),
-                    child: Image.network(
-                      recipeIngredients[index].ingredientUrl,
-                      width: 80,
-                      height: 50,
-                      fit: BoxFit.cover,
+                  if (recipeIngredients[index].ingredientUrl.isNotEmpty) ...[
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(13),
+                      child: Image.network(
+                        recipeIngredients[index].ingredientUrl,
+                        width: 80,
+                        height: 50,
+                        fit: BoxFit.cover,
+                      ),
                     ),
-                  ),
+                  ] else ...[
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(13),
+                      child: Image.asset(
+                        'assets/icons/no-image.jpg',
+                        width: 80,
+                        height: 50,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ],
                   const Padding(padding: EdgeInsets.only(right: 12.0)),
                   Text(
                     recipeIngredients[index].ingredientName,

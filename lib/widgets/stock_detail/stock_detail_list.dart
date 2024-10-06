@@ -29,8 +29,7 @@ class StockDetailList extends StatelessWidget {
               itemCount: stockDetails.length,
               itemBuilder: (context, index) {
                 return StockDetailDetail(
-                  stockDetails: stockDetails,
-                  index: index,
+                  stockDetails: stockDetails[index],
                 );
               },
             ),

@@ -61,7 +61,9 @@ class _AddEditIngredientStockScreenState
           builder: (context) {
             return IconButton(
               icon: const Icon(Icons.arrow_back_ios),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pop(context);
+              },
             );
           },
         ),
@@ -77,8 +79,7 @@ class _AddEditIngredientStockScreenState
                 dialogParams: BakingUpDialogParams(
                   title: "Confirm Delete?",
                   imgUrl: "assets/icons/delete_warning.png",
-                  content:
-                      "Are you sure you want to delete this ingredient?",
+                  content: "Are you sure you want to delete this ingredient?",
                   grayButtonTitle: "Cancel",
                   secondButtonTitle: "Delete",
                   secondButtonColor: lightRedColor,
@@ -294,8 +295,6 @@ class _AddEditIngredientStockScreenState
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              BakingUpLongActionButton(title: 'Cancel', color: greyColor),
-              const SizedBox(width: 8),
               BakingUpLongActionButton(
                 title: 'Save',
                 color: lightGreenColor,

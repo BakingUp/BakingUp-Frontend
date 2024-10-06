@@ -1,44 +1,29 @@
-import 'package:bakingup_frontend/models/ingredient_detail.dart';
-import 'package:bakingup_frontend/screens/ingredient_stock_detail_screen.dart';
-import 'package:bakingup_frontend/widgets/ingredient_detail/expiration_status_indicator.dart';
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/enum/expiration_status.dart';
+import 'package:bakingup_frontend/models/warehouse.dart';
+import 'package:bakingup_frontend/widgets/ingredient_detail/expiration_status_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-class IngredientStockDetail extends StatelessWidget {
-  final List<IngredientStock> ingredientStocks;
+class WarehouseIngredientsItem extends StatelessWidget {
+  final List<IngredientItemData> ingredientList;
   final int index;
   final bool isLoading;
 
-  const IngredientStockDetail({
-    super.key,
-    required this.ingredientStocks,
-    required this.index,
-    required this.isLoading,
-  });
+  const WarehouseIngredientsItem(
+      {super.key,
+      required this.ingredientList,
+      required this.index,
+      required this.isLoading});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => IngredientStockDetailScreen(
-              ingredientStockId: ingredientStocks[index].stockId,
-            ),
-          ),
-        );
-      },
       child: Container(
-        margin: const EdgeInsets.fromLTRB(20, 0, 20, 25),
-        padding: const EdgeInsets.all(12.0),
+        margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+        padding: const EdgeInsets.fromLTRB(12, 20, 12, 20),
         decoration: BoxDecoration(
-          color:
-              ingredientStocks[index].expirationStatus == ExpirationStatus.black
-                  ? greyColor
-                  : beigeColor,
+          color: beigeColor,
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.5),
@@ -58,8 +43,8 @@ class IngredientStockDetail extends StatelessWidget {
                   baseColor: greyColor,
                   highlightColor: whiteColor,
                   child: Container(
-                    width: 80,
-                    height: 50,
+                    width: 90,
+                    height: 60,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(13),
                       color: Colors.white,
@@ -68,43 +53,34 @@ class IngredientStockDetail extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    if (ingredientStocks[index].stockUrl.isNotEmpty) ...[
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(13),
-                        child: Image.network(
-                          ingredientStocks[index].stockUrl,
-                          width: 80,
-                          height: 50,
-                          fit: BoxFit.cover,
-                        ),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(13),
+                      child: Image.network(
+                        ingredientList[index].ingredientUrl,
+                        width: 90,
+                        height: 60,
+                        fit: BoxFit.cover,
                       ),
-                    ] else ...[
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(13),
-                        child: Image.asset(
-                          'assets/icons/no-image.jpg',
-                          width: 80,
-                          height: 50,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ],
-                    const Padding(padding: EdgeInsets.only(right: 12.0)),
+                    ),
+                    const Padding(padding: EdgeInsets.only(right: 16.0)),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Price: ${ingredientStocks[index].price}',
+                          ingredientList[index].ingredientName,
                           style: TextStyle(
                             color: blackColor,
                             fontFamily: 'Inter',
                             fontStyle: FontStyle.normal,
                             fontWeight: FontWeight.w500,
-                            fontSize: 10,
+                            fontSize: 12,
                           ),
                         ),
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 5.0),
+                        ),
                         Text(
-                          'Quantity: ${ingredientStocks[index].quantity}',
+                          'Quantity: ${ingredientList[index].quantity}',
                           style: TextStyle(
                             color: blackColor,
                             fontFamily: 'Inter',
@@ -113,13 +89,13 @@ class IngredientStockDetail extends StatelessWidget {
                             fontSize: 10,
                           ),
                         ),
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 1.0),
+                        ),
                         Text(
-                          'Expiration Date: ${ingredientStocks[index].expirationDate}',
+                          '${ingredientList[index].stock} ${ingredientList[index].stock == 0 ? "stocks" : ingredientList[index].stock == 1 ? "stock" : "stocks"}',
                           style: TextStyle(
-                            color: ingredientStocks[index].expirationStatus ==
-                                    ExpirationStatus.black
-                                ? redColor
-                                : blackColor,
+                            color: blackColor,
                             fontFamily: 'Inter',
                             fontStyle: FontStyle.normal,
                             fontWeight: FontWeight.w300,
@@ -135,18 +111,20 @@ class IngredientStockDetail extends StatelessWidget {
             Row(
               children: [
                 ExpirationStatusIndicator(
-                    status: ingredientStocks[index].expirationStatus),
+                    status: ingredientList[index].expirationStatus == "black"
+                        ? ExpirationStatus.black
+                        : ingredientList[index].expirationStatus == "red"
+                            ? ExpirationStatus.red
+                            : ingredientList[index].expirationStatus == "yellow"
+                                ? ExpirationStatus.yellow
+                                : ExpirationStatus.green),
                 const Padding(padding: EdgeInsets.only(right: 20.0)),
-                Image.asset(
-                  'assets/icons/edit.png',
-                  scale: 0.7,
-                ),
-                const Padding(padding: EdgeInsets.only(right: 8.0)),
               ],
             )
           ],
         ),
       ),
+      onTap: () {},
     );
   }
 }
