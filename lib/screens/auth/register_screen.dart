@@ -289,7 +289,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                                       final response =
                                           await NetworkService.instance.post(
-                                              "http://127.0.0.1:8000/api/auth/register",
+                                              "/api/auth/register",
                                               data: {
                                             "user_id": userCredential.user?.uid,
                                             "first_name":
