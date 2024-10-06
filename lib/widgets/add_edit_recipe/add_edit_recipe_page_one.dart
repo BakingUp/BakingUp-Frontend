@@ -1,4 +1,5 @@
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/screens/add_edit_recipe_ingredient_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_recipe_screen.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_image_uploader.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_ingredient.dart';
@@ -138,9 +139,9 @@ class AddEditRecipePageOne extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 50),
-        const Stack(
+        Stack(
           children: [
-            Align(
+            const Align(
               alignment: Alignment.center,
               child: AddEditRecipeTitle(
                 title: "Ingredients",
@@ -150,7 +151,14 @@ class AddEditRecipePageOne extends StatelessWidget {
             Align(
               alignment: Alignment.centerRight,
               heightFactor: 0.5,
-              child: BakingUpCircularAddButton(),
+              child: BakingUpCircularAddButton(onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddEditRecipeIngredientScreen(),
+                  ),
+                );
+              }),
             ),
           ],
         ),
@@ -170,10 +178,8 @@ class AddEditRecipePageOne extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            BakingUpLongActionButton(title: 'Cancel', color: greyColor),
-            const SizedBox(width: 8),
             BakingUpLongActionButton(
-                title: 'Next', color: lightRedColor, onClick: onClick),
+                title: 'Next', color: greyColor, onClick: onClick),
           ],
         )
       ],

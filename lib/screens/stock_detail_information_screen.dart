@@ -10,14 +10,65 @@ import 'package:bakingup_frontend/widgets/stock_detail_information/stock_detail_
 import 'package:bakingup_frontend/widgets/stock_detail_information/stock_detail_information_bakery_quantity.dart';
 import 'package:bakingup_frontend/widgets/stock_detail_information/stock_detail_information_bakery_recipe.dart';
 import 'package:bakingup_frontend/widgets/stock_detail_information/stock_detail_information_bakery_sell_by_date.dart';
+import 'package:bakingup_frontend/models/stock_batch.dart';
+import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:shimmer/shimmer.dart';
 
-class StockDetailInformationScreen extends StatelessWidget {
-  const StockDetailInformationScreen({super.key});
+class StockDetailInformationScreen extends StatefulWidget {
+  final String? stockDetailId;
+  const StockDetailInformationScreen({super.key, this.stockDetailId});
 
-  final String note = "For order #3";
-  final String createdAt = "03/03/2024";
-  final bool isLoading = false;
+  @override
+  State<StockDetailInformationScreen> createState() =>
+      _StockDetailInformationScreenState();
+}
+
+class _StockDetailInformationScreenState
+    extends State<StockDetailInformationScreen> {
+  String recipeName = "";
+  String recipeUrl = "";
+  int quantity = 0;
+  String sellByDate = "";
+  String note = "";
+  String noteCreatedAt = "";
+  bool isLoading = false;
+  bool isError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchStockBatch();
+  }
+
+  Future<void> _fetchStockBatch() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final response = await NetworkService.instance.get(
+        '/api/stock/getStockBatch?stock_detail_id=${widget.stockDetailId}',
+      );
+      final stockBatchResponse = StockBatchResponse.fromJson(response);
+      final data = stockBatchResponse.data;
+      setState(() {
+        recipeName = data.recipeName;
+        recipeUrl = data.recipeUrl;
+        quantity = data.quantity;
+        sellByDate = data.sellByDate;
+        note = data.note;
+        noteCreatedAt = data.noteCreatedAt;
+      });
+    } catch (e) {
+      setState(() {
+        isError = true;
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +90,9 @@ class StockDetailInformationScreen extends StatelessWidget {
           builder: (context) {
             return IconButton(
               icon: const Icon(Icons.arrow_back_ios),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pop(context);
+              },
             );
           },
         ),
@@ -49,37 +102,52 @@ class StockDetailInformationScreen extends StatelessWidget {
           const StockDetailInformationTitle(title: "Bakery Stock Information"),
           Stack(
             children: [
-              Shimmer.fromColors(
-                baseColor: greyColor,
-                highlightColor: whiteColor,
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.width / 2,
-                  margin: const EdgeInsets.all(12.0),
-                  color: Colors.white,
+              if (isLoading || recipeUrl.isNotEmpty) ...[
+                Shimmer.fromColors(
+                  baseColor: greyColor,
+                  highlightColor: whiteColor,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.width / 2,
+                    margin: const EdgeInsets.all(12.0),
+                    color: Colors.white,
+                  ),
                 ),
-              ),
+              ],
               Column(
                 children: [
-                  StockDetailInformationImage(isLoading: isLoading),
+                  if (isLoading || recipeUrl.isNotEmpty) ...[
+                    StockDetailInformationImage(
+                      isLoading: isLoading,
+                      stockUrl: recipeUrl,
+                    ),
+                  ],
                   const SizedBox(height: 16),
-                  StockDetailInformationBakeryRecipe(isLoading: isLoading),
+                  StockDetailInformationBakeryRecipe(
+                    isLoading: isLoading,
+                    recipeName: recipeName,
+                  ),
                   const SizedBox(height: 16),
                   Row(
                     children: [
-                      StockDetailInformationBakeryQuantity(isLoading: isLoading)
+                      StockDetailInformationBakeryQuantity(
+                        isLoading: isLoading,
+                        quantity: quantity,
+                      )
                     ],
                   ),
                   const SizedBox(height: 16),
                   StockDetailInformationBakerySellByDate(isLoading: isLoading),
-                  const SizedBox(height: 50),
-                  const StockDetailInformationTitle(title: "Note:"),
-                  const SizedBox(height: 16),
-                  StockDetailInformationNote(
-                    note: note,
-                    createdAt: createdAt,
-                    isLoading: isLoading,
-                  ),
+                  if (note.isNotEmpty || isLoading) ...[
+                    const SizedBox(height: 50),
+                    const StockDetailInformationTitle(title: "Note:"),
+                    const SizedBox(height: 16),
+                    StockDetailInformationNote(
+                      note: note,
+                      createdAt: noteCreatedAt,
+                      isLoading: isLoading,
+                    ),
+                  ],
                 ],
               ),
             ],

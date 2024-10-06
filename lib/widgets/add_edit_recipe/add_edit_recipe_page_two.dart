@@ -33,7 +33,7 @@ class AddEditRecipePageTwo extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             BakingUpLongActionButton(
-                title: 'Cancel', color: greyColor, onClick: onClick),
+                title: 'Back', color: greyColor, onClick: onClick),
             const SizedBox(width: 8),
             BakingUpLongActionButton(
               title: 'Save',

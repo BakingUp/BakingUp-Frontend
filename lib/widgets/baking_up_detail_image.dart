@@ -116,7 +116,7 @@ class _IngredientDetailImageState extends State<BakingUpDetailImage> {
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height -
                     (MediaQuery.of(context).size.width / 0.8),
-                color: greyColor,
+                color: yellowColor,
               )
             ]
           ]

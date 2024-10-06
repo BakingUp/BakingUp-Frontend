@@ -4,9 +4,11 @@ import 'package:shimmer/shimmer.dart';
 
 class StockDetailInformationBakeryRecipe extends StatelessWidget {
   final bool isLoading;
+  final String recipeName;
   const StockDetailInformationBakeryRecipe({
     super.key,
     required this.isLoading,
+    required this.recipeName,
   });
 
   @override
@@ -47,9 +49,9 @@ class StockDetailInformationBakeryRecipe extends StatelessWidget {
                   color: lightGreyColor,
                   borderRadius: BorderRadius.circular(5),
                 ),
-                child: const Text(
-                  "Butter Cookie",
-                  style: TextStyle(
+                child: Text(
+                  recipeName,
+                  style: const TextStyle(
                     fontSize: 12,
                     fontFamily: 'Inter',
                     fontStyle: FontStyle.normal,

@@ -1,13 +1,18 @@
 import 'package:bakingup_frontend/constants/colors.dart';
-import 'package:bakingup_frontend/screens/warehouse_screen.dart';
+import 'package:bakingup_frontend/models/warehouse.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 class WarehouseRecipesItem extends StatelessWidget {
-  final List<RecipeItem> recipeList;
+  final List<RecipeItemData> recipeList;
   final int index;
+  final bool isLoading;
 
   const WarehouseRecipesItem(
-      {super.key, required this.recipeList, required this.index});
+      {super.key,
+      required this.recipeList,
+      required this.index,
+      required this.isLoading});
 
   @override
   Widget build(BuildContext context) {
@@ -29,14 +34,30 @@ class WarehouseRecipesItem extends StatelessWidget {
         ),
         child: Row(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(13),
-              child: Image.network(
-                recipeList[index].imgUrl,
-                width: 90,
-                height: 60,
-                fit: BoxFit.cover,
-              ),
+            Stack(
+              children: [
+                Shimmer.fromColors(
+                  baseColor: greyColor,
+                  highlightColor: whiteColor,
+                  child: Container(
+                    width: 90,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(13),
+                    ),
+                  ),
+                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(13),
+                  child: Image.network(
+                    recipeList[index].recipeImg,
+                    width: 90,
+                    height: 60,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(
               width: 10,
@@ -49,7 +70,7 @@ class WarehouseRecipesItem extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          recipeList[index].name,
+                          recipeList[index].recipeName,
                           style: TextStyle(
                             color: blackColor,
                             fontFamily: 'Inter',
@@ -64,17 +85,17 @@ class WarehouseRecipesItem extends StatelessWidget {
                         children: [
                           for (int i = 0; i < 5; i++)
                             Icon(
-                              i < recipeList[index].star
+                              i < recipeList[index].stars
                                   ? Icons.star
                                   : Icons.star_border,
-                              color: i < recipeList[index].star
+                              color: i < recipeList[index].stars
                                   ? orangeColor
                                   : greyColor,
                               size: 12,
                             ),
                           const SizedBox(width: 1),
                           Text(
-                            "(${recipeList[index].score})",
+                            "(${recipeList[index].numOfOrder})",
                             style: TextStyle(
                                 color: blackColor,
                                 fontFamily: 'Inter',
@@ -98,7 +119,7 @@ class WarehouseRecipesItem extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Servings: ${recipeList[index].servingAmount}',
+                    'Servings: ${recipeList[index].servings}',
                     style: TextStyle(
                       color: blackColor,
                       fontFamily: 'Inter',

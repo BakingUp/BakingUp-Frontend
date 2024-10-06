@@ -7,7 +7,6 @@ import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_container.
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_back_button_container.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_scale_button.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_tab_button.dart';
-import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_title.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_ingredients_section.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_instructions_section.dart';
 import 'package:bakingup_frontend/widgets/baking_up_circular_edit_button.dart';
@@ -20,16 +19,17 @@ import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_total_time
 import 'package:bakingup_frontend/widgets/baking_up_detail_image.dart';
 import 'package:bakingup_frontend/models/recipe_detail.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:bakingup_frontend/widgets/baking_up_no_result.dart';
 
 class RecipeDetailScreen extends StatefulWidget {
-  const RecipeDetailScreen({super.key});
+  final String? recipeId;
+  const RecipeDetailScreen({super.key, this.recipeId});
 
   @override
   State<RecipeDetailScreen> createState() => _RecipeDetailScreenState();
 }
 
 class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
-  String recipeId = '1';
   List<String> recipeUrl = [];
   String recipeName = '';
   int servings = 0;
@@ -56,20 +56,20 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
 
     try {
       final response = await NetworkService.instance.get(
-        '/api/recipe/getRecipeDetail?recipe_id=$recipeId',
+        '/api/recipe/getRecipeDetail?recipe_id=${widget.recipeId}',
       );
       final recipeDetailResponse = RecipeDetailResponse.fromJson(response);
       final data = recipeDetailResponse.data;
       setState(() {
         recipeName = data.recipeName;
-        recipeUrl = data.recipeUrl;
+        recipeUrl = data.recipeUrl ?? [];
         totalTime = data.totalTime;
         servings = data.servings;
         star = data.stars;
         score = data.numOfOrder;
-        recipeIngredients = data.recipeIngredients;
-        instructionUrls = data.instructionUrl;
-        instructionSteps = data.instructionSteps;
+        recipeIngredients = data.recipeIngredients ?? [];
+        instructionUrls = data.instructionUrl ?? [];
+        instructionSteps = data.instructionSteps ?? [];
       });
     } catch (e) {
       setState(() {
@@ -84,21 +84,6 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String title;
-    switch (tabIndex) {
-      case 1:
-        title = 'Ingredients';
-        break;
-      case 2:
-        title = 'Instructions';
-        break;
-      case 3:
-        title = 'Cost';
-        break;
-      default:
-        title = 'Recipe Detail';
-    }
-
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
@@ -170,28 +155,73 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(15.0, 0, 0, 10.0),
-                    child: tabIndex != 3
-                        ? RecipeDetailTitle(title: title)
-                        : Container(),
-                  ),
-                  if (tabIndex == 1)
-                    RecipeDetailIngredientsSection(
-                      recipeIngredients: recipeIngredients,
-                      isLoading: isLoading,
-                    ),
-                  if (tabIndex == 2)
-                    RecipeDetailInstructionsSection(
-                      instructionUrls: instructionUrls,
-                      instructionSteps: instructionSteps,
-                      isLoading: isLoading,
-                    ),
-                  if (tabIndex == 3)
-                    RecipeDetailCostSection(
-                      recipeIngredients: recipeIngredients,
-                      isLoading: isLoading,
-                    ),
+                  if (tabIndex == 1) ...[
+                    if (recipeIngredients.isEmpty && !isLoading) ...[
+                      const Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            BakingUpNoResult(
+                                message:
+                                    "This recipe currently has no ingredients."),
+                            SizedBox(
+                              height: 60,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ] else ...[
+                      RecipeDetailIngredientsSection(
+                        recipeIngredients: recipeIngredients,
+                        isLoading: isLoading,
+                      ),
+                    ]
+                  ] else if (tabIndex == 2) ...[
+                    if (instructionUrls.isEmpty &&
+                        instructionSteps.isEmpty &&
+                        !isLoading) ...[
+                      const Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            BakingUpNoResult(
+                                message:
+                                    "This recipe currently has no instructions."),
+                            SizedBox(
+                              height: 60,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ] else ...[
+                      RecipeDetailInstructionsSection(
+                        instructionUrls: instructionUrls,
+                        instructionSteps: instructionSteps,
+                        isLoading: isLoading,
+                      ),
+                    ],
+                  ] else if (tabIndex == 3) ...[
+                    if (recipeIngredients.isEmpty && !isLoading) ...[
+                      const Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            BakingUpNoResult(
+                                message:
+                                    "This recipe currently has no ingredients."),
+                            SizedBox(
+                              height: 60,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ] else ...[
+                      RecipeDetailCostSection(
+                        recipeIngredients: recipeIngredients,
+                        isLoading: isLoading,
+                      ),
+                    ],
+                  ]
                 ],
               ),
             ),

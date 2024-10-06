@@ -1,4 +1,5 @@
 // Importing libraries
+import 'package:bakingup_frontend/widgets/baking_up_no_result.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -18,14 +19,14 @@ import 'package:bakingup_frontend/models/stock_detail.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 
 class StockDetailScreen extends StatefulWidget {
-  const StockDetailScreen({super.key});
+  final String? recipeId;
+  const StockDetailScreen({super.key, this.recipeId});
 
   @override
   State<StockDetailScreen> createState() => _StockDetailScreenState();
 }
 
 class _StockDetailScreenState extends State<StockDetailScreen> {
-  final String recipeId = '1';
   List<String> stockUrl = [];
   String stockName = '';
   int quantity = 0;
@@ -49,18 +50,18 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
 
     try {
       final response = await NetworkService.instance.get(
-        '/api/stock/getStockDetail?recipe_id=$recipeId',
+        '/api/stock/getStockDetail?recipe_id=${widget.recipeId}',
       );
       final stockDetailResponse = StockDetailResponse.fromJson(response);
       final data = stockDetailResponse.data;
       setState(() {
-        stockUrl = data.stockUrl;
+        stockUrl = data.stockUrl ?? [];
         stockName = data.stockName;
         quantity = data.quantity;
         lst = data.lst;
         price = data.sellingPrice;
         stockLessThan = data.stockLessThan;
-        stockDetails = data.stockDetails;
+        stockDetails = data.stockDetails ?? [];
       });
     } catch (e) {
       setState(() {
@@ -99,8 +100,22 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
               decoration: const BoxDecoration(
                 color: Colors.white,
               ),
-              child: Column(
-                children: [
+              child: Column(children: [
+                if (stockDetails.isEmpty && !isLoading) ...[
+                  const Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        BakingUpNoResult(
+                            message:
+                                "This stock currently has no stock batchs."),
+                        SizedBox(
+                          height: 60,
+                        ),
+                      ],
+                    ),
+                  )
+                ] else ...[
                   const Padding(
                     padding: EdgeInsets.all(20.0),
                     child: Row(
@@ -114,8 +129,8 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                     stockDetails: stockDetails,
                     isLoading: isLoading,
                   ),
-                ],
-              ),
+                ]
+              ]),
             ),
           ),
           StockDetailContainer(
