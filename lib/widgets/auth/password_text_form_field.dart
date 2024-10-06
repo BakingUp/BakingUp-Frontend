@@ -35,6 +35,7 @@ class _PasswordTextFormFieldState extends State<PasswordTextFormField> {
       validator: widget.validate,
       obscureText: passwordVisible,
       decoration: InputDecoration(
+          errorMaxLines: 2,
           border: const OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(10)),
           ),

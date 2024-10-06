@@ -24,11 +24,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String errorMessage = "";
 
   void navigate() {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                const VerifyEmailScreen()));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => const VerifyEmailScreen()));
   }
 
   void errorConfirmPassword() {
@@ -264,8 +261,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                               .center,
                                                       children: [
                                                         CircularProgressIndicator(
-                                                          color:yellowColor
-                                                    ,
+                                                          color: yellowColor,
                                                         ),
                                                         const SizedBox(
                                                             height: 10),
@@ -290,19 +286,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                   password: _registerController
                                                       .password
                                                       .trim());
-                                    
-                                      final response = await NetworkService
-                                          .instance
-                                          .post("http://10.0.2.2:8000/api/auth/register", data: {
-                                        "user_id": userCredential.user?.uid,
-                                        "first_name":
-                                            _registerController.firstname,
-                                        "last_name":
-                                            _registerController.lastname,
-                                        "tel": _registerController.phoneNumber,
-                                        "store_name":
-                                            _registerController.storeName,
-                                      });
+
+                                      final response =
+                                          await NetworkService.instance.post(
+                                              "http://127.0.0.1:8000/api/auth/register",
+                                              data: {
+                                            "user_id": userCredential.user?.uid,
+                                            "first_name":
+                                                _registerController.firstname,
+                                            "last_name":
+                                                _registerController.lastname,
+                                            "tel":
+                                                _registerController.phoneNumber,
+                                            "store_name":
+                                                _registerController.storeName,
+                                          });
                                       if (response == null) {
                                         debugPrint('API response is null');
                                       } else {
