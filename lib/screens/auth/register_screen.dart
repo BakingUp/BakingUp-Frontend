@@ -170,12 +170,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           RegisterTextFormField(
                             controller: _registerController.storeNameController,
                             validate: (value) {
-                              if (value == null ||
-                                  value.isEmpty ||
-                                  !RegExp(r'^\w+$').hasMatch(value)) {
-                                //แก้ให้มัน โอกัย spacebar
+                              if (value == null || value.isEmpty) {
                                 setState(() => errorMessage = "");
                                 return "Please enter store name";
+                              } else if (!RegExp(r'^[a-zA-Z0-9\s]+$')
+                                  .hasMatch(value)) {
+                                setState(() => errorMessage = "");
+                                return "Store name can only contain letters, numbers, and spaces";
                               }
                               return null;
                             },
@@ -287,6 +288,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                       .password
                                                       .trim());
 
+                                      debugPrint('Sending data: ${{
+                                        "user_id": userCredential.user?.uid,
+                                        "first_name":
+                                            _registerController.firstname,
+                                        "last_name":
+                                            _registerController.lastname,
+                                        "tel": _registerController.phoneNumber,
+                                        "store_name":
+                                            _registerController.storeName,
+                                      }}');
+
                                       final response =
                                           await NetworkService.instance.post(
                                               "/api/auth/register",
@@ -303,14 +315,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           });
                                       if (response == null) {
                                         debugPrint('API response is null');
+                                      } else if (response is! Map) {
+                                        debugPrint(
+                                            'Unexpected response type: ${response.runtimeType}');
                                       } else {
                                         debugPrint('API response: $response');
                                       }
-
-                                      // SuccessAuth d =
-                                      //     SuccessAuth.fromJson(response.data);
-
-                                      // UserProvider.setKey(key: d.data);
 
                                       debugPrint("register successful");
                                       navigate();
