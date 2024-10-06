@@ -17,14 +17,14 @@ import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/widgets/baking_up_detail_image.dart';
 
 class IngredientDetailScreen extends StatefulWidget {
-  const IngredientDetailScreen({super.key});
+  final String? ingredientId;
+  const IngredientDetailScreen({super.key, this.ingredientId});
 
   @override
   State<IngredientDetailScreen> createState() => _IngredientDetailScreenState();
 }
 
 class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
-  String ingredientId = '1';
   List<String> ingredientUrl = [];
   String ingredientName = '';
   double quantity = 0.0;
@@ -47,7 +47,7 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
 
     try {
       final response = await NetworkService.instance.get(
-        '/api/ingredient/getIngredientDetail?ingredient_id=$ingredientId',
+        '/api/ingredient/getIngredientDetail?ingredient_id=${widget.ingredientId}',
       );
       final ingredientDetailResponse =
           IngredientDetailResponse.fromJson(response);
