@@ -56,6 +56,7 @@ class _StockScreenState extends State<StockScreen> {
           .get('/api/stock/getAllStocks?user_id=1');
 
       final stockResponse = StockListResponse.fromJson(response);
+
       final data = stockResponse.data;
       setState(() {
         stocks = data.stocks;
@@ -220,12 +221,17 @@ class _StockScreenState extends State<StockScreen> {
                     ],
                   ),
                 ),
-                if (!noResult && filteredStocks.isNotEmpty)
-                  StockList(
-                    stockList: filteredStocks,
-                    isLoading: isLoading,
+                if (noResult)
+                  Container(
+                    margin: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.height * 0.15),
+                    child: const BakingUpNoResult(
+                      message: "You currently have no stocks",
+                    ),
                   )
-                else if (!noResult && !isLoading && filteredStocks.isEmpty)
+                else if (!noResult &&
+                    stocks.isNotEmpty &&
+                    filteredStocks.isEmpty)
                   Container(
                     margin: EdgeInsets.only(
                         top: MediaQuery.of(context).size.height * 0.15),
@@ -233,14 +239,11 @@ class _StockScreenState extends State<StockScreen> {
                       message: "No results found",
                     ),
                   )
-                else if (noResult)
-                  Container(
-                    margin: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height * 0.15),
-                    child: const BakingUpNoResult(
-                      message: "You currently have no stocks",
-                    ),
-                  ),
+                else if (!noResult)
+                  StockList(
+                    stockList: filteredStocks,
+                    isLoading: isLoading,
+                  )
               ],
             )),
       ),

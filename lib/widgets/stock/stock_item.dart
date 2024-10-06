@@ -1,4 +1,5 @@
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/enum/lst_status.dart';
 import 'package:bakingup_frontend/models/stock.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
@@ -89,7 +90,7 @@ class StockItem extends StatelessWidget {
                         padding: EdgeInsets.only(bottom: 1.0),
                       ),
                       Text(
-                        'Selling price: ${stockList[index].sellingPrice % 1 == 0 ? stockList[index].sellingPrice.ceil() : stockList[index].sellingPrice}',
+                        'Selling price: ${stockList[index].sellingPrice % 1 == 0 ? stockList[index].sellingPrice.ceil() : stockList[index].sellingPrice.toStringAsFixed(2)}',
                         style: TextStyle(
                           color: blackColor,
                           fontFamily: 'Inter',
@@ -110,11 +111,11 @@ class StockItem extends StatelessWidget {
                   borderRadius: const BorderRadius.only(
                       bottomRight: Radius.circular(13),
                       topRight: Radius.circular(13)),
-                  color: stockList[index].lstStatus == "black"
+                  color: stockList[index].lstStatus == LSTStatus.black
                       ? blackColor
-                      : stockList[index].lstStatus == "red"
+                      : stockList[index].lstStatus == LSTStatus.red
                           ? redColor
-                          : stockList[index].lstStatus == "yellow"
+                          : stockList[index].lstStatus == LSTStatus.yellow
                               ? yellowColor
                               : greenColor),
             ),

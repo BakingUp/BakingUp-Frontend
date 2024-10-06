@@ -1,3 +1,4 @@
+import 'package:bakingup_frontend/enum/lst_status.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'stock.g.dart';
@@ -45,7 +46,7 @@ class StockItemData {
   @JsonKey(name: 'selling_price')
   final double sellingPrice;
   @JsonKey(name: 'lst_status')
-  final String lstStatus;
+  final LSTStatus lstStatus;
 
   StockItemData({
     required this.stockID,

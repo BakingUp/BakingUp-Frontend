@@ -25,7 +25,7 @@ class _StockListState extends State<StockList> {
   Future<void> _deleteStock(String stockId) async {
     showDialog(
       context: context,
-      barrierColor: const Color(0xC7D9D9D9),
+      barrierColor: greyColor,
       builder: (BuildContext context) {
         return const BakingUpLoadingDialog();
       },

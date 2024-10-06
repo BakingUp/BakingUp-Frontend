@@ -40,7 +40,7 @@ StockItemData _$StockItemDataFromJson(Map<String, dynamic> json) =>
       quantity: (json['quantity'] as num).toInt(),
       lst: (json['lst'] as num).toInt(),
       sellingPrice: (json['selling_price'] as num).toDouble(),
-      lstStatus: json['lst_status'] as String,
+      lstStatus: $enumDecode(_$LSTStatusEnumMap, json['lst_status']),
     );
 
 Map<String, dynamic> _$StockItemDataToJson(StockItemData instance) =>
@@ -51,5 +51,12 @@ Map<String, dynamic> _$StockItemDataToJson(StockItemData instance) =>
       'quantity': instance.quantity,
       'lst': instance.lst,
       'selling_price': instance.sellingPrice,
-      'lst_status': instance.lstStatus,
+      'lst_status': _$LSTStatusEnumMap[instance.lstStatus]!,
     };
+
+const _$LSTStatusEnumMap = {
+  LSTStatus.black: 'black',
+  LSTStatus.red: 'red',
+  LSTStatus.yellow: 'yellow',
+  LSTStatus.green: 'green',
+};

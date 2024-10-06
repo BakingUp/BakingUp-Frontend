@@ -5,15 +5,15 @@ enum LSTStatus {
   green,
 }
 
-int convertLSTStatus(String expirationDate) {
-  switch (expirationDate.toLowerCase()) {
-    case "black":
+int convertLSTStatus(LSTStatus lstStatus) {
+  switch (lstStatus) {
+    case LSTStatus.black:
       return LSTStatus.black.index;
-    case "red":
+    case LSTStatus.red:
       return LSTStatus.red.index;
-    case "yellow":
+    case LSTStatus.yellow:
       return LSTStatus.yellow.index;
-    case "green":
+    case LSTStatus.green:
       return LSTStatus.green.index;
     default:
       return LSTStatus.black.index;
