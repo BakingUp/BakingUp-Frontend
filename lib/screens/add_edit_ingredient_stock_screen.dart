@@ -40,6 +40,7 @@ class _AddEditIngredientStockScreenState
       noteCreatedAt: "09/03/2024",
     ),
   ];
+  String selectedUnit = '';
 
   @override
   Widget build(BuildContext context) {
@@ -174,7 +175,7 @@ class _AddEditIngredientStockScreenState
                   const SizedBox(width: 16),
                   AddEditIngredientStockTextField(
                       label: 'Quantity',
-                      width: MediaQuery.of(context).size.width - 275),
+                      width: MediaQuery.of(context).size.width - 300),
                   const SizedBox(width: 16),
                 ],
               ),
@@ -202,7 +203,21 @@ class _AddEditIngredientStockScreenState
                     ),
                   ),
                   const SizedBox(width: 8),
-                  const BakingUpDropdown(text: 'select'),
+                  BakingUpDropdown(
+                    options: const [
+                      'Grams',
+                      'Kilograms',
+                      'Litres',
+                      'Millilitres',
+                    ],
+                    topic: 'Unit',
+                    selectedOption: selectedUnit,
+                    onApply: (String value) {
+                      setState(() {
+                        selectedUnit = value;
+                      });
+                    },
+                  ),
                 ],
               ),
             ],
