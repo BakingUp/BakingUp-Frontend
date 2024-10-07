@@ -1,8 +1,8 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:flutter/material.dart';
 
-class AddEditRecipeImageUploader extends StatelessWidget {
-  const AddEditRecipeImageUploader({super.key});
+class BakingUpImagePicker extends StatelessWidget {
+  const BakingUpImagePicker({super.key});
 
   @override
   Widget build(BuildContext context) {

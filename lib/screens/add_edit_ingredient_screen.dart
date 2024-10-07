@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_container.dart';
-import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_image_uploader.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_name_text_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_title.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_text_field.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dropdown.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
+import 'package:bakingup_frontend/widgets/baking_up_image_picker.dart';
 
 class AddEditIngredientScreen extends StatefulWidget {
   const AddEditIngredientScreen({super.key});
@@ -59,7 +59,7 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
       body: AddEditIngredientContainer(
         children: [
           const AddEditIngredientTitle(title: "Adding Ingredient"),
-          const AddEditIngredientImageUploader(),
+          const BakingUpImagePicker(),
           const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

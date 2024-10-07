@@ -1,8 +1,8 @@
 import 'package:bakingup_frontend/constants/colors.dart';
-import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_image_uploader.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_instruction_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_title.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
+import 'package:bakingup_frontend/widgets/baking_up_image_picker.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +17,7 @@ class AddEditRecipePageTwo extends StatelessWidget {
     return Column(
       children: [
         const AddEditRecipeTitle(title: "Instructions"),
-        const AddEditRecipeImageUploader(),
+        const BakingUpImagePicker(),
         const SizedBox(height: 16),
         const AddEditRecipeTitle(
           title: "Instruction detail :",
