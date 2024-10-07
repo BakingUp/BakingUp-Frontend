@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/add_edit_stock/add_edit_stock_container.dart';
-import 'package:bakingup_frontend/widgets/add_edit_stock/add_edit_stock_notification_text_field.dart';
+import 'package:bakingup_frontend/widgets/add_edit_stock/add_edit_stock_text_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_stock/add_edit_stock_title.dart';
 import 'package:bakingup_frontend/widgets/add_edit_stock/add_edit_stock_lst_text_field.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
@@ -24,6 +24,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
   final bool _isEdit = false;
   final String recipeUrl =
       'https://images.immediate.co.uk/production/volatile/sites/30/2021/09/butter-cookies-262c4fd.jpg';
+  String selectedBakeryRecipe = '';
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +82,20 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                 ),
               ),
               const SizedBox(width: 8),
-              const BakingUpDropdown(text: 'select')
+              BakingUpDropdown(
+                options: const [
+                  "Option 1",
+                  "Option 2",
+                  "Option 3",
+                ],
+                topic: "Bakery Recipe",
+                selectedOption: selectedBakeryRecipe,
+                onApply: (String value) {
+                  setState(() {
+                    selectedBakeryRecipe = value;
+                  });
+                },
+              )
             ],
           ),
           const SizedBox(height: 16.0),
@@ -152,10 +166,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                child: BakingUpDropdown(text: 'select'),
-              ),
+              AddEditStockTextField(),
               Text(
                 'days before expiration',
                 style: TextStyle(
@@ -181,7 +192,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                   ),
                 ),
               ),
-              AddEditStockNotificationTextField(),
+              AddEditStockTextField(),
               Text(
                 'unit',
                 style: TextStyle(
