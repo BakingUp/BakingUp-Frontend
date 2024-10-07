@@ -1,7 +1,9 @@
 // Define name routes
+
 const loginRoute = '/login/';
 const registerRoute = '/register/';
-const resetPasswordRoute = '/resetPassword/';
+const verifyEmailRoute = '/verifyEmail/';
+const forgotPasswordRoute = '/forgotPassword/';
 const changePasswordRoute = '/changePassword/';
 const homeRoute = '/home/';
 const warehouseRoute = '/warehouse/';
