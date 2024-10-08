@@ -80,7 +80,7 @@ class BakingUpDrawer extends StatelessWidget {
             ),
             onTap: () {
               Navigator.of(context).pushNamedAndRemoveUntil(
-                  addEditIngredientRoute, (route) => false);
+                  warehouseRoute, (route) => false);
             },
           ),
           ListTile(
