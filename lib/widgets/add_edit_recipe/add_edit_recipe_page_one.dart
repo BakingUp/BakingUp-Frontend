@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/screens/add_edit_recipe_ingredient_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_recipe_screen.dart';
@@ -12,16 +13,23 @@ import 'package:flutter/material.dart';
 
 class AddEditRecipePageOne extends StatelessWidget {
   final List<RecipeIngredient> recipeIngredients;
+  final List<File> recipeImages;
   final VoidCallback onClick;
-  const AddEditRecipePageOne(
-      {super.key, required this.recipeIngredients, required this.onClick});
+  final Function(File) onNewImage;
+  const AddEditRecipePageOne({
+    super.key,
+    required this.recipeIngredients,
+    required this.recipeImages,
+    required this.onClick,
+    required this.onNewImage,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         const AddEditRecipeTitle(title: "Recipe Information"),
-        const BakingUpImagePicker(),
+        BakingUpImagePicker(images: recipeImages, onNewImage: onNewImage),
         const SizedBox(height: 16),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

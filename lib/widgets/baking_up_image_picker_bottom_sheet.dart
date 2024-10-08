@@ -2,7 +2,11 @@ import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:flutter/material.dart';
 
 class BakingUpImagePickerBottomSheet {
-  static void show(BuildContext context) {
+  static void show(
+    BuildContext context,
+    VoidCallback onTakePhoto,
+    VoidCallback onChooseFromGallery,
+  ) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -20,6 +24,7 @@ class BakingUpImagePickerBottomSheet {
                 ),
               ),
               onTap: () {
+                onTakePhoto();
                 Navigator.of(context).pop();
               },
             ),
@@ -40,6 +45,7 @@ class BakingUpImagePickerBottomSheet {
                 ),
               ),
               onTap: () {
+                onChooseFromGallery();
                 Navigator.of(context).pop();
               },
             ),

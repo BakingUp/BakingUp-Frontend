@@ -1,4 +1,5 @@
 // Importing libraries
+import 'dart:io';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -24,6 +25,7 @@ class AddEditIngredientScreen extends StatefulWidget {
 class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
   final int _currentDrawerIndex = 4;
   final bool _isEdit = false;
+  final List<File> _images = [];
   String selectedUnit = '';
 
   @override
@@ -59,7 +61,14 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
       body: AddEditIngredientContainer(
         children: [
           const AddEditIngredientTitle(title: "Adding Ingredient"),
-          const BakingUpImagePicker(),
+          BakingUpImagePicker(
+            images: _images,
+            onNewImage: (File image) {
+              setState(() {
+                _images.add(image);
+              });
+            },
+          ),
           const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

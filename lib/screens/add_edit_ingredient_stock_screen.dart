@@ -1,4 +1,5 @@
 // Importing libraries
+import 'dart:io';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -26,6 +27,7 @@ class AddEditIngredientStockScreen extends StatefulWidget {
 class _AddEditIngredientStockScreenState
     extends State<AddEditIngredientStockScreen> {
   final bool _isEdit = false;
+  final List<File> _images = [];
   List<IngredientStockDetailNote> ingredientStockDetailNotes = [
     IngredientStockDetailNote(
       ingredientNote: "This ingredient is used for making bread.",
@@ -88,7 +90,14 @@ class _AddEditIngredientStockScreenState
               ),
             ],
           ),
-          const BakingUpImagePicker(),
+          BakingUpImagePicker(
+            images: _images,
+            onNewImage: (File image) {
+              setState(() {
+                _images.add(image);
+              });
+            },
+          ),
           const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
