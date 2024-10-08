@@ -1,8 +1,8 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:flutter/material.dart';
 
-class AddEditIngredientNotificationTextField extends StatelessWidget {
-  const AddEditIngredientNotificationTextField({super.key});
+class AddEditIngredientTextField extends StatelessWidget {
+  const AddEditIngredientTextField({super.key});
 
   @override
   Widget build(BuildContext context) {

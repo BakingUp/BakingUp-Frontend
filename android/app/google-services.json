@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "396551999685",
+    "project_id": "bakingup-c3ed5",
+    "storage_bucket": "bakingup-c3ed5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:396551999685:android:58d76db669e23bb65560ac",
+        "android_client_info": {
+          "package_name": "com.example.backingup"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDz-8l0LLKZEjgfnHpqYgpBDyMSaB7nooA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:396551999685:android:1c7ebf987cdfaa285560ac",
+        "android_client_info": {
+          "package_name": "com.example.bakingupFrontend"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDz-8l0LLKZEjgfnHpqYgpBDyMSaB7nooA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

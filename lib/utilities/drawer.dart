@@ -36,30 +36,6 @@ class BakingUpDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            tileColor: currentDrawerIndex == 1
-                ? const Color.fromRGBO(217, 217, 217, 0.5)
-                : Colors.white,
-            title: const Row(
-              children: [
-                Text(
-                  'Register',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontFamily: 'Poppins',
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 10,
-                    height: 0.5,
-                  ),
-                ),
-              ],
-            ),
-            onTap: () {
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil(registerRoute, (route) => false);
-            },
-          ),
-          ListTile(
             tileColor: currentDrawerIndex == 2
                 ? const Color.fromRGBO(217, 217, 217, 0.5)
                 : Colors.white,

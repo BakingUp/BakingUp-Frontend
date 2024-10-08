@@ -8,7 +8,7 @@ import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredien
 import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_image_uploader.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_name_text_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_title.dart';
-import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_notification_text_field.dart';
+import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_text_field.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dropdown.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
@@ -24,6 +24,7 @@ class AddEditIngredientScreen extends StatefulWidget {
 class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
   final int _currentDrawerIndex = 4;
   final bool _isEdit = false;
+  String selectedUnit = '';
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +125,21 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
                 ],
               ),
               const SizedBox(width: 8),
-              const BakingUpDropdown(text: 'select')
+              BakingUpDropdown(
+                options: const [
+                  'Grams',
+                  'Kilograms',
+                  'Litres',
+                  'Millilitres',
+                ],
+                topic: 'Unit',
+                selectedOption: selectedUnit,
+                onApply: (String value) {
+                  setState(() {
+                    selectedUnit = value;
+                  });
+                },
+              )
             ],
           ),
           const SizedBox(height: 50),
@@ -143,7 +158,7 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
                   ),
                 ),
               ),
-              AddEditIngredientNotificationTextField(),
+              AddEditIngredientTextField(),
               Text(
                 'unit',
                 style: TextStyle(
@@ -167,10 +182,7 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                child: BakingUpDropdown(text: 'select'),
-              ),
+              AddEditIngredientTextField(),
               Text(
                 'days before expiration',
                 style: TextStyle(
