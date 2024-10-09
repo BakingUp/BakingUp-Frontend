@@ -14,7 +14,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("BakingUp"),
+          title: const Text("Baking"),
           leading: Builder(
             builder: (context) {
               return IconButton(
@@ -29,6 +29,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         drawer: BakingUpDrawer(
           currentDrawerIndex: _currentDrawerIndex,
         ),
-        body: const Text("Profile"));
+        body: const Text("Profile ja"));
   }
 }

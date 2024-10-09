@@ -1,27 +1,35 @@
+import 'dart:io';
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/screens/add_edit_recipe_ingredient_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_recipe_screen.dart';
-import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_image_uploader.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_ingredient.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_name_text_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_text_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_title.dart';
 import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
+import 'package:bakingup_frontend/widgets/baking_up_image_picker.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:flutter/material.dart';
 
 class AddEditRecipePageOne extends StatelessWidget {
   final List<RecipeIngredient> recipeIngredients;
+  final List<File> recipeImages;
   final VoidCallback onClick;
-  const AddEditRecipePageOne(
-      {super.key, required this.recipeIngredients, required this.onClick});
+  final Function(File) onNewImage;
+  const AddEditRecipePageOne({
+    super.key,
+    required this.recipeIngredients,
+    required this.recipeImages,
+    required this.onClick,
+    required this.onNewImage,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         const AddEditRecipeTitle(title: "Recipe Information"),
-        const AddEditRecipeImageUploader(),
+        BakingUpImagePicker(images: recipeImages, onNewImage: onNewImage),
         const SizedBox(height: 16),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

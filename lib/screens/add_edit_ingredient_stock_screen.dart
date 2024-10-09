@@ -1,4 +1,5 @@
 // Importing libraries
+import 'dart:io';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -10,10 +11,10 @@ import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ing
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_name_text_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_text_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_note_text_field.dart';
-import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_image_uploader.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dropdown.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
+import 'package:bakingup_frontend/widgets/baking_up_image_picker.dart';
 
 class AddEditIngredientStockScreen extends StatefulWidget {
   const AddEditIngredientStockScreen({super.key});
@@ -26,6 +27,7 @@ class AddEditIngredientStockScreen extends StatefulWidget {
 class _AddEditIngredientStockScreenState
     extends State<AddEditIngredientStockScreen> {
   final bool _isEdit = false;
+  final List<File> _images = [];
   List<IngredientStockDetailNote> ingredientStockDetailNotes = [
     IngredientStockDetailNote(
       ingredientNote: "This ingredient is used for making bread.",
@@ -40,6 +42,7 @@ class _AddEditIngredientStockScreenState
       noteCreatedAt: "09/03/2024",
     ),
   ];
+  String selectedUnit = '';
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +90,14 @@ class _AddEditIngredientStockScreenState
               ),
             ],
           ),
-          const AddEditIngredientStockImageUploader(),
+          BakingUpImagePicker(
+            images: _images,
+            onNewImage: (File image) {
+              setState(() {
+                _images.add(image);
+              });
+            },
+          ),
           const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -174,7 +184,7 @@ class _AddEditIngredientStockScreenState
                   const SizedBox(width: 16),
                   AddEditIngredientStockTextField(
                       label: 'Quantity',
-                      width: MediaQuery.of(context).size.width - 275),
+                      width: MediaQuery.of(context).size.width - 300),
                   const SizedBox(width: 16),
                 ],
               ),
@@ -202,7 +212,21 @@ class _AddEditIngredientStockScreenState
                     ),
                   ),
                   const SizedBox(width: 8),
-                  const BakingUpDropdown(text: 'select'),
+                  BakingUpDropdown(
+                    options: const [
+                      'Grams',
+                      'Kilograms',
+                      'Litres',
+                      'Millilitres',
+                    ],
+                    topic: 'Unit',
+                    selectedOption: selectedUnit,
+                    onApply: (String value) {
+                      setState(() {
+                        selectedUnit = value;
+                      });
+                    },
+                  ),
                 ],
               ),
             ],
