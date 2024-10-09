@@ -1,5 +1,5 @@
 // Importing libraries
-import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_page_two.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -7,6 +7,7 @@ import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_container.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_page_one.dart';
+import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_page_two.dart';
 
 class AddEditRecipeScreen extends StatefulWidget {
   const AddEditRecipeScreen({super.key});
@@ -19,6 +20,8 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
   final int _currentDrawerIndex = 5;
   final bool _isEdit = true;
   bool _isFirstPage = true;
+  final List<File> _recipeImages = [];
+  final List<File> _instructionImages = [];
 
   List<RecipeIngredient> recipeIngredients = [
     RecipeIngredient(
@@ -68,20 +71,33 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
         children: [
           if (_isFirstPage) ...[
             AddEditRecipePageOne(
-                recipeIngredients: recipeIngredients,
-                onClick: () {
-                  setState(() {
-                    _isFirstPage = false;
-                  });
-                }),
+              recipeIngredients: recipeIngredients,
+              recipeImages: _recipeImages,
+              onClick: () {
+                setState(() {
+                  _isFirstPage = false;
+                });
+              },
+              onNewImage: (File image) {
+                setState(() {
+                  _recipeImages.add(image);
+                });
+              },
+            ),
           ] else ...[
             AddEditRecipePageTwo(
+              instructionImages: _instructionImages,
               onClick: () {
                 setState(() {
                   _isFirstPage = true;
                 });
               },
               isEdit: _isEdit,
+              onNewImage: (File image) {
+                setState(() {
+                  _instructionImages.add(image);
+                });
+              },
             ),
           ]
         ],

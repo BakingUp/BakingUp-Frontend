@@ -1,23 +1,34 @@
+import 'dart:io';
 import 'package:bakingup_frontend/constants/colors.dart';
-import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_image_uploader.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_instruction_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_title.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
+import 'package:bakingup_frontend/widgets/baking_up_image_picker.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:flutter/material.dart';
 
 class AddEditRecipePageTwo extends StatelessWidget {
   final VoidCallback onClick;
+  final List<File> instructionImages;
   final bool isEdit;
-  const AddEditRecipePageTwo(
-      {super.key, required this.onClick, required this.isEdit});
+  final Function(File) onNewImage;
+  const AddEditRecipePageTwo({
+    super.key,
+    required this.onClick,
+    required this.instructionImages,
+    required this.isEdit,
+    required this.onNewImage,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         const AddEditRecipeTitle(title: "Instructions"),
-        const AddEditRecipeImageUploader(),
+        BakingUpImagePicker(
+          images: instructionImages,
+          onNewImage: onNewImage,
+        ),
         const SizedBox(height: 16),
         const AddEditRecipeTitle(
           title: "Instruction detail :",
