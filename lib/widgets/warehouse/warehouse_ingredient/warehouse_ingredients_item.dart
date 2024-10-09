@@ -1,6 +1,7 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/enum/expiration_status.dart';
 import 'package:bakingup_frontend/models/warehouse.dart';
+import 'package:bakingup_frontend/screens/ingredient_detail_screen.dart';
 import 'package:bakingup_frontend/widgets/ingredient_detail/expiration_status_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
@@ -19,6 +20,14 @@ class WarehouseIngredientsItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => IngredientDetailScreen(
+                      ingredientId: ingredientList[index].ingredientId,
+                    )));
+      },
       child: Container(
         margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
         padding: const EdgeInsets.fromLTRB(12, 20, 12, 20),
@@ -124,7 +133,6 @@ class WarehouseIngredientsItem extends StatelessWidget {
           ],
         ),
       ),
-      onTap: () {},
     );
   }
 }

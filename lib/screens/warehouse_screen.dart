@@ -1,6 +1,8 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/enum/expiration_status.dart';
 import 'package:bakingup_frontend/models/warehouse.dart';
+import 'package:bakingup_frontend/screens/add_edit_ingredient_screen.dart';
+import 'package:bakingup_frontend/screens/add_edit_recipe_screen.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
@@ -281,10 +283,26 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                 );
               },
             ),
-            actions: const [
+            actions: [
               Padding(
-                padding: EdgeInsets.only(right: 14.0),
-                child: BakingUpCircularAddButton(),
+                padding: const EdgeInsets.only(right: 14.0),
+                child: BakingUpCircularAddButton(
+                  onPressed: () {
+                    if (tabIndex == 1) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const AddEditRecipeScreen()));
+                    } else if (tabIndex == 2) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  const AddEditIngredientScreen()));
+                    }
+                  },
+                ),
               )
             ],
           ),
@@ -386,35 +404,18 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                       ],
                     ),
                   ),
-                  if (tabIndex == 1 && !noResult && filteredRecipes.isNotEmpty)
-                    WarehouseRecipeList(
-                      recipeList: filteredRecipes,
-                      isLoading: isLoading,
-                    )
-                  else if (tabIndex == 1 && !noResult && !isLoading)
-                    Container(
-                      margin: EdgeInsets.only(
-                          top: MediaQuery.of(context).size.height * 0.1),
-                      child: const BakingUpNoResult(
-                        message: "No results found",
-                      ),
-                    )
-                  else if (tabIndex == 1 && noResult)
+                  if (tabIndex == 1 && noResult)
                     Container(
                       margin: EdgeInsets.only(
                           top: MediaQuery.of(context).size.height * 0.1),
                       child: const BakingUpNoResult(
                         message: "You currently have no recipes",
                       ),
-                    ),
-                  if (tabIndex == 2 &&
-                      !noResult &&
-                      filteredIngredients.isNotEmpty)
-                    WarehouseIngredientList(
-                      ingredientList: filteredIngredients,
-                      isLoading: isLoading,
                     )
-                  else if (tabIndex == 2 && !noResult && !isLoading)
+                  else if (tabIndex == 1 &&
+                      !noResult &&
+                      recipes.isNotEmpty &&
+                      filteredRecipes.isEmpty)
                     Container(
                       margin: EdgeInsets.only(
                           top: MediaQuery.of(context).size.height * 0.1),
@@ -422,14 +423,35 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                         message: "No results found",
                       ),
                     )
-                  else if (tabIndex == 2 && noResult)
+                  else if (tabIndex == 1 && !noResult)
+                    WarehouseRecipeList(
+                      recipeList: filteredRecipes,
+                      isLoading: isLoading,
+                    ),
+                  if (tabIndex == 2 && noResult)
                     Container(
                       margin: EdgeInsets.only(
                           top: MediaQuery.of(context).size.height * 0.1),
                       child: const BakingUpNoResult(
                         message: "You currently have no ingredients",
                       ),
-                    ),
+                    )
+                  else if (tabIndex == 2 &&
+                      !noResult &&
+                      ingredients.isNotEmpty &&
+                      filteredIngredients.isEmpty)
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height * 0.1),
+                      child: const BakingUpNoResult(
+                        message: "No results found",
+                      ),
+                    )
+                  else if (tabIndex == 2 && !noResult)
+                    WarehouseIngredientList(
+                      ingredientList: filteredIngredients,
+                      isLoading: isLoading,
+                    )
                 ],
               )),
         ));
