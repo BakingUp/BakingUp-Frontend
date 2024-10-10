@@ -14,7 +14,7 @@ import 'package:bakingup_frontend/screens/ingredient_detail_screen.dart';
 import 'package:bakingup_frontend/screens/ingredient_stock_detail_screen.dart';
 import 'package:bakingup_frontend/screens/auth/login_screen.dart';
 import 'package:bakingup_frontend/screens/notification_screen.dart';
-import 'package:bakingup_frontend/screens/order_detail_screen.dart';
+import 'package:bakingup_frontend/screens/instore_order_detail_screen.dart';
 import 'package:bakingup_frontend/screens/order_screen.dart';
 import 'package:bakingup_frontend/screens/profile_screen.dart';
 import 'package:bakingup_frontend/screens/recipe_detail_screen.dart';
@@ -81,7 +81,7 @@ class _MainAppState extends State<MainApp> {
             return MaterialPageRoute(builder: (context) => const OrderScreen());
           case orderDetailRoute:
             return MaterialPageRoute(
-                builder: (context) => const OrderDetailScreen());
+                builder: (context) => const InStoreOrderDetailScreen());
           case notificationRoute:
             return MaterialPageRoute(
                 builder: (context) => const NotificationScreen());

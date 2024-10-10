@@ -45,6 +45,7 @@ ProductionQueue _$ProductionQueueFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String,
       quantity: json['quantity'] as String,
       pickUpDate: json['pick_up_date'] as String,
+      imgUrl: json['recipe_url'] as String,
     );
 
 Map<String, dynamic> _$ProductionQueueToJson(ProductionQueue instance) =>
@@ -53,4 +54,5 @@ Map<String, dynamic> _$ProductionQueueToJson(ProductionQueue instance) =>
       'name': instance.name,
       'quantity': instance.quantity,
       'pick_up_date': instance.pickUpDate,
+      'recipe_url': instance.imgUrl,
     };

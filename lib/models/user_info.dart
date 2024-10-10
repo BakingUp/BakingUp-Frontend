@@ -52,12 +52,15 @@ part 'user_info.g.dart';
     final String quantity;
     @JsonKey(name: 'pick_up_date')
     final String pickUpDate;
+    @JsonKey(name: 'recipe_url')
+    final String imgUrl;
 
     ProductionQueue({
       required this.orderIndex,
       required this.name,
       required this.quantity,
       required this.pickUpDate,
+      required this.imgUrl,
     });
 
     factory ProductionQueue.fromJson(Map<String, dynamic> json) =>
