@@ -3,10 +3,8 @@ import 'package:bakingup_frontend/enum/order_platform.dart';
 import 'package:bakingup_frontend/enum/order_status.dart';
 import 'package:bakingup_frontend/enum/order_type.dart';
 import 'package:bakingup_frontend/models/instore_order_detail.dart';
-import 'package:bakingup_frontend/models/preorder_order_detail.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/string_extensions.dart';
-import 'package:bakingup_frontend/widgets/baking_up_dropdown.dart';
 import 'package:bakingup_frontend/widgets/order_detail/order_detail_note.dart';
 import 'package:bakingup_frontend/widgets/order_detail/order_detail_order_date.dart';
 import 'package:bakingup_frontend/widgets/order_detail/order_detail_order_list.dart';
@@ -18,7 +16,6 @@ import 'package:bakingup_frontend/widgets/order_detail/order_detail_type_of_orde
 import 'package:bakingup_frontend/widgets/order_detail/order_edit_button.dart';
 import 'package:bakingup_frontend/widgets/order_detail/status_dropdown.dart';
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 
 class InStoreOrderDetailScreen extends StatefulWidget {
   final String? orderId;
@@ -32,7 +29,7 @@ class InStoreOrderDetailScreen extends StatefulWidget {
 class _InStoreOrderDetailScreenState extends State<InStoreOrderDetailScreen> {
   bool isLoading = true;
   bool isError = false;
-  bool _isEdit = false;
+  // bool _isEdit = false;
   int orderIndex = 1;
   OrderStatus orderStatus = OrderStatus.DONE;
   OrderPlatform orderPlatform = OrderPlatform.STORE;

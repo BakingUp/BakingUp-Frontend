@@ -26,7 +26,7 @@ class _OrderDetailOrderListState extends State<OrderDetailOrderList> {
               padding: const EdgeInsets.all(0),
               itemCount: 1,
               itemBuilder: (context, index) {
-                return OrderDetailOrderStockLoading();
+                return const OrderDetailOrderStockLoading();
               },
             ),
           )

@@ -144,10 +144,10 @@ class _OrderScreenState extends State<OrderScreen> {
       selectedOrderFiltering = selectingOrderFiltering;
       selectedOrderSorting = selectingOrderSorting;
     });
-    for (var order in orders) {
-      if (selectingOrderFiltering.length < 3) {}
-    }
-    if (selectedOrderSorting == "Ascending Order") {}
+    // for (var order in orders) {
+    //   if (selectingOrderFiltering.length < 3) {}
+    // }
+    // if (selectedOrderSorting == "Ascending Order") {}
   }
 
   @override
