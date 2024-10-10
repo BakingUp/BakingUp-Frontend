@@ -47,10 +47,10 @@ class OrderItem extends StatelessWidget {
                     child: CircleAvatar(
                       backgroundColor: Colors.transparent,
                       backgroundImage: orderList[index].orderStatus ==
-                              OrderStatus.DONE
+                              OrderStatus.done
                           ? const AssetImage(
                               'assets/icons/order_status_done.png')
-                          : orderList[index].orderStatus == OrderStatus.CANCEL
+                          : orderList[index].orderStatus == OrderStatus.cancel
                               ? const AssetImage(
                                   'assets/icons/order_status_cancel.png')
                               : const AssetImage(
@@ -145,10 +145,10 @@ class OrderItem extends StatelessWidget {
                     child: CircleAvatar(
                       backgroundColor: Colors.transparent,
                       backgroundImage: orderList[index].orderStatus ==
-                              OrderStatus.DONE
+                              OrderStatus.done
                           ? const AssetImage(
                               'assets/icons/order_status_done.png')
-                          : orderList[index].orderStatus == OrderStatus.CANCEL
+                          : orderList[index].orderStatus == OrderStatus.cancel
                               ? const AssetImage(
                                   'assets/icons/order_status_cancel.png')
                               : const AssetImage(
@@ -206,16 +206,16 @@ class OrderItem extends StatelessWidget {
                     width: 10,
                   ),
                   Container(
-                    child: orderList[index].orderPlatform == OrderPlatform.STORE
+                    child: orderList[index].orderPlatform == OrderPlatform.store
                         ? Image.asset(
                             'assets/icons/store.png',
                             width: 45,
                             height: 45,
                           )
                         : orderList[index].orderPlatform ==
-                                    OrderPlatform.LINEMAN ||
+                                    OrderPlatform.lineman ||
                                 orderList[index].orderPlatform ==
-                                    OrderPlatform.GRAB
+                                    OrderPlatform.grab
                             ? Image.asset(
                                 'assets/icons/delivery.png',
                                 width: 40,

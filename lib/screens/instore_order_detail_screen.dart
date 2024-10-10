@@ -31,11 +31,11 @@ class _InStoreOrderDetailScreenState extends State<InStoreOrderDetailScreen> {
   bool isError = false;
   // bool _isEdit = false;
   int orderIndex = 1;
-  OrderStatus orderStatus = OrderStatus.DONE;
-  OrderPlatform orderPlatform = OrderPlatform.STORE;
+  OrderStatus orderStatus = OrderStatus.done;
+  OrderPlatform orderPlatform = OrderPlatform.store;
   String orderDate = '';
   String orderTime = '';
-  OrderType orderType = OrderType.PERSONAL;
+  OrderType orderType = OrderType.personal;
   String orderTakenBy = '';
   List<OrderStock> orderStockList = [];
   double total = 0.0;
@@ -192,14 +192,14 @@ class _InStoreOrderDetailScreenState extends State<InStoreOrderDetailScreen> {
                       ],
                     ),
                     Container(
-                      child: orderPlatform == OrderPlatform.STORE
+                      child: orderPlatform == OrderPlatform.store
                           ? Image.asset(
                               'assets/icons/store.png',
                               width: 45,
                               height: 45,
                             )
-                          : orderPlatform == OrderPlatform.LINEMAN ||
-                                  orderPlatform == OrderPlatform.GRAB
+                          : orderPlatform == OrderPlatform.lineman ||
+                                  orderPlatform == OrderPlatform.grab
                               ? Image.asset(
                                   'assets/icons/delivery.png',
                                   width: 40,

@@ -1,26 +1,26 @@
 enum OrderPlatform {
-  STORE,
-  LINEMAN,
-  GRAB,
-  FACEBOOK,
-  WEBSITE,
-  OTHER,
+  store,
+  lineman,
+  grab,
+  facebook,
+  website,
+  other,
 }
 
 OrderPlatform platformFromJson(String platform) {
   switch (platform) {
     case 'STORE':
-      return OrderPlatform.STORE;
+      return OrderPlatform.store;
     case 'LINEMAN':
-      return OrderPlatform.LINEMAN;
+      return OrderPlatform.store;
     case 'GRAB':
-      return OrderPlatform.GRAB;
+      return OrderPlatform.grab;
     case 'FACEBOOK':
-      return OrderPlatform.FACEBOOK;
+      return OrderPlatform.facebook;
     case 'WEBSITE':
-      return OrderPlatform.WEBSITE;
+      return OrderPlatform.website;
     case 'OTHER':
-      return OrderPlatform.OTHER;
+      return OrderPlatform.other;
     default:
       throw ArgumentError('Unknown OrderPlatform: $platform');
   }

@@ -1,17 +1,17 @@
 enum OrderStatus {
-  DONE,
-  IN_PROCESS,
-  CANCEL,
+  done,
+  inProcess,
+  cancel,
 }
 
 OrderStatus statusFromJson(String status) {
   switch (status) {
     case 'DONE':
-      return OrderStatus.DONE;
+      return OrderStatus.done;
     case 'IN_PROCESS':
-      return OrderStatus.IN_PROCESS;
+      return OrderStatus.inProcess;
     case 'CANCEL':
-      return OrderStatus.CANCEL;
+      return OrderStatus.cancel;
     default:
       throw ArgumentError('Unknown OrderStatus: $status');
   }

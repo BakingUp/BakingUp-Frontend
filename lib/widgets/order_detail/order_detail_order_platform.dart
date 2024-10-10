@@ -11,17 +11,17 @@ class OrderDetailOrderPlatform extends StatelessWidget {
 
   String changeToString(OrderPlatform orderPlatform) {
     switch (orderPlatform) {
-      case OrderPlatform.STORE:
+      case OrderPlatform.store:
         return 'Store';
-      case OrderPlatform.FACEBOOK:
+      case OrderPlatform.facebook:
         return 'Facebook';
-      case OrderPlatform.GRAB:
+      case OrderPlatform.grab:
         return 'Grab';
-      case OrderPlatform.LINEMAN:
+      case OrderPlatform.lineman:
         return 'Lineman';
-      case OrderPlatform.WEBSITE:
+      case OrderPlatform.website:
         return 'Website';
-      case OrderPlatform.OTHER:
+      case OrderPlatform.other:
         return 'Other';
       default:
         return 'Other';

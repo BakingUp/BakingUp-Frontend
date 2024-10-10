@@ -12,13 +12,13 @@ class OrderDetailTypeOfOrder extends StatelessWidget {
 
   String changeToString(OrderType orderType) {
     switch (orderType) {
-      case OrderType.PERSONAL:
+      case OrderType.personal:
         return 'Personal';
-      case OrderType.BULK_ORDER:
+      case OrderType.bulkOrder:
         return 'Bulk Order';
-      case OrderType.FESTIVAL:
+      case OrderType.festival:
         return 'Festival';
-      case OrderType.SPECIAL_DAY:
+      case OrderType.specialDay:
         return 'Spacial Day';
       default:
         return 'Other';
