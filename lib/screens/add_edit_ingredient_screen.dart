@@ -15,7 +15,7 @@ import 'package:bakingup_frontend/widgets/baking_up_dropdown.dart';
 import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_image_picker.dart';
-import 'package:bakingup_frontend/models/auth/add_edit_ingredient_controller.dart';
+import 'package:bakingup_frontend/models/add_edit_ingredient_controller.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:flutter/material.dart';
 
