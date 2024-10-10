@@ -4,6 +4,7 @@ import 'package:bakingup_frontend/models/warehouse.dart';
 import 'package:bakingup_frontend/screens/ingredient_detail_screen.dart';
 import 'package:bakingup_frontend/widgets/ingredient_detail/expiration_status_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shimmer/shimmer.dart';
 
 class WarehouseIngredientsItem extends StatelessWidget {
@@ -65,7 +66,7 @@ class WarehouseIngredientsItem extends StatelessWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(13),
                       child: Image.network(
-                        ingredientList[index].ingredientUrl,
+                        '${dotenv.env['API_BASE_URL']}/${ingredientList[index].ingredientUrl}',
                         width: 90,
                         height: 60,
                         fit: BoxFit.cover,
