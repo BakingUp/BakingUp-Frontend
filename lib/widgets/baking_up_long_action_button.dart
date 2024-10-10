@@ -35,6 +35,8 @@ class BakingUpLongActionButton extends StatelessWidget {
                   grayButtonTitle: dialogParams!.grayButtonTitle,
                   secondButtonTitle: dialogParams?.secondButtonTitle,
                   secondButtonColor: dialogParams?.secondButtonColor,
+                  grayButtonOnClick: dialogParams?.grayButtonOnClick,
+                  secondButtonOnClick: dialogParams?.secondButtonOnClick,
                 );
               },
             );

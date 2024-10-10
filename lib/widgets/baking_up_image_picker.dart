@@ -114,6 +114,7 @@ class _BakingUpImagePickerState extends State<BakingUpImagePicker> {
                             child: Container(
                               width: 100,
                               height: 100,
+                              margin: const EdgeInsets.only(left: 15),
                               decoration: BoxDecoration(
                                 color: greyColor,
                                 borderRadius: BorderRadius.circular(13),
