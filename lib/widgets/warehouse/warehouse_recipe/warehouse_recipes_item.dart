@@ -1,5 +1,6 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/models/warehouse.dart';
+import 'package:bakingup_frontend/screens/recipe_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -17,6 +18,13 @@ class WarehouseRecipesItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    RecipeDetailScreen(recipeId: recipeList[index].recipeID)));
+      },
       child: Container(
         margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
         padding: const EdgeInsets.fromLTRB(12, 20, 12, 20),
