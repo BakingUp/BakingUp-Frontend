@@ -1,41 +1,63 @@
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/widgets/home/home_top_filter_bottom.dart';
 import 'package:flutter/material.dart';
 
-class BakingUpFilterModalBottom extends StatefulWidget {
-  final List<String> optionsOne;
+class BakingUpFilterMultipleModalBottom extends StatefulWidget {
+  final List<Map<String, dynamic>> optionsOne;
   final String optionOneName;
-  final String defaultFilteringValue;
-  final String defaultSortingValue;
+  // final String defaultFilteringValue;
+  // final String defaultSortingValue;
+  final List<Map<String, dynamic>> optionsTwo;
+  final String optionTwoName;
+  final String filterName;
   final Function filterFunction;
-  final String? filterName;
-  const BakingUpFilterModalBottom(
+  // final Function filterFunction;
+  const BakingUpFilterMultipleModalBottom(
       {super.key,
       required this.optionsOne,
       required this.optionOneName,
-      required this.defaultFilteringValue,
-      required this.defaultSortingValue,
-      required this.filterFunction,
-      this.filterName});
+      // required this.defaultFilteringValue,
+      // required this.defaultSortingValue,
+      required this.optionsTwo,
+      required this.optionTwoName,
+      required this.filterName,
+      required this.filterFunction});
 
   @override
-  State<BakingUpFilterModalBottom> createState() =>
+  State<BakingUpFilterMultipleModalBottom> createState() =>
       _WarehouseIngredientFilterState();
 }
 
-class _WarehouseIngredientFilterState extends State<BakingUpFilterModalBottom> {
+class _WarehouseIngredientFilterState
+    extends State<BakingUpFilterMultipleModalBottom> {
   String? selectedFiltering;
   String? selectedSorting;
   final List<String> sortBy = ['Ascending Order', 'Descending Order'];
   List<String> name = [];
   String selectFilterType = "";
+  List<Map<String, dynamic>> filterFirstOption = [];
+  List<Map<String, dynamic>> filterSecondOption = [];
 
   @override
   void initState() {
+    // for (var i = 0; i < widget.optionsOne.length; i++) {
+    //   setState(() {
+    //     filterFirstOption
+    //         .add({"title": widget.optionsOne[i], "isChecked": false});
+    //   });
+    // }
+
+    // setState(() {
+    //   name = widget.optionsOne;
+    //   selectFilterType = widget.optionOneName;
+    //   selectedFiltering = widget.defaultFilteringValue;
+    //   selectedSorting = widget.defaultSortingValue;
+    // });
+
     setState(() {
-      name = widget.optionsOne;
       selectFilterType = widget.optionOneName;
-      selectedFiltering = widget.defaultFilteringValue;
-      selectedSorting = widget.defaultSortingValue;
+      filterFirstOption = widget.optionsOne;
+      filterSecondOption = widget.optionsTwo;
     });
     super.initState();
   }
@@ -43,7 +65,7 @@ class _WarehouseIngredientFilterState extends State<BakingUpFilterModalBottom> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.45,
+      height: MediaQuery.of(context).size.height * 0.50,
       padding: const EdgeInsets.only(top: 20, bottom: 40),
       child: Column(
         children: [
@@ -58,11 +80,58 @@ class _WarehouseIngredientFilterState extends State<BakingUpFilterModalBottom> {
                   Stack(
                     children: [
                       Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 5),
+                            child: IconButton(
+                              onPressed: () {
+                                // Close the current BakingUpFilterMultipleModalBottom
+                                Navigator.of(context).pop();
+
+                                // Open HomeTopFilterBottom after closing the current modal
+                                Future.delayed(
+                                    const Duration(milliseconds: 200), () {
+                                  showModalBottomSheet<void>(
+                                    context: context,
+                                    backgroundColor: backgroundColor,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(40.0),
+                                        topRight: Radius.circular(40.0),
+                                      ),
+                                    ),
+                                    isScrollControlled: true,
+                                    builder: (BuildContext context) {
+                                      return SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.70,
+                                          child: DraggableScrollableSheet(
+                                            initialChildSize: 1,
+                                            minChildSize: 1,
+                                            maxChildSize: 1,
+                                            builder:
+                                                (context, scrollController) {
+                                              return HomeTopFilterBottom(
+                                                filterFunction:
+                                                    widget.filterFunction,
+                                              );
+                                            },
+                                          ));
+                                    },
+                                  );
+                                });
+                              },
+                              icon: const Icon(Icons.arrow_back_ios),
+                            ),
+                          )),
+                      Align(
                         alignment: Alignment.center,
                         child: Padding(
                           padding: const EdgeInsets.only(top: 5),
                           child: Text(
-                            widget.filterName ?? "Filters",
+                            widget.filterName,
                             style: const TextStyle(
                               fontSize: 24,
                               fontFamily: 'Inter',
@@ -97,7 +166,7 @@ class _WarehouseIngredientFilterState extends State<BakingUpFilterModalBottom> {
                             onTap: () {
                               setState(() {
                                 selectFilterType = widget.optionOneName;
-                                name = widget.optionsOne;
+                                // name = widget.optionsOne;
                               });
                             },
                             child: Container(
@@ -132,8 +201,7 @@ class _WarehouseIngredientFilterState extends State<BakingUpFilterModalBottom> {
                           InkWell(
                             onTap: () {
                               setState(() {
-                                selectFilterType = "Sort by";
-                                name = sortBy;
+                                selectFilterType = widget.optionTwoName;
                               });
                             },
                             child: Container(
@@ -141,22 +209,23 @@ class _WarehouseIngredientFilterState extends State<BakingUpFilterModalBottom> {
                               height: 50,
                               alignment: Alignment.center,
                               child: Text(
-                                "Sort by",
+                                widget.optionTwoName,
                                 style: TextStyle(
                                     fontSize: 16,
                                     fontFamily: 'Inter',
                                     fontStyle: FontStyle.normal,
                                     fontWeight: FontWeight.w500,
-                                    color: selectFilterType == "Sort by"
-                                        ? greenColor
-                                        : blackColor),
+                                    color:
+                                        selectFilterType == widget.optionTwoName
+                                            ? greenColor
+                                            : blackColor),
                               ),
                             ),
                           ),
                           Container(
                             width: MediaQuery.of(context).size.width * 0.5,
                             height: 2.0,
-                            color: selectFilterType == "Sort by"
+                            color: selectFilterType == widget.optionTwoName
                                 ? greenColor
                                 : greyColor,
                           ),
@@ -169,43 +238,47 @@ class _WarehouseIngredientFilterState extends State<BakingUpFilterModalBottom> {
           Expanded(
               child: Scrollbar(
                   thumbVisibility: true,
-                  child: ListView(
-                    scrollDirection: Axis.vertical,
-                    children: name.map((name) {
-                      bool isSelected;
-                      selectFilterType == widget.optionOneName
-                          ? isSelected = name == selectedFiltering
-                          : isSelected = name == selectedSorting;
-                      return Material(
-                          color: Colors.transparent,
-                          child: RadioListTile<String>(
+                  child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      itemCount: selectFilterType == widget.optionOneName
+                          ? filterFirstOption.length
+                          : filterSecondOption.length,
+                      itemBuilder: (context, index) => CheckboxListTile(
+                            controlAffinity: ListTileControlAffinity.leading,
+                            activeColor: greenColor,
+                            value: selectFilterType == widget.optionOneName
+                                ? filterFirstOption[index]["isChecked"]
+                                : filterSecondOption[index]["isChecked"],
+                            onChanged: (value) {
+                              setState(() {
+                                if (selectFilterType == widget.optionOneName) {
+                                  filterFirstOption[index]["isChecked"] =
+                                      value!;
+                                } else {
+                                  filterSecondOption[index]["isChecked"] =
+                                      value!;
+                                }
+                              });
+                            },
                             title: Text(
-                              name,
+                              selectFilterType == widget.optionOneName
+                                  ? filterFirstOption[index]["title"]
+                                  : filterSecondOption[index]["title"],
                               style: TextStyle(
                                 fontSize: 16,
                                 fontFamily: 'Inter',
                                 fontStyle: FontStyle.normal,
                                 fontWeight: FontWeight.normal,
-                                color: isSelected ? greenColor : blackColor,
+                                color: selectFilterType == widget.optionOneName
+                                    ? filterFirstOption[index]["isChecked"]
+                                        ? greenColor
+                                        : blackColor
+                                    : filterSecondOption[index]["isChecked"]
+                                        ? greenColor
+                                        : blackColor,
                               ),
                             ),
-                            value: name,
-                            groupValue: selectFilterType == widget.optionOneName
-                                ? selectedFiltering
-                                : selectedSorting,
-                            onChanged: (String? value) {
-                              setState(() {
-                                if (selectFilterType == widget.optionOneName) {
-                                  selectedFiltering = value;
-                                } else {
-                                  selectedSorting = value;
-                                }
-                              });
-                            },
-                            activeColor: greenColor,
-                          ));
-                    }).toList(),
-                  ))),
+                          )))),
           const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -216,8 +289,9 @@ class _WarehouseIngredientFilterState extends State<BakingUpFilterModalBottom> {
                   minimumSize: const Size(200, 40),
                 ),
                 onPressed: () {
-                  widget.filterFunction(selectedFiltering, selectedSorting);
                   Navigator.of(context).pop();
+                  widget.filterFunction(
+                      filterFirstOption, filterSecondOption, widget.filterName);
                 },
                 child: Center(
                   child: Text(

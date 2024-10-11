@@ -26,3 +26,20 @@ OrderType typeFromJson(String type) {
 String typeToJson(OrderType type) {
   return type.toString().split('.').last;
 }
+
+String convertOrderTypeString(String orderType) {
+  switch (orderType) {
+    case 'Bulk Order':
+      return 'BULK_ORDER';
+    case 'Personal':
+      return 'PERSONAL';
+    case 'Special Day':
+      return 'SPECIAL_DAY';
+    case 'Festival':
+      return 'FESTIVAL';
+    case 'Other':
+      return 'OTHER';
+    default:
+      throw ArgumentError('Unknown OrderType: $orderType');
+  }
+}

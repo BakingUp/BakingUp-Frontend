@@ -1,14 +1,15 @@
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/widgets/home/home_top_filter_bottom.dart';
 import 'package:flutter/material.dart';
 
-class BakingUpFilterModalBottom extends StatefulWidget {
+class HomeModalBottom extends StatefulWidget {
   final List<String> optionsOne;
   final String optionOneName;
   final String defaultFilteringValue;
   final String defaultSortingValue;
   final Function filterFunction;
   final String? filterName;
-  const BakingUpFilterModalBottom(
+  const HomeModalBottom(
       {super.key,
       required this.optionsOne,
       required this.optionOneName,
@@ -18,11 +19,10 @@ class BakingUpFilterModalBottom extends StatefulWidget {
       this.filterName});
 
   @override
-  State<BakingUpFilterModalBottom> createState() =>
-      _WarehouseIngredientFilterState();
+  State<HomeModalBottom> createState() => _WarehouseIngredientFilterState();
 }
 
-class _WarehouseIngredientFilterState extends State<BakingUpFilterModalBottom> {
+class _WarehouseIngredientFilterState extends State<HomeModalBottom> {
   String? selectedFiltering;
   String? selectedSorting;
   final List<String> sortBy = ['Ascending Order', 'Descending Order'];
@@ -57,6 +57,53 @@ class _WarehouseIngredientFilterState extends State<BakingUpFilterModalBottom> {
                 children: [
                   Stack(
                     children: [
+                      Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 5),
+                            child: IconButton(
+                              onPressed: () {
+                                // Close the current BakingUpFilterMultipleModalBottom
+                                Navigator.of(context).pop();
+
+                                // Open HomeTopFilterBottom after closing the current modal
+                                Future.delayed(
+                                    const Duration(milliseconds: 200), () {
+                                  showModalBottomSheet<void>(
+                                    context: context,
+                                    backgroundColor: backgroundColor,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(40.0),
+                                        topRight: Radius.circular(40.0),
+                                      ),
+                                    ),
+                                    isScrollControlled: true,
+                                    builder: (BuildContext context) {
+                                      return SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.70,
+                                          child: DraggableScrollableSheet(
+                                            initialChildSize: 1,
+                                            minChildSize: 1,
+                                            maxChildSize: 1,
+                                            builder:
+                                                (context, scrollController) {
+                                              return HomeTopFilterBottom(
+                                                filterFunction:
+                                                    widget.filterFunction,
+                                              );
+                                            },
+                                          ));
+                                    },
+                                  );
+                                });
+                              },
+                              icon: const Icon(Icons.arrow_back_ios),
+                            ),
+                          )),
                       Align(
                         alignment: Alignment.center,
                         child: Padding(
@@ -216,7 +263,13 @@ class _WarehouseIngredientFilterState extends State<BakingUpFilterModalBottom> {
                   minimumSize: const Size(200, 40),
                 ),
                 onPressed: () {
-                  widget.filterFunction(selectedFiltering, selectedSorting);
+                  List<Map<String, dynamic>> ingredientType = [
+                    {"title": selectedFiltering, "isChecked": true}
+                  ];
+                  List<Map<String, dynamic>> sortType = [
+                    {"title": selectedSorting, "isChecked": true}
+                  ];
+                  widget.filterFunction(ingredientType, sortType);
                   Navigator.of(context).pop();
                 },
                 child: Center(
