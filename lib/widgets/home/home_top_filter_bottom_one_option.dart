@@ -1,28 +1,24 @@
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/widgets/home/home_top_filter_bottom.dart';
 import 'package:flutter/material.dart';
 
-class BakingUpFilterModalBottom extends StatefulWidget {
-  final List<String> optionsOne;
-  final String optionOneName;
-  final String defaultFilteringValue;
+class HomeTopFilterBottomOneOption extends StatefulWidget {
   final String defaultSortingValue;
   final Function filterFunction;
   final String? filterName;
-  const BakingUpFilterModalBottom(
+  const HomeTopFilterBottomOneOption(
       {super.key,
-      required this.optionsOne,
-      required this.optionOneName,
-      required this.defaultFilteringValue,
       required this.defaultSortingValue,
       required this.filterFunction,
       this.filterName});
 
   @override
-  State<BakingUpFilterModalBottom> createState() =>
+  State<HomeTopFilterBottomOneOption> createState() =>
       _WarehouseIngredientFilterState();
 }
 
-class _WarehouseIngredientFilterState extends State<BakingUpFilterModalBottom> {
+class _WarehouseIngredientFilterState
+    extends State<HomeTopFilterBottomOneOption> {
   String? selectedFiltering;
   String? selectedSorting;
   final List<String> sortBy = ['Ascending Order', 'Descending Order'];
@@ -32,9 +28,6 @@ class _WarehouseIngredientFilterState extends State<BakingUpFilterModalBottom> {
   @override
   void initState() {
     setState(() {
-      name = widget.optionsOne;
-      selectFilterType = widget.optionOneName;
-      selectedFiltering = widget.defaultFilteringValue;
       selectedSorting = widget.defaultSortingValue;
     });
     super.initState();
@@ -57,6 +50,53 @@ class _WarehouseIngredientFilterState extends State<BakingUpFilterModalBottom> {
                 children: [
                   Stack(
                     children: [
+                      Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 5),
+                            child: IconButton(
+                              onPressed: () {
+                                // Close the current BakingUpFilterMultipleModalBottom
+                                Navigator.of(context).pop();
+
+                                // Open HomeTopFilterBottom after closing the current modal
+                                Future.delayed(
+                                    const Duration(milliseconds: 200), () {
+                                  showModalBottomSheet<void>(
+                                    context: context,
+                                    backgroundColor: backgroundColor,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(40.0),
+                                        topRight: Radius.circular(40.0),
+                                      ),
+                                    ),
+                                    isScrollControlled: true,
+                                    builder: (BuildContext context) {
+                                      return SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.70,
+                                          child: DraggableScrollableSheet(
+                                            initialChildSize: 1,
+                                            minChildSize: 1,
+                                            maxChildSize: 1,
+                                            builder:
+                                                (context, scrollController) {
+                                              return HomeTopFilterBottom(
+                                                filterFunction:
+                                                    widget.filterFunction,
+                                              );
+                                            },
+                                          ));
+                                    },
+                                  );
+                                });
+                              },
+                              icon: const Icon(Icons.arrow_back_ios),
+                            ),
+                          )),
                       Align(
                         alignment: Alignment.center,
                         child: Padding(
@@ -93,72 +133,26 @@ class _WarehouseIngredientFilterState extends State<BakingUpFilterModalBottom> {
                     children: [
                       Column(
                         children: [
-                          InkWell(
-                            onTap: () {
-                              setState(() {
-                                selectFilterType = widget.optionOneName;
-                                name = widget.optionsOne;
-                              });
-                            },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width / 2,
-                              height: 50,
-                              alignment: Alignment.center,
-                              child: Text(
-                                widget.optionOneName,
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontFamily: 'Inter',
-                                    fontStyle: FontStyle.normal,
-                                    fontWeight: FontWeight.w500,
-                                    color:
-                                        selectFilterType == widget.optionOneName
-                                            ? greenColor
-                                            : blackColor),
-                              ),
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 50,
+                            alignment: Alignment.center,
+                            child: Text(
+                              "Sort by",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontFamily: 'Inter',
+                                  fontStyle: FontStyle.normal,
+                                  fontWeight: FontWeight.w500,
+                                  color: selectFilterType == "Sort by"
+                                      ? greenColor
+                                      : blackColor),
                             ),
                           ),
                           Container(
-                            width: MediaQuery.of(context).size.width * 0.5,
+                            width: MediaQuery.of(context).size.width,
                             height: 2.0,
-                            color: selectFilterType == widget.optionOneName
-                                ? greenColor
-                                : greyColor,
-                          ),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              setState(() {
-                                selectFilterType = "Sort by";
-                                name = sortBy;
-                              });
-                            },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width / 2,
-                              height: 50,
-                              alignment: Alignment.center,
-                              child: Text(
-                                "Sort by",
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontFamily: 'Inter',
-                                    fontStyle: FontStyle.normal,
-                                    fontWeight: FontWeight.w500,
-                                    color: selectFilterType == "Sort by"
-                                        ? greenColor
-                                        : blackColor),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.5,
-                            height: 2.0,
-                            color: selectFilterType == "Sort by"
-                                ? greenColor
-                                : greyColor,
+                            color: greenColor,
                           ),
                         ],
                       ),
@@ -171,11 +165,10 @@ class _WarehouseIngredientFilterState extends State<BakingUpFilterModalBottom> {
                   thumbVisibility: true,
                   child: ListView(
                     scrollDirection: Axis.vertical,
-                    children: name.map((name) {
+                    children: sortBy.map((name) {
                       bool isSelected;
-                      selectFilterType == widget.optionOneName
-                          ? isSelected = name == selectedFiltering
-                          : isSelected = name == selectedSorting;
+
+                      isSelected = name == selectedSorting;
                       return Material(
                           color: Colors.transparent,
                           child: RadioListTile<String>(
@@ -190,16 +183,10 @@ class _WarehouseIngredientFilterState extends State<BakingUpFilterModalBottom> {
                               ),
                             ),
                             value: name,
-                            groupValue: selectFilterType == widget.optionOneName
-                                ? selectedFiltering
-                                : selectedSorting,
+                            groupValue: selectedSorting,
                             onChanged: (String? value) {
                               setState(() {
-                                if (selectFilterType == widget.optionOneName) {
-                                  selectedFiltering = value;
-                                } else {
-                                  selectedSorting = value;
-                                }
+                                selectedSorting = value;
                               });
                             },
                             activeColor: greenColor,

@@ -29,3 +29,22 @@ OrderPlatform platformFromJson(String platform) {
 String platformToJson(OrderPlatform platform) {
   return platform.toString().split('.').last;
 }
+
+String convertOrderPlatformString(String orderPlatform) {
+  switch (orderPlatform) {
+    case 'Store':
+      return 'STORE';
+    case 'Line Man':
+      return 'LINEMAN';
+    case 'Grab':
+      return 'GRAB';
+    case 'Facebook':
+      return 'FACEBOOK';
+    case 'website':
+      return 'WEBSITE';
+    case 'other':
+      return 'OTHER';
+    default:
+      throw ArgumentError('Unknown OrderPlatform: $orderPlatform');
+  }
+}

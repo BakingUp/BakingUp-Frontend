@@ -82,8 +82,6 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
           noResult = true;
         }
       });
-
-      setState(() {});
     } catch (e) {
       setState(() {
         isError = true;
