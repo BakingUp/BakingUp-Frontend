@@ -156,8 +156,6 @@ class _HomeScreenState extends State<HomeScreen> {
       //     "sort_type": orderType[0].toString(),
       //   };
       // }
-
-      print(data);
       final response = await NetworkService.instance
           .post("/api/home/getTopProducts", data: data);
 
@@ -425,11 +423,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     right: -20,
                     top: MediaQuery.of(context).size.height * 0.17,
                     child: IconButton(
-                      icon: Icon(Icons.chevron_right, size: 40),
+                      icon: const Icon(Icons.chevron_right, size: 40),
                       onPressed: () {
                         if (_currentPageIndex < 1) {
                           _pageController.nextPage(
-                            duration: Duration(milliseconds: 300),
+                            duration: const Duration(milliseconds: 300),
                             curve: Curves.easeInOut,
                           );
                         }

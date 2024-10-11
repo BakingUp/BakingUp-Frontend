@@ -1,8 +1,4 @@
 import 'package:bakingup_frontend/constants/colors.dart';
-import 'package:bakingup_frontend/enum/order_platform.dart';
-import 'package:bakingup_frontend/enum/order_type.dart';
-import 'package:bakingup_frontend/models/home.dart';
-import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_multiple_modal_bottom.dart';
 import 'package:bakingup_frontend/widgets/home/home_modal_bottom.dart';
 import 'package:bakingup_frontend/widgets/home/home_top_filter_bottom_one_option.dart';
@@ -49,39 +45,6 @@ class _HomeTopFilterBottomState extends State<HomeTopFilterBottom> {
 
   List<String> sortBy = ["Ascending", "Descending"];
   String filterType = "";
-
-  Future<void> _filter(List<Map<String, dynamic>> filterFirstOption,
-      List<Map<String, dynamic>> filterSecondOption) async {
-    print(filterFirstOption);
-    List<String> orderPlatform = [];
-    List<String> orderType = [];
-    String userID = "1";
-    for (var i = 0; i < filterFirstOption.length; i++) {
-      if (filterFirstOption[i]["isChecked"]) {
-        orderPlatform[i] =
-            convertOrderPlatformString(filterFirstOption[i]["title"]);
-      }
-    }
-
-    for (var i = 0; i < filterSecondOption.length; i++) {
-      if (filterSecondOption[i]["isChecked"]) {
-        orderType[i] = convertOrderTypeString(filterSecondOption[i]["title"]);
-      }
-    }
-    try {
-      final data = {
-        "filter_type": filterType,
-        "order_type": orderType,
-        "order_platform": orderPlatform,
-        "user_id": userID
-      };
-      final response = await NetworkService.instance
-          .post("/api/home/getTopProduct", data: data);
-
-      final topProductListResponse = TopProductResponse.fromJson(response);
-      final dataResponse = topProductListResponse.data;
-    } catch (error) {}
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -187,7 +150,7 @@ class _HomeTopFilterBottomState extends State<HomeTopFilterBottom> {
                                       ? HomeTopFilterBottomOneOption(
                                           defaultSortingValue:
                                               "Ascending Order",
-                                          filterFunction: _filter,
+                                          filterFunction: widget.filterFunction,
                                           filterName: "Wasted Bakery Stock",
                                         )
                                       : BakingUpFilterMultipleModalBottom(
