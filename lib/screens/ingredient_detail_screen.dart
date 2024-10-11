@@ -15,6 +15,7 @@ import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_detail_ba
 import 'package:bakingup_frontend/models/ingredient_detail.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/widgets/baking_up_detail_image.dart';
+import 'package:bakingup_frontend/screens/add_edit_ingredient_stock_screen.dart';
 
 class IngredientDetailScreen extends StatefulWidget {
   final String? ingredientId;
@@ -137,7 +138,18 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
                         ),
                       ],
                     ),
-                    const BakingUpCircularAddButton(),
+                    BakingUpCircularAddButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddEditIngredientStockScreen(
+                              ingredientId: widget.ingredientId,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ],
                 ),
                 IngredientDetailQuantity(

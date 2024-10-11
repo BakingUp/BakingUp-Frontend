@@ -2,7 +2,11 @@ import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:flutter/material.dart';
 
 class AddEditIngredientStockNoteTextField extends StatelessWidget {
-  const AddEditIngredientStockNoteTextField({super.key});
+  final TextEditingController controller;
+  const AddEditIngredientStockNoteTextField({
+    super.key,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {

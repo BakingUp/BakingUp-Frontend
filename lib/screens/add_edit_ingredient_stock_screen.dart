@@ -15,9 +15,11 @@ import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dropdown.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_image_picker.dart';
+import 'package:bakingup_frontend/models/add_edit_ingredient_stock_controller.dart';
 
 class AddEditIngredientStockScreen extends StatefulWidget {
-  const AddEditIngredientStockScreen({super.key});
+  final String? ingredientId;
+  const AddEditIngredientStockScreen({super.key, this.ingredientId});
 
   @override
   State<AddEditIngredientStockScreen> createState() =>
@@ -28,21 +30,9 @@ class _AddEditIngredientStockScreenState
     extends State<AddEditIngredientStockScreen> {
   final bool _isEdit = false;
   final List<File> _images = [];
-  List<IngredientStockDetailNote> ingredientStockDetailNotes = [
-    IngredientStockDetailNote(
-      ingredientNote: "This ingredient is used for making bread.",
-      noteCreatedAt: "03/03/2024",
-    ),
-    IngredientStockDetailNote(
-      ingredientNote: "This ingredient is used for making cake.",
-      noteCreatedAt: "06/03/2024",
-    ),
-    IngredientStockDetailNote(
-      ingredientNote: "This ingredient is used for making cookies.",
-      noteCreatedAt: "09/03/2024",
-    ),
-  ];
   String selectedUnit = '';
+  final AddEditIngredientStockController _controller =
+      AddEditIngredientStockController();
 
   @override
   Widget build(BuildContext context) {
@@ -127,21 +117,27 @@ class _AddEditIngredientStockScreenState
                   const SizedBox(width: 16),
                 ],
               ),
-              const Column(
+              Column(
                 children: [
-                  AddEditIngredientStockNameTextField(label: 'English'),
-                  SizedBox(height: 16),
-                  AddEditIngredientStockNameTextField(label: 'Thai')
+                  AddEditIngredientStockNameTextField(
+                    label: 'English',
+                    controller: _controller.engNameController,
+                  ),
+                  const SizedBox(height: 16),
+                  AddEditIngredientStockNameTextField(
+                    label: 'Thai',
+                    controller: _controller.thaiNameController,
+                  ),
                 ],
               ),
             ],
           ),
           const SizedBox(height: 16),
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
+              const Text(
                 'Brand',
                 style: TextStyle(
                   fontSize: 16,
@@ -150,8 +146,12 @@ class _AddEditIngredientStockScreenState
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              SizedBox(width: 16),
-              AddEditIngredientStockTextField(label: "Brand", width: 150)
+              const SizedBox(width: 16),
+              AddEditIngredientStockTextField(
+                label: "Brand",
+                width: 150,
+                controller: _controller.brandController,
+              )
             ],
           ),
           const SizedBox(height: 16),
@@ -183,8 +183,10 @@ class _AddEditIngredientStockScreenState
                   ),
                   const SizedBox(width: 16),
                   AddEditIngredientStockTextField(
-                      label: 'Quantity',
-                      width: MediaQuery.of(context).size.width - 300),
+                    label: 'Quantity',
+                    width: MediaQuery.of(context).size.width - 300,
+                    controller: _controller.quantityController,
+                  ),
                   const SizedBox(width: 16),
                 ],
               ),
@@ -256,17 +258,21 @@ class _AddEditIngredientStockScreenState
                 ),
               ),
               const SizedBox(width: 16),
-              const AddEditIngredientStockTextField(label: "Price", width: 150)
+              AddEditIngredientStockTextField(
+                label: "Price",
+                width: 150,
+                controller: _controller.priceController,
+              )
             ],
           ),
           const SizedBox(height: 16),
           const AddEditIngredientStockTitle(title: "Additional Information"),
           const SizedBox(height: 16),
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(
+              const Text(
                 'Supplier',
                 style: TextStyle(
                   fontSize: 16,
@@ -275,8 +281,12 @@ class _AddEditIngredientStockScreenState
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              SizedBox(width: 16),
-              AddEditIngredientStockTextField(label: "Supplier", width: 150)
+              const SizedBox(width: 16),
+              AddEditIngredientStockTextField(
+                label: "Supplier",
+                width: 150,
+                controller: _controller.supplierController,
+              ),
             ],
           ),
           const SizedBox(height: 16),
@@ -308,13 +318,17 @@ class _AddEditIngredientStockScreenState
                   const SizedBox(width: 16),
                 ],
               ),
-              const AddEditIngredientStockExpirationDateField(),
+              AddEditIngredientStockExpirationDateField(
+                controller: _controller.expirationController,
+              ),
             ],
           ),
           const SizedBox(height: 50),
           const AddEditIngredientStockTitle(title: "Note:"),
           const SizedBox(height: 16),
-          const AddEditIngredientStockNoteTextField(),
+          AddEditIngredientStockNoteTextField(
+            controller: _controller.noteController,
+          ),
           const SizedBox(height: 80),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
