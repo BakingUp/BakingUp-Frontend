@@ -37,7 +37,6 @@ class _OrderScreenState extends State<OrderScreen> {
       TextEditingController();
   final List<String> orderFilterList = ['Done', 'In-Process', 'Cancel'];
 
-  
   List<String> selectedOrderFiltering = ['Done', 'In-Process', 'Cancel'];
   String selectedOrderSorting = "Descending Order";
 
@@ -64,7 +63,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
     try {
       final response = await NetworkService.instance
-          .get('http://10.0.2.2:8000/api/order/getAllOrders/?user_id=$userID');
+          .get('/api/order/getAllOrders/?user_id=$userID');
 
       final ordersResponse = OrdersResponse.fromJson(response);
       final data = ordersResponse.data;

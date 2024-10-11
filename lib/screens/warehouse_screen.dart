@@ -290,10 +290,13 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                   onPressed: () {
                     if (tabIndex == 1) {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const AddEditRecipeScreen()));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AddEditRecipeScreen(),
+                        ),
+                      ).then((_) {
+                        _fetchRecipeList();
+                      });
                     } else if (tabIndex == 2) {
                       Navigator.push(
                         context,
@@ -430,6 +433,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                     WarehouseRecipeList(
                       recipeList: filteredRecipes,
                       isLoading: isLoading,
+                      fetchRecipeList: _fetchRecipeList,
                     ),
                   if (tabIndex == 2 && noResult)
                     Container(
@@ -454,6 +458,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                     WarehouseIngredientList(
                       ingredientList: filteredIngredients,
                       isLoading: isLoading,
+                      fetchIngredientList: _fetchIngredientList,
                     )
                 ],
               )),

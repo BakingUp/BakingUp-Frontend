@@ -32,7 +32,7 @@ class _OrderInfoListState extends State<OrderInfoList> {
     );
 
     await NetworkService.instance
-        .delete('http://10.0.2.2:8000/api/order/deleteOrder?order_id=$orderId');
+        .delete('/api/order/deleteOrder?order_id=$orderId');
   }
 
   @override

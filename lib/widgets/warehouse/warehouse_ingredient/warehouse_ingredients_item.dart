@@ -11,23 +11,30 @@ class WarehouseIngredientsItem extends StatelessWidget {
   final List<IngredientItemData> ingredientList;
   final int index;
   final bool isLoading;
+  final Future<void> Function() fetchIngredientList;
 
-  const WarehouseIngredientsItem(
-      {super.key,
-      required this.ingredientList,
-      required this.index,
-      required this.isLoading});
+  const WarehouseIngredientsItem({
+    super.key,
+    required this.ingredientList,
+    required this.index,
+    required this.isLoading,
+    required this.fetchIngredientList,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => IngredientDetailScreen(
-                      ingredientId: ingredientList[index].ingredientId,
-                    )));
+          context,
+          MaterialPageRoute(
+            builder: (context) => IngredientDetailScreen(
+              ingredientId: ingredientList[index].ingredientId,
+            ),
+          ),
+        ).then((value) {
+          fetchIngredientList();
+        });
       },
       child: Container(
         margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
