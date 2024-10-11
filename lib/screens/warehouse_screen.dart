@@ -294,10 +294,13 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                                   const AddEditRecipeScreen()));
                     } else if (tabIndex == 2) {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  const AddEditIngredientScreen()));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AddEditIngredientScreen(),
+                        ),
+                      ).then((_) {
+                        _fetchIngredientList();
+                      });
                     }
                   },
                 ),
