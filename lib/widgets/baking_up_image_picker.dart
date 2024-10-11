@@ -7,10 +7,12 @@ import 'package:image_picker/image_picker.dart';
 class BakingUpImagePicker extends StatefulWidget {
   final List<File> images;
   final Function(File) onNewImage;
+  final bool? isOneImage;
   const BakingUpImagePicker({
     super.key,
     required this.images,
     required this.onNewImage,
+    this.isOneImage = false,
   });
 
   @override
@@ -82,58 +84,76 @@ class _BakingUpImagePickerState extends State<BakingUpImagePicker> {
             ),
           )
         : Container(
-            height: 100,
+            height: widget.isOneImage == true
+                ? MediaQuery.of(context).size.width / 2
+                : 100,
             margin: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 25.0),
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: widget.images.length + 1,
-              itemBuilder: (context, index) {
-                return index != widget.images.length
-                    ? Container(
-                        width: 100,
-                        height: 100,
-                        margin: EdgeInsets.only(
-                            right: index == widget.images.length - 1 ? 0 : 15),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(13),
-                          image: DecorationImage(
-                            image: FileImage(widget.images[index]),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      )
-                    : widget.images.length < 5
-                        ? GestureDetector(
-                            onTap: () {
-                              BakingUpImagePickerBottomSheet.show(
-                                context,
-                                takePhoto,
-                                getImageGallery,
-                              );
-                            },
-                            child: Container(
+            child: widget.isOneImage == true
+                ? Container(
+                    margin: const EdgeInsets.all(12.0),
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.width / 2,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(13),
+                      image: DecorationImage(
+                        image: FileImage(widget.images[0]),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  )
+                : ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: widget.images.length + 1,
+                    itemBuilder: (context, index) {
+                      return index != widget.images.length
+                          ? Container(
                               width: 100,
                               height: 100,
-                              margin: const EdgeInsets.only(left: 15),
+                              margin: EdgeInsets.only(
+                                  right: index == widget.images.length - 1
+                                      ? 0
+                                      : 15),
                               decoration: BoxDecoration(
-                                color: greyColor,
                                 borderRadius: BorderRadius.circular(13),
-                              ),
-                              child: Center(
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset('assets/icons/add.png',
-                                        scale: 0.4),
-                                  ],
+                                image: DecorationImage(
+                                  image: FileImage(widget.images[index]),
+                                  fit: BoxFit.cover,
                                 ),
                               ),
-                            ),
-                          )
-                        : Container();
-              },
-            ),
+                            )
+                          : widget.images.length < 5
+                              ? GestureDetector(
+                                  onTap: () {
+                                    BakingUpImagePickerBottomSheet.show(
+                                      context,
+                                      takePhoto,
+                                      getImageGallery,
+                                    );
+                                  },
+                                  child: Container(
+                                    width: 100,
+                                    height: 100,
+                                    margin: const EdgeInsets.only(left: 15),
+                                    decoration: BoxDecoration(
+                                      color: greyColor,
+                                      borderRadius: BorderRadius.circular(13),
+                                    ),
+                                    child: Center(
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset('assets/icons/add.png',
+                                              scale: 0.4),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : Container();
+                    },
+                  ),
           );
   }
 }

@@ -3,7 +3,8 @@ import 'package:bakingup_frontend/widgets/baking_up_date_picker.dart';
 import 'package:flutter/material.dart';
 
 class AddEditIngredientStockExpirationDateField extends StatefulWidget {
-  const AddEditIngredientStockExpirationDateField({super.key});
+  final TextEditingController controller;
+  const AddEditIngredientStockExpirationDateField({super.key, required this.controller});
 
   @override
   AddEditIngredientStockExpirationDateFieldState createState() =>
@@ -12,7 +13,6 @@ class AddEditIngredientStockExpirationDateField extends StatefulWidget {
 
 class AddEditIngredientStockExpirationDateFieldState
     extends State<AddEditIngredientStockExpirationDateField> {
-  final TextEditingController _controller = TextEditingController();
   List<DateTime> dates = [
     DateTime.now(),
   ];
@@ -34,7 +34,7 @@ class AddEditIngredientStockExpirationDateFieldState
             setState(() {
               dates = newDates;
             });
-            _controller.text =
+            widget.controller.text =
                 "${newDates[0].day}/${newDates[0].month}/${newDates[0].year}";
           },
         );
@@ -48,7 +48,7 @@ class AddEditIngredientStockExpirationDateFieldState
       width: MediaQuery.of(context).size.width / 2,
       height: 45,
       child: TextField(
-        controller: _controller,
+        controller: widget.controller,
         readOnly: true,
         onTap: () => showDatePickerBottomSheet(context, backgroundColor),
         style: const TextStyle(
