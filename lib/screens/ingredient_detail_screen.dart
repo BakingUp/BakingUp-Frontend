@@ -147,7 +147,9 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
                               ingredientId: widget.ingredientId,
                             ),
                           ),
-                        );
+                        ).then((_) {
+                          _fetchIngredientDetails();
+                        });
                       },
                     ),
                   ],

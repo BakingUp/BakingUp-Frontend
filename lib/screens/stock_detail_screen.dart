@@ -17,7 +17,6 @@ import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_quantity.dar
 import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_selling_price.dart';
 import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_stock_name.dart';
 
-
 class StockDetailScreen extends StatefulWidget {
   final String? recipeId;
   const StockDetailScreen({super.key, this.recipeId});
@@ -83,6 +82,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
           BakingUpDetailImage(
             imageUrl: stockUrl,
             isLoading: isLoading,
+            noBaseURL: true,
           ),
           const StockDetailBackButtonContainer(
             children: [

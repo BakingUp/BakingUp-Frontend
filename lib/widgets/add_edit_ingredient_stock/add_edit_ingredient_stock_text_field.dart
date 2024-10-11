@@ -18,6 +18,7 @@ class AddEditIngredientStockTextField extends StatelessWidget {
       width: width,
       height: 45,
       child: TextField(
+        controller: controller,
         maxLines: 1,
         style: const TextStyle(
           fontSize: 12,

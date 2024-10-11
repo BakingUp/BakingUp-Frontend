@@ -1,5 +1,9 @@
 // Importing libraries
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
+import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -8,11 +12,11 @@ import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ing
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_title.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_delete_button.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_expiration_date_field.dart';
-import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_name_text_field.dart';
+// import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_name_text_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_text_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_note_text_field.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
-import 'package:bakingup_frontend/widgets/baking_up_dropdown.dart';
+// import 'package:bakingup_frontend/widgets/baking_up_dropdown.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_image_picker.dart';
 import 'package:bakingup_frontend/models/add_edit_ingredient_stock_controller.dart';
@@ -33,6 +37,13 @@ class _AddEditIngredientStockScreenState
   String selectedUnit = '';
   final AddEditIngredientStockController _controller =
       AddEditIngredientStockController();
+
+  List<String> convertFilesToBase64(List<File> files) {
+    return files.map((file) {
+      final bytes = file.readAsBytesSync();
+      return base64Encode(bytes);
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,51 +98,52 @@ class _AddEditIngredientStockScreenState
                 _images.add(image);
               });
             },
+            isOneImage: true,
           ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  const Text(
-                    'Ingredient Name',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  Text(
-                    '*',
-                    style: TextStyle(
-                      color: redColor,
-                      fontSize: 20,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                ],
-              ),
-              Column(
-                children: [
-                  AddEditIngredientStockNameTextField(
-                    label: 'English',
-                    controller: _controller.engNameController,
-                  ),
-                  const SizedBox(height: 16),
-                  AddEditIngredientStockNameTextField(
-                    label: 'Thai',
-                    controller: _controller.thaiNameController,
-                  ),
-                ],
-              ),
-            ],
-          ),
+          // const SizedBox(height: 16),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.start,
+          //   crossAxisAlignment: CrossAxisAlignment.start,
+          //   children: [
+          //     Row(
+          //       children: [
+          //         const Text(
+          //           'Ingredient Name',
+          //           style: TextStyle(
+          //             fontSize: 16,
+          //             fontFamily: 'Inter',
+          //             fontStyle: FontStyle.normal,
+          //             fontWeight: FontWeight.w400,
+          //           ),
+          //         ),
+          //         Text(
+          //           '*',
+          //           style: TextStyle(
+          //             color: redColor,
+          //             fontSize: 20,
+          //             fontFamily: 'Inter',
+          //             fontStyle: FontStyle.normal,
+          //             fontWeight: FontWeight.w400,
+          //           ),
+          //         ),
+          //         const SizedBox(width: 16),
+          //       ],
+          //     ),
+          //     Column(
+          //       children: [
+          //         AddEditIngredientStockNameTextField(
+          //           label: 'English',
+          //           controller: _controller.engNameController,
+          //         ),
+          //         const SizedBox(height: 16),
+          //         AddEditIngredientStockNameTextField(
+          //           label: 'Thai',
+          //           controller: _controller.thaiNameController,
+          //         ),
+          //       ],
+          //     ),
+          //   ],
+          // ),
           const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -190,47 +202,47 @@ class _AddEditIngredientStockScreenState
                   const SizedBox(width: 16),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Unit',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  Text(
-                    '*',
-                    style: TextStyle(
-                      color: redColor,
-                      fontSize: 20,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  BakingUpDropdown(
-                    options: const [
-                      'Grams',
-                      'Kilograms',
-                      'Litres',
-                      'Millilitres',
-                    ],
-                    topic: 'Unit',
-                    selectedOption: selectedUnit,
-                    onApply: (String value) {
-                      setState(() {
-                        selectedUnit = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.start,
+              //   crossAxisAlignment: CrossAxisAlignment.start,
+              //   children: [
+              //     const Text(
+              //       'Unit',
+              //       style: TextStyle(
+              //         fontSize: 16,
+              //         fontFamily: 'Inter',
+              //         fontStyle: FontStyle.normal,
+              //         fontWeight: FontWeight.w400,
+              //       ),
+              //     ),
+              //     Text(
+              //       '*',
+              //       style: TextStyle(
+              //         color: redColor,
+              //         fontSize: 20,
+              //         fontFamily: 'Inter',
+              //         fontStyle: FontStyle.normal,
+              //         fontWeight: FontWeight.w400,
+              //       ),
+              //     ),
+              //     const SizedBox(width: 8),
+              //     BakingUpDropdown(
+              //       options: const [
+              //         'Grams',
+              //         'Kilograms',
+              //         'Litres',
+              //         'Millilitres',
+              //       ],
+              //       topic: 'Unit',
+              //       selectedOption: selectedUnit,
+              //       onApply: (String value) {
+              //         setState(() {
+              //           selectedUnit = value;
+              //         });
+              //       },
+              //     ),
+              //   ],
+              // ),
             ],
           ),
           const SizedBox(height: 16),
@@ -347,6 +359,53 @@ class _AddEditIngredientStockScreenState
                   grayButtonTitle: 'Cancel',
                   secondButtonTitle: 'Confirm',
                   secondButtonColor: lightGreenColor,
+                  grayButtonOnClick: () {
+                    Navigator.of(context).pop();
+                  },
+                  secondButtonOnClick: () async {
+                    try {
+                      final data = {
+                        "user_id": "1",
+                        "ingredient_id": widget.ingredientId,
+                        "price": _controller.priceController.text,
+                        "quantity": _controller.quantityController.text,
+                        "expiration_date":
+                            _controller.expirationController.text,
+                        "supplier": _controller.supplierController.text,
+                        "ingredient_brand": _controller.brandController.text,
+                        "img": _images.isNotEmpty
+                            ? convertFilesToBase64(_images)[0]
+                            : "",
+                        "note": _controller.noteController.text,
+                      };
+                      await NetworkService.instance
+                          .post(
+                        "/api/ingredient/addIngredientStock",
+                        data: data,
+                      )
+                          .then(
+                        (value) {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        },
+                      );
+                    } catch (e) {
+                      log(e.toString());
+                      // ignore: use_build_context_synchronously
+                      Navigator.of(context).pop();
+                      // ignore: use_build_context_synchronously
+                      Navigator.of(context).overlay!.insert(
+                        OverlayEntry(
+                          builder: (BuildContext context) {
+                            return const BakingUpErrorTopNotification(
+                              message:
+                                  "Sorry, we couldn’t add the ingredient stock due to a system error. Please try again later.",
+                            );
+                          },
+                        ),
+                      );
+                    }
+                  },
                 ),
               )
             ],

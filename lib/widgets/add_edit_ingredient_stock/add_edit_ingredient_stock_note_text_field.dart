@@ -13,6 +13,7 @@ class AddEditIngredientStockNoteTextField extends StatelessWidget {
     return SizedBox(
       width: MediaQuery.of(context).size.width - 60,
       child: TextField(
+        controller: controller,
         maxLines: null,
         style: const TextStyle(
           fontSize: 12,
