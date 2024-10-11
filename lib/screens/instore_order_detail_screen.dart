@@ -56,7 +56,7 @@ class _InStoreOrderDetailScreenState extends State<InStoreOrderDetailScreen> {
     });
     try {
       final response = await NetworkService.instance.get(
-          'http://10.0.2.2:8000/api/order/getOrderDetail/?order_id=${widget.orderId}');
+          '/api/order/getOrderDetail/?order_id=${widget.orderId}');
       final instoreOrderDetailResponse =
           InstoreOrderDetailResponse.fromJson(response);
       final data = instoreOrderDetailResponse.data;

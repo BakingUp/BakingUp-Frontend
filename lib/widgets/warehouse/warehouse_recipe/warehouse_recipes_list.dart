@@ -11,10 +11,12 @@ import 'package:flutter/material.dart';
 class WarehouseRecipeList extends StatefulWidget {
   final List<RecipeItemData> recipeList;
   final bool isLoading;
+  final Future<void> Function() fetchRecipeList;
   const WarehouseRecipeList({
     super.key,
     required this.recipeList,
     required this.isLoading,
+    required this.fetchRecipeList,
   });
 
   @override
@@ -130,9 +132,11 @@ class WarehouseRecipeListState extends State<WarehouseRecipeList> {
                         });
                       },
                       child: WarehouseRecipesItem(
-                          recipeList: widget.recipeList,
-                          index: index,
-                          isLoading: widget.isLoading),
+                        recipeList: widget.recipeList,
+                        index: index,
+                        isLoading: widget.isLoading,
+                        fetchRecipeList: widget.fetchRecipeList,
+                      ),
                     );
                   },
                 )));
