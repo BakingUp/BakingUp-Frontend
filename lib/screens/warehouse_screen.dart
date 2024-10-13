@@ -24,7 +24,7 @@ class WarehouseScreen extends StatefulWidget {
 
 class _WarehouseScreenState extends State<WarehouseScreen> {
   int tabIndex = 1;
-  final int _currentDrawerIndex = 3;
+  final int _currentDrawerIndex = 2;
   bool isLoading = true;
   bool isError = true;
   List<RecipeItemData> recipes = [];

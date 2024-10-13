@@ -18,7 +18,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final int _currentDrawerIndex = 2;
+  final int _currentDrawerIndex = 0;
   bool isLoading = true;
   bool isError = true;
   DashboardChartData chartData = DashboardChartData(

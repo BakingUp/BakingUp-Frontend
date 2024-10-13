@@ -19,7 +19,7 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
-  final int _currentDrawerIndex = 6;
+  final int _currentDrawerIndex = 3;
 
   int tabIndex = 1;
   bool isLoading = true;

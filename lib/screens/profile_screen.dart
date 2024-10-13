@@ -9,7 +9,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final int _currentDrawerIndex = 8;
+  final int _currentDrawerIndex = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
