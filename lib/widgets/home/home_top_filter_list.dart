@@ -13,23 +13,23 @@ class HomeTopFilterList extends StatelessWidget {
   Widget build(BuildContext context) {
     return isLoading
         ? Expanded(
-            child: Container(
             child: ListView.builder(
                 itemCount: 3,
                 itemBuilder: (context, index) {
                   return const HomeTopFilterItemLoading();
                 }),
-          ))
+          )
         : Expanded(
-            child: Container(
-            child: ListView.builder(
-                itemCount: topProductList.length,
-                itemBuilder: (context, index) {
-                  return HomeTopFilterItem(
-                      topProductList: topProductList,
-                      index: index,
-                      isLoading: isLoading);
-                }),
-          ));
+            child: Scrollbar(
+                thumbVisibility: true,
+                child: ListView.builder(
+                    itemCount: topProductList.length,
+                    itemBuilder: (context, index) {
+                      return HomeTopFilterItem(
+                          topProductList: topProductList,
+                          index: index,
+                          isLoading: isLoading);
+                    })),
+          );
   }
 }

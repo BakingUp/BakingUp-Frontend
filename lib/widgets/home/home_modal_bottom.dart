@@ -63,10 +63,7 @@ class _WarehouseIngredientFilterState extends State<HomeModalBottom> {
                             padding: const EdgeInsets.only(left: 5),
                             child: IconButton(
                               onPressed: () {
-                                // Close the current BakingUpFilterMultipleModalBottom
                                 Navigator.of(context).pop();
-
-                                // Open HomeTopFilterBottom after closing the current modal
                                 Future.delayed(
                                     const Duration(milliseconds: 200), () {
                                   showModalBottomSheet<void>(
@@ -263,13 +260,8 @@ class _WarehouseIngredientFilterState extends State<HomeModalBottom> {
                   minimumSize: const Size(200, 40),
                 ),
                 onPressed: () {
-                  List<Map<String, dynamic>> ingredientType = [
-                    {"title": selectedFiltering, "isChecked": true}
-                  ];
-                  List<Map<String, dynamic>> sortType = [
-                    {"title": selectedSorting, "isChecked": true}
-                  ];
-                  widget.filterFunction(ingredientType, sortType);
+                  widget.filterFunction(null, null, widget.filterName,
+                      selectedFiltering, selectedSorting);
                   Navigator.of(context).pop();
                 },
                 child: Center(

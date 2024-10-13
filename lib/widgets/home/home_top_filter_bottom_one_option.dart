@@ -19,11 +19,8 @@ class HomeTopFilterBottomOneOption extends StatefulWidget {
 
 class _WarehouseIngredientFilterState
     extends State<HomeTopFilterBottomOneOption> {
-  String? selectedFiltering;
   String? selectedSorting;
   final List<String> sortBy = ['Ascending Order', 'Descending Order'];
-  List<String> name = [];
-  String selectFilterType = "";
 
   @override
   void initState() {
@@ -56,10 +53,7 @@ class _WarehouseIngredientFilterState
                             padding: const EdgeInsets.only(left: 5),
                             child: IconButton(
                               onPressed: () {
-                                // Close the current BakingUpFilterMultipleModalBottom
                                 Navigator.of(context).pop();
-
-                                // Open HomeTopFilterBottom after closing the current modal
                                 Future.delayed(
                                     const Duration(milliseconds: 200), () {
                                   showModalBottomSheet<void>(
@@ -144,9 +138,7 @@ class _WarehouseIngredientFilterState
                                   fontFamily: 'Inter',
                                   fontStyle: FontStyle.normal,
                                   fontWeight: FontWeight.w500,
-                                  color: selectFilterType == "Sort by"
-                                      ? greenColor
-                                      : blackColor),
+                                  color: greenColor),
                             ),
                           ),
                           Container(
@@ -203,7 +195,8 @@ class _WarehouseIngredientFilterState
                   minimumSize: const Size(200, 40),
                 ),
                 onPressed: () {
-                  widget.filterFunction(selectedFiltering, selectedSorting);
+                  widget.filterFunction(
+                      null, null, widget.filterName!, null, selectedSorting);
                   Navigator.of(context).pop();
                 },
                 child: Center(

@@ -2,6 +2,7 @@ import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/enum/order_platform.dart';
 import 'package:bakingup_frontend/enum/order_type.dart';
 import 'package:bakingup_frontend/models/home.dart';
+import 'package:bakingup_frontend/screens/notification_screen.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_two_button.dart';
@@ -108,7 +109,6 @@ class _HomeScreenState extends State<HomeScreen> {
       final topProductListResponse = TopProductResponse.fromJson(response);
 
       final dataResponse = topProductListResponse.data;
-
       setState(() {
         topProductList = dataResponse.products;
         successResponse = true;
@@ -124,8 +124,13 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> _filterTopProducts(List<Map<String, dynamic>> filterFirstOption,
-      List<Map<String, dynamic>> filterSecondOption, String filterType) async {
+  Future<void> _filterTopProducts(
+    List<Map<String, dynamic>>? filterFirstOption,
+    List<Map<String, dynamic>>? filterSecondOption,
+    String? filterType,
+    String? ingredientType,
+    String? sortType,
+  ) async {
     setState(() {
       isLoading = true;
       isError = false;
@@ -136,44 +141,57 @@ class _HomeScreenState extends State<HomeScreen> {
     List<String> orderPlatform = [];
     List<String> orderType = [];
     String userID = "1";
-    for (var i = 0; i < filterFirstOption.length; i++) {
-      if (filterFirstOption[i]["isChecked"]) {
-        orderPlatform
-            .add(convertOrderPlatformString(filterFirstOption[i]["title"]));
+
+    if (filterType != "Wasted Ingredients" &&
+        filterType != "Wasted Bakery Stock") {
+      for (var i = 0; i < filterFirstOption!.length; i++) {
+        if (filterFirstOption[i]["isChecked"]) {
+          orderPlatform
+              .add(convertOrderPlatformString(filterFirstOption[i]["title"]));
+        }
+      }
+
+      for (var i = 0; i < filterSecondOption!.length; i++) {
+        if (filterSecondOption[i]["isChecked"]) {
+          orderType.add(convertOrderTypeString(filterSecondOption[i]["title"]));
+        }
       }
     }
 
-    for (var i = 0; i < filterSecondOption.length; i++) {
-      if (filterSecondOption[i]["isChecked"]) {
-        orderType.add(convertOrderTypeString(filterSecondOption[i]["title"]));
-      }
-    }
     try {
-      // Map<String, dynamic> data = {};
-      // if (filterType != "Wasted Ingredients") {
-      final data = {
-        "filter_type": filterType,
-        "order_types": orderType,
-        "sales_channel": orderPlatform,
-        "user_id": userID
-      };
-      // } else {
-      //   data = {
-      //     "filter_type": filterType,
-      //     "unit_type": orderPlatform[0].toString(),
-      //     "sort_type": orderType[0].toString(),
-      //   };
-      // }
+      Map<String, dynamic> data = {};
+      if (filterType != "Wasted Ingredients" &&
+          filterType != "Wasted Bakery Stock") {
+        data = {
+          "filter_type": filterType,
+          "order_types": orderType,
+          "sales_channel": orderPlatform,
+          "user_id": userID
+        };
+      } else if (filterType != "Wasted Ingredients") {
+        data = {
+          "filter_type": filterType,
+          "sort_type": sortType,
+          "user_id": userID
+        };
+      } else {
+        data = {
+          "filter_type": filterType,
+          "unit_type": ingredientType,
+          "sort_type": sortType,
+          "user_id": userID
+        };
+      }
+
       final response = await NetworkService.instance
           .post("/api/home/getTopProducts", data: data);
 
       final topProductListResponse = TopProductResponse.fromJson(response);
 
       final dataResponse = topProductListResponse.data;
-
       setState(() {
         topProductList = dataResponse.products;
-        filterName = filterType;
+        filterName = filterType!;
         successResponse = true;
       });
     } catch (error) {
@@ -222,10 +240,18 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.only(right: 14),
             child: Stack(
               children: [
-                Icon(
-                  Icons.notifications,
-                  color: blackColor,
-                  size: 35,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const NotificationScreen()));
+                  },
+                  child: Icon(
+                    Icons.notifications,
+                    color: blackColor,
+                    size: 35,
+                  ),
                 ),
                 if (unreadNotiAmount > 0)
                   if (isLoadingNoti)

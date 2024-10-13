@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 class BakingUpFilterMultipleModalBottom extends StatefulWidget {
   final List<Map<String, dynamic>> optionsOne;
   final String optionOneName;
-  // final String defaultFilteringValue;
-  // final String defaultSortingValue;
   final List<Map<String, dynamic>> optionsTwo;
   final String optionTwoName;
   final String filterName;
@@ -16,8 +14,6 @@ class BakingUpFilterMultipleModalBottom extends StatefulWidget {
       {super.key,
       required this.optionsOne,
       required this.optionOneName,
-      // required this.defaultFilteringValue,
-      // required this.defaultSortingValue,
       required this.optionsTwo,
       required this.optionTwoName,
       required this.filterName,
@@ -40,20 +36,6 @@ class _WarehouseIngredientFilterState
 
   @override
   void initState() {
-    // for (var i = 0; i < widget.optionsOne.length; i++) {
-    //   setState(() {
-    //     filterFirstOption
-    //         .add({"title": widget.optionsOne[i], "isChecked": false});
-    //   });
-    // }
-
-    // setState(() {
-    //   name = widget.optionsOne;
-    //   selectFilterType = widget.optionOneName;
-    //   selectedFiltering = widget.defaultFilteringValue;
-    //   selectedSorting = widget.defaultSortingValue;
-    // });
-
     setState(() {
       selectFilterType = widget.optionOneName;
       filterFirstOption = widget.optionsOne;
@@ -85,10 +67,8 @@ class _WarehouseIngredientFilterState
                             padding: const EdgeInsets.only(left: 5),
                             child: IconButton(
                               onPressed: () {
-                                // Close the current BakingUpFilterMultipleModalBottom
                                 Navigator.of(context).pop();
 
-                                // Open HomeTopFilterBottom after closing the current modal
                                 Future.delayed(
                                     const Duration(milliseconds: 200), () {
                                   showModalBottomSheet<void>(
@@ -166,7 +146,6 @@ class _WarehouseIngredientFilterState
                             onTap: () {
                               setState(() {
                                 selectFilterType = widget.optionOneName;
-                                // name = widget.optionsOne;
                               });
                             },
                             child: Container(
@@ -290,8 +269,8 @@ class _WarehouseIngredientFilterState
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  widget.filterFunction(
-                      filterFirstOption, filterSecondOption, widget.filterName);
+                  widget.filterFunction(filterFirstOption, filterSecondOption,
+                      widget.filterName, "", "");
                 },
                 child: Center(
                   child: Text(
