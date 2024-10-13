@@ -1,6 +1,7 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/models/order.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:bakingup_frontend/utilities/bottom_navbar.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_modal_bottom.dart';
@@ -188,6 +189,7 @@ class _OrderScreenState extends State<OrderScreen> {
           ],
         ),
         drawer: BakingUpDrawer(currentDrawerIndex: _currentDrawerIndex),
+        bottomNavigationBar: const BottomNavbar(),
         body: Container(
           margin: const EdgeInsets.only(top: 15),
           child: Column(
