@@ -136,9 +136,11 @@ class _WarehouseIngredientListState extends State<WarehouseIngredientList> {
                             });
                           },
                           child: WarehouseIngredientsItem(
-                              ingredientList: widget.ingredientList,
-                              index: index,
-                              isLoading: widget.isLoading),
+                            ingredientList: widget.ingredientList,
+                            index: index,
+                            isLoading: widget.isLoading,
+                            fetchIngredientList: widget.fetchIngredientList,
+                          ),
                         );
                       },
                     ))));

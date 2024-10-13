@@ -134,9 +134,11 @@ class WarehouseRecipeListState extends State<WarehouseRecipeList> {
                             });
                           },
                           child: WarehouseRecipesItem(
-                              recipeList: widget.recipeList,
-                              index: index,
-                              isLoading: widget.isLoading),
+                            recipeList: widget.recipeList,
+                            index: index,
+                            isLoading: widget.isLoading,
+                            fetchRecipeList: widget.fetchRecipeList,
+                          ),
                         );
                       },
                     ))));
