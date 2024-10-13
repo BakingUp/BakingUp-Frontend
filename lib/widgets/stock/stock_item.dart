@@ -1,6 +1,7 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/enum/lst_status.dart';
 import 'package:bakingup_frontend/models/stock.dart';
+import 'package:bakingup_frontend/screens/stock_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -13,6 +14,14 @@ class StockItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => StockDetailScreen(
+                      recipeId: stockList[index].stockID,
+                    )));
+      },
       child: Container(
         margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
         decoration: BoxDecoration(
@@ -122,7 +131,6 @@ class StockItem extends StatelessWidget {
           ],
         ),
       ),
-      onTap: () {},
     );
   }
 }

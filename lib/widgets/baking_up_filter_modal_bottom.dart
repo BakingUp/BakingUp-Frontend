@@ -7,13 +7,15 @@ class BakingUpFilterModalBottom extends StatefulWidget {
   final String defaultFilteringValue;
   final String defaultSortingValue;
   final Function filterFunction;
+  final String? filterName;
   const BakingUpFilterModalBottom(
       {super.key,
       required this.optionsOne,
       required this.optionOneName,
       required this.defaultFilteringValue,
       required this.defaultSortingValue,
-      required this.filterFunction});
+      required this.filterFunction,
+      this.filterName});
 
   @override
   State<BakingUpFilterModalBottom> createState() =>
@@ -55,13 +57,13 @@ class _WarehouseIngredientFilterState extends State<BakingUpFilterModalBottom> {
                 children: [
                   Stack(
                     children: [
-                      const Align(
+                      Align(
                         alignment: Alignment.center,
                         child: Padding(
-                          padding: EdgeInsets.only(top: 5),
+                          padding: const EdgeInsets.only(top: 5),
                           child: Text(
-                            "Filters",
-                            style: TextStyle(
+                            widget.filterName ?? "Filters",
+                            style: const TextStyle(
                               fontSize: 24,
                               fontFamily: 'Inter',
                               fontStyle: FontStyle.normal,

@@ -4,7 +4,13 @@ import 'package:flutter/material.dart';
 class AddEditIngredientStockTextField extends StatelessWidget {
   final String label;
   final double width;
-  const AddEditIngredientStockTextField({super.key, required this.label, required this.width});
+  final TextEditingController controller;
+  const AddEditIngredientStockTextField({
+    super.key,
+    required this.label,
+    required this.width,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -12,6 +18,7 @@ class AddEditIngredientStockTextField extends StatelessWidget {
       width: width,
       height: 45,
       child: TextField(
+        controller: controller,
         maxLines: 1,
         style: const TextStyle(
           fontSize: 12,

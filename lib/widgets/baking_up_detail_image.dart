@@ -1,16 +1,19 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class BakingUpDetailImage extends StatefulWidget {
   final List<String> imageUrl;
   final bool isLoading;
+  final bool? noBaseURL;
 
   const BakingUpDetailImage({
     super.key,
     required this.imageUrl,
     required this.isLoading,
+    this.noBaseURL = false,
   });
 
   @override
@@ -75,7 +78,9 @@ class _IngredientDetailImageState extends State<BakingUpDetailImage> {
                             _pageController.position.pixels - details.delta.dx);
                       },
                       child: Image.network(
-                        widget.imageUrl[index],
+                        widget.noBaseURL == true
+                            ? widget.imageUrl[index]
+                            : '${dotenv.env['API_BASE_URL']}/${widget.imageUrl[index]}',
                         width: MediaQuery.of(context).size.width,
                         fit: BoxFit.cover,
                       ),

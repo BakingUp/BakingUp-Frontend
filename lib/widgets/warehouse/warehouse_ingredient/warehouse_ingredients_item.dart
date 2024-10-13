@@ -4,29 +4,37 @@ import 'package:bakingup_frontend/models/warehouse.dart';
 import 'package:bakingup_frontend/screens/ingredient_detail_screen.dart';
 import 'package:bakingup_frontend/widgets/ingredient_detail/expiration_status_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shimmer/shimmer.dart';
 
 class WarehouseIngredientsItem extends StatelessWidget {
   final List<IngredientItemData> ingredientList;
   final int index;
   final bool isLoading;
+  final Future<void> Function() fetchIngredientList;
 
-  const WarehouseIngredientsItem(
-      {super.key,
-      required this.ingredientList,
-      required this.index,
-      required this.isLoading});
+  const WarehouseIngredientsItem({
+    super.key,
+    required this.ingredientList,
+    required this.index,
+    required this.isLoading,
+    required this.fetchIngredientList,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => IngredientDetailScreen(
-                      ingredientId: ingredientList[index].ingredientId,
-                    )));
+          context,
+          MaterialPageRoute(
+            builder: (context) => IngredientDetailScreen(
+              ingredientId: ingredientList[index].ingredientId,
+            ),
+          ),
+        ).then((value) {
+          fetchIngredientList();
+        });
       },
       child: Container(
         margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
@@ -65,7 +73,7 @@ class WarehouseIngredientsItem extends StatelessWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(13),
                       child: Image.network(
-                        ingredientList[index].ingredientUrl,
+                        '${dotenv.env['API_BASE_URL']}/${ingredientList[index].ingredientUrl}',
                         width: 90,
                         height: 60,
                         fit: BoxFit.cover,

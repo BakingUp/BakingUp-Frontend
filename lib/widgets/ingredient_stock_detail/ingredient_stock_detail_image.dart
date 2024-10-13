@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class IngredientStockDetailImage extends StatelessWidget {
   final bool isLoading;
@@ -23,7 +24,7 @@ class IngredientStockDetailImage extends StatelessWidget {
                   fit: BoxFit.cover,
                 )
               : Image.network(
-                  ingredientStockDetailUrl,
+                  '${dotenv.env['API_BASE_URL']}/$ingredientStockDetailUrl',
                   width: MediaQuery.of(context).size.width,
                   fit: BoxFit.cover,
                 )

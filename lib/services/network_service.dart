@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -36,14 +38,19 @@ class NetworkService {
 
   Future<dynamic> post(
     String url, {
-    Map<String, dynamic>? data
+    Map<String, dynamic>? data,
   }) async {
     try {
       final response = await _dio.post(url, data: data);
       return response.data;
     } on DioException catch (e) {
-      final data = Map<String, dynamic>.from(e.response?.data);
-      throw Exception(data['message'] ?? "Error while posting data");
+      log(e.toString());
+      final responseData = e.response?.data;
+      if (responseData != null && responseData is Map<String, dynamic>) {
+        throw Exception(responseData['message'] ?? "Error while posting data");
+      } else {
+        throw Exception("Error while posting data");
+      }
     } catch (e) {
       rethrow;
     }

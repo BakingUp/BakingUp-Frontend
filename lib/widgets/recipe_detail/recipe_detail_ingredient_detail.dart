@@ -1,6 +1,7 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/models/recipe_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shimmer/shimmer.dart';
 
 class RecipeDetailIngredientDetail extends StatelessWidget {
@@ -37,7 +38,7 @@ class RecipeDetailIngredientDetail extends StatelessWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(13),
                       child: Image.network(
-                        recipeIngredients[index].ingredientUrl,
+                        '${dotenv.env['API_BASE_URL']}/${recipeIngredients[index].ingredientUrl}',
                         width: 80,
                         height: 50,
                         fit: BoxFit.cover,

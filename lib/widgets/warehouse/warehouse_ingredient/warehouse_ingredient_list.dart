@@ -11,10 +11,12 @@ import 'package:flutter/material.dart';
 class WarehouseIngredientList extends StatefulWidget {
   final List<IngredientItemData> ingredientList;
   final bool isLoading;
+  final Future<void> Function() fetchIngredientList;
   const WarehouseIngredientList({
     super.key,
     required this.ingredientList,
     required this.isLoading,
+    required this.fetchIngredientList,
   });
 
   @override
