@@ -63,6 +63,14 @@ class WarehouseRecipesItem extends StatelessWidget {
                     width: 90,
                     height: 60,
                     fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        'assets/icons/no-image.jpg',
+                        width: 90,
+                        height: 60,
+                        fit: BoxFit.cover,
+                      );
+                    },
                   ),
                 ),
               ],
