@@ -228,6 +228,5 @@ class _BakingUpDrawerState extends State<BakingUpDrawer> {
         ],
       ),
     );
-    ;
   }
 }
