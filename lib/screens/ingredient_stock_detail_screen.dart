@@ -183,6 +183,14 @@ class _IngredientStockDetailScreenState
                           ingredientStockDetailNotes:
                               ingredientStockDetailNotes,
                           isLoading: isLoading,
+                          onDelete: (index) {
+                            setState(() {
+                              ingredientStockDetailNotes.removeWhere((note) =>
+                                  note.ingredientNoteId ==
+                                  ingredientStockDetailNotes[index]
+                                      .ingredientNoteId);
+                            });
+                          },
                         )
                       ],
                     )

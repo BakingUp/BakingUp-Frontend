@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 class IngredientStockDetailNoteList extends StatefulWidget {
   final List<IngredientStockDetailNote> ingredientStockDetailNotes;
   final bool isLoading;
+  final Function(int) onDelete;
   const IngredientStockDetailNoteList({
     super.key,
     required this.ingredientStockDetailNotes,
     required this.isLoading,
+    required this.onDelete,
   });
 
   @override
@@ -41,12 +43,7 @@ class _IngredientStockDetailNoteListState
                   ingredientStockDetailNote:
                       widget.ingredientStockDetailNotes[index],
                   onDelete: () {
-                    setState(() {
-                      widget.ingredientStockDetailNotes.removeWhere((note) =>
-                          note.ingredientNoteId ==
-                          widget.ingredientStockDetailNotes[index]
-                              .ingredientNoteId);
-                    });
+                    widget.onDelete(index);
                   });
             },
           );
