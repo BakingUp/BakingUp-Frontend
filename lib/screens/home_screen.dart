@@ -310,6 +310,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       highlightColor: whiteColor,
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.80,
+                        margin: EdgeInsets.symmetric(
+                            horizontal:
+                                MediaQuery.of(context).size.width * 0.06),
                         decoration: BoxDecoration(
                           color: whiteColor,
                           borderRadius: BorderRadius.circular(20),
