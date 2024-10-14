@@ -8,11 +8,13 @@ class BakingUpImagePicker extends StatefulWidget {
   final List<File> images;
   final Function(File) onNewImage;
   final bool? isOneImage;
+  final Function(int) onDelete;
   const BakingUpImagePicker({
     super.key,
     required this.images,
     required this.onNewImage,
     this.isOneImage = false,
+    required this.onDelete,
   });
 
   @override
@@ -89,36 +91,89 @@ class _BakingUpImagePickerState extends State<BakingUpImagePicker> {
                 : 100,
             margin: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 25.0),
             child: widget.isOneImage == true
-                ? Container(
-                    margin: const EdgeInsets.all(12.0),
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.width / 2,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(13),
-                      image: DecorationImage(
-                        image: FileImage(widget.images[0]),
-                        fit: BoxFit.cover,
+                ? Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.all(12.0),
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.width / 2,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(13),
+                          image: DecorationImage(
+                            image: FileImage(widget.images[0]),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
-                    ),
+                      Positioned(
+                        top: 5,
+                        right: 5,
+                        child: Container(
+                          width: 30,
+                          height: 30,
+                          decoration: BoxDecoration(
+                            color: redColor,
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            icon: Icon(Icons.remove,
+                                size: 15, color: whiteColor, weight: 10),
+                            onPressed: () {
+                              widget.onDelete(0);
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
                   )
                 : ListView.builder(
                     scrollDirection: Axis.horizontal,
+                    clipBehavior: Clip.none,
                     itemCount: widget.images.length + 1,
                     itemBuilder: (context, index) {
                       return index != widget.images.length
                           ? Container(
-                              width: 100,
-                              height: 100,
                               margin: EdgeInsets.only(
                                   right: index == widget.images.length - 1
                                       ? 0
                                       : 15),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(13),
-                                image: DecorationImage(
-                                  image: FileImage(widget.images[index]),
-                                  fit: BoxFit.cover,
-                                ),
+                              child: Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  Container(
+                                    width: 100,
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(13),
+                                      image: DecorationImage(
+                                        image: FileImage(widget.images[index]),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    top: -5,
+                                    right: -5,
+                                    child: Container(
+                                      width: 30,
+                                      height: 30,
+                                      decoration: BoxDecoration(
+                                        color: redColor,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: IconButton(
+                                        icon: Icon(Icons.remove,
+                                            size: 15,
+                                            color: whiteColor,
+                                            weight: 10),
+                                        onPressed: () {
+                                          widget.onDelete(index);
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             )
                           : widget.images.length < 5

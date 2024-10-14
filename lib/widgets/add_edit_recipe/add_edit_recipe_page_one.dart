@@ -16,12 +16,14 @@ class AddEditRecipePageOne extends StatelessWidget {
   final List<File> recipeImages;
   final VoidCallback onClick;
   final Function(File) onNewImage;
+  final Function(int) onImgDelete;
   const AddEditRecipePageOne({
     super.key,
     required this.recipeIngredients,
     required this.recipeImages,
     required this.onClick,
     required this.onNewImage,
+    required this.onImgDelete,
   });
 
   @override
@@ -29,7 +31,14 @@ class AddEditRecipePageOne extends StatelessWidget {
     return Column(
       children: [
         const AddEditRecipeTitle(title: "Recipe Information"),
-        BakingUpImagePicker(images: recipeImages, onNewImage: onNewImage),
+        BakingUpImagePicker(
+          images: recipeImages,
+          onNewImage: onNewImage,
+          isOneImage: false,
+          onDelete: (index) {
+            onImgDelete(index);
+          },
+        ),
         const SizedBox(height: 16),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
