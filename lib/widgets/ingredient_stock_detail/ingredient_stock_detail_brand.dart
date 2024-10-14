@@ -43,7 +43,7 @@ class IngredientStockDetailBrand extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                ingredientBrand,
+                ingredientBrand.isEmpty ? '-' : ingredientBrand,
                 style: const TextStyle(
                   fontSize: 16,
                   fontFamily: 'Inter',
