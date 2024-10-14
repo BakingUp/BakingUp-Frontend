@@ -211,7 +211,7 @@ class _BakingUpDrawerState extends State<BakingUpDrawer> {
                   .pushNamedAndRemoveUntil(loginRoute, (route) => false);
             },
             child: Text(
-              "Logout",
+              "Log out",
               style: TextStyle(
                 color: redColor,
                 fontFamily: 'Poppins',
