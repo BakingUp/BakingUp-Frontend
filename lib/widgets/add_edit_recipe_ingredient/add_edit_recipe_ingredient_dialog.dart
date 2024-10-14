@@ -2,6 +2,7 @@ import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe_ingredient/add_edit_recipe_ingredient_text_field.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AddEditRecipeIngredientDialog extends StatelessWidget {
   final String ingredientTitle;
@@ -39,7 +40,7 @@ class AddEditRecipeIngredientDialog extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(13),
                   child: Image.network(
-                    imgUrl,
+                    "${dotenv.env['API_BASE_URL']}/$imgUrl",
                     width: 90,
                     height: 60,
                     fit: BoxFit.cover,

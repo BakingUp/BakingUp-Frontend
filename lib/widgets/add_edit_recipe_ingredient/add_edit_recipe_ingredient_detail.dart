@@ -1,11 +1,14 @@
-import 'package:bakingup_frontend/screens/add_edit_recipe_ingredient_screen.dart';
+import 'package:bakingup_frontend/enum/expiration_status.dart';
+import 'package:bakingup_frontend/models/warehouse.dart';
+import 'package:bakingup_frontend/utilities/regex.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe_ingredient/add_edit_recipe_ingredient_dialog.dart';
 import 'package:bakingup_frontend/widgets/ingredient_detail/expiration_status_indicator.dart';
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AddEditRecipeIngredientDetail extends StatelessWidget {
-  final List<RecipeIngredientDetail> recipeIngredientDetails;
+  final List<IngredientItemData> recipeIngredientDetails;
   final int index;
 
   const AddEditRecipeIngredientDetail(
@@ -37,7 +40,7 @@ class AddEditRecipeIngredientDetail extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(13),
                   child: Image.network(
-                    recipeIngredientDetails[index].imgUrl,
+                    "${dotenv.env['API_BASE_URL']}/${recipeIngredientDetails[index].ingredientUrl}",
                     width: 90,
                     height: 60,
                     fit: BoxFit.cover,
@@ -48,7 +51,7 @@ class AddEditRecipeIngredientDetail extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      recipeIngredientDetails[index].name,
+                      recipeIngredientDetails[index].ingredientName,
                       style: TextStyle(
                         color: blackColor,
                         fontFamily: 'Inter',
@@ -61,7 +64,7 @@ class AddEditRecipeIngredientDetail extends StatelessWidget {
                       padding: EdgeInsets.only(bottom: 5.0),
                     ),
                     Text(
-                      'Quantity: ${recipeIngredientDetails[index].quantity} ${recipeIngredientDetails[index].unit}',
+                      'Quantity: ${recipeIngredientDetails[index].quantity}',
                       style: TextStyle(
                         color: blackColor,
                         fontFamily: 'Inter',
@@ -90,8 +93,19 @@ class AddEditRecipeIngredientDetail extends StatelessWidget {
             Row(
               children: [
                 ExpirationStatusIndicator(
-                    status: recipeIngredientDetails[index].expirationStatus),
-                const Padding(padding: EdgeInsets.only(right: 20.0)),
+                    status: recipeIngredientDetails[index].expirationStatus ==
+                            "black"
+                        ? ExpirationStatus.black
+                        : recipeIngredientDetails[index].expirationStatus ==
+                                "red"
+                            ? ExpirationStatus.red
+                            : recipeIngredientDetails[index].expirationStatus ==
+                                    "yellow"
+                                ? ExpirationStatus.yellow
+                                : ExpirationStatus.green),
+                const Padding(
+                  padding: EdgeInsets.only(right: 20.0),
+                ),
               ],
             )
           ],
@@ -103,9 +117,9 @@ class AddEditRecipeIngredientDetail extends StatelessWidget {
           barrierColor: const Color(0xC7D9D9D9),
           builder: (BuildContext context) {
             return AddEditRecipeIngredientDialog(
-              ingredientTitle: recipeIngredientDetails[index].name,
-              imgUrl: recipeIngredientDetails[index].imgUrl,
-              unit: recipeIngredientDetails[index].unit,
+              ingredientTitle: recipeIngredientDetails[index].ingredientName,
+              imgUrl: recipeIngredientDetails[index].ingredientUrl,
+              unit: extractUnit(recipeIngredientDetails[index].quantity),
             );
           },
         );
