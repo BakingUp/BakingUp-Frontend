@@ -96,6 +96,12 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
                 _images.add(image);
               });
             },
+            isOneImage: false,
+            onDelete: (index) {
+              setState(() {
+                _images.removeAt(index);
+              });
+            },
           ),
           const SizedBox(height: 16),
           Row(

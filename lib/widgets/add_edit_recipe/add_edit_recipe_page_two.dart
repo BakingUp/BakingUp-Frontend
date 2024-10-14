@@ -12,12 +12,14 @@ class AddEditRecipePageTwo extends StatelessWidget {
   final List<File> instructionImages;
   final bool isEdit;
   final Function(File) onNewImage;
+  final Function(int) onImgDelete;
   const AddEditRecipePageTwo({
     super.key,
     required this.onClick,
     required this.instructionImages,
     required this.isEdit,
     required this.onNewImage,
+    required this.onImgDelete,
   });
 
   @override
@@ -28,6 +30,10 @@ class AddEditRecipePageTwo extends StatelessWidget {
         BakingUpImagePicker(
           images: instructionImages,
           onNewImage: onNewImage,
+          isOneImage: false,
+          onDelete: (index) {
+            onImgDelete(index);
+          },
         ),
         const SizedBox(height: 16),
         const AddEditRecipeTitle(

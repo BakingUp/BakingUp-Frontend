@@ -99,6 +99,11 @@ class _AddEditIngredientStockScreenState
               });
             },
             isOneImage: true,
+            onDelete: (index) {
+              setState(() {
+                _images.removeAt(index);
+              });
+            },
           ),
           // const SizedBox(height: 16),
           // Row(
