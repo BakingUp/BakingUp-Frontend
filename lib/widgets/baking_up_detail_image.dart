@@ -88,34 +88,36 @@ class _IngredientDetailImageState extends State<BakingUpDetailImage> {
                   },
                 ),
               ),
-              Positioned(
-                top: MediaQuery.of(context).size.width / 1.5 - 30,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8.0,
-                      horizontal: 12.0,
-                    ),
-                    decoration: BoxDecoration(
-                      color: whiteColor.withOpacity(0.6),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: SmoothPageIndicator(
-                      controller: _pageController,
-                      count: widget.imageUrl.length,
-                      effect: WormEffect(
-                        dotHeight: 8.0,
-                        dotWidth: 8.0,
-                        spacing: 3.0,
-                        dotColor: darkGreyColor.withOpacity(0.3),
-                        activeDotColor: darkGreyColor,
+              widget.imageUrl.length > 1
+                  ? Positioned(
+                      top: MediaQuery.of(context).size.width / 1.5 - 30,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 8.0,
+                            horizontal: 12.0,
+                          ),
+                          decoration: BoxDecoration(
+                            color: whiteColor.withOpacity(0.6),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: SmoothPageIndicator(
+                            controller: _pageController,
+                            count: widget.imageUrl.length,
+                            effect: WormEffect(
+                              dotHeight: 8.0,
+                              dotWidth: 8.0,
+                              spacing: 3.0,
+                              dotColor: darkGreyColor.withOpacity(0.3),
+                              activeDotColor: darkGreyColor,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-              ),
+                    )
+                  : Container(),
             ] else ...[
               Container(
                 width: MediaQuery.of(context).size.width,
