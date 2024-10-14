@@ -128,6 +128,11 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                   StockDetailList(
                     stockDetails: stockDetails,
                     isLoading: isLoading,
+                    onDelete: (index) {
+                      setState(() {
+                        stockDetails.removeAt(index);
+                      });
+                    },
                   ),
                 ]
               ]),
