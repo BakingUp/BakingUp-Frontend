@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 
 // Importing files
 import 'package:bakingup_frontend/constants/colors.dart';
-import 'package:bakingup_frontend/enum/expiration_status.dart';
+import 'package:bakingup_frontend/screens/add_edit_ingredient_screen.dart';
+import 'package:bakingup_frontend/widgets/add_edit_recipe_ingredient/add_edit_recipe_ingredient_detail_loading.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe_ingredient/add_edit_add_recipe_ingredient_button.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe_ingredient/add_edit_recipe_ingredient_container.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe_ingredient/add_edit_recipe_ingredient_detail.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_two_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_search_bar.dart';
+import 'package:bakingup_frontend/models/warehouse.dart';
+import 'package:bakingup_frontend/services/network_service.dart';
 
 class AddEditRecipeIngredientScreen extends StatefulWidget {
   const AddEditRecipeIngredientScreen({super.key});
@@ -20,25 +23,41 @@ class AddEditRecipeIngredientScreen extends StatefulWidget {
 
 class _AddEditRecipeIngredientScreenState
     extends State<AddEditRecipeIngredientScreen> {
-  List<RecipeIngredientDetail> recipeIngredientDetails = [
-    RecipeIngredientDetail(
-      imgUrl: 'https://i.imgur.com/RLsjqFm.png',
-      name: 'All-purpose flour',
-      stock: 2,
-      quantity: 1.4,
-      unit: 'kg',
-      expirationStatus: ExpirationStatus.red,
-    ),
-    RecipeIngredientDetail(
-      imgUrl:
-          'https://img.freepik.com/free-photo/world-diabetes-day-sugar-wooden-bowl-dark-surface_1150-26666.jpg',
-      name: 'Sugar',
-      stock: 1,
-      quantity: 1,
-      unit: 'kg',
-      expirationStatus: ExpirationStatus.green,
-    ),
-  ];
+  bool isLoading = true;
+  bool isError = false;
+  List<IngredientItemData> recipeIngredientDetails = [];
+
+  Future<void> _fetchIngredientList() async {
+    setState(() {
+      isLoading = true;
+      isError = false;
+    });
+
+    try {
+      final response = await NetworkService.instance
+          .get('/api/ingredient/getAllIngredients?user_id=1');
+
+      final ingredientListResponse = IngredientListResponse.fromJson(response);
+      final data = ingredientListResponse.data;
+      setState(() {
+        recipeIngredientDetails = data.ingredientList;
+      });
+    } catch (e) {
+      setState(() {
+        isError = true;
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchIngredientList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,41 +99,41 @@ class _AddEditRecipeIngredientScreenState
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(0),
-              itemCount: recipeIngredientDetails.length + 1,
-              itemBuilder: (context, index) {
-                if (index < recipeIngredientDetails.length) {
-                  return AddEditRecipeIngredientDetail(
-                    recipeIngredientDetails: recipeIngredientDetails,
-                    index: index,
-                  );
-                } else {
-                  return const AddEditAddRecipeIngredientButton();
-                }
-              },
-            ),
+            child: isLoading
+                ? ListView.builder(
+                    padding: const EdgeInsets.all(0),
+                    itemCount: 6,
+                    itemBuilder: (context, index) {
+                      return const AddEditRecipeIngredientDetailLoading();
+                    },
+                  )
+                : ListView.builder(
+                    padding: const EdgeInsets.all(0),
+                    itemCount: recipeIngredientDetails.length + 1,
+                    itemBuilder: (context, index) {
+                      if (index < recipeIngredientDetails.length) {
+                        return AddEditRecipeIngredientDetail(
+                          recipeIngredientDetails: recipeIngredientDetails,
+                          index: index,
+                        );
+                      } else {
+                        return AddEditAddRecipeIngredientButton(onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const AddEditIngredientScreen(),
+                            ),
+                          ).then((_) {
+                            _fetchIngredientList();
+                          });
+                        });
+                      }
+                    },
+                  ),
           ),
         ],
       ),
     );
   }
-}
-
-class RecipeIngredientDetail {
-  final String imgUrl;
-  final String name;
-  final int stock;
-  final double quantity;
-  final String unit;
-  final ExpirationStatus expirationStatus;
-
-  RecipeIngredientDetail({
-    required this.imgUrl,
-    required this.name,
-    required this.stock,
-    required this.quantity,
-    required this.unit,
-    required this.expirationStatus,
-  });
 }
