@@ -2,13 +2,13 @@ import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-class AddEditIngredientStockNameTextField extends StatelessWidget {
+class AddEditIngredientStockUnit extends StatelessWidget {
   final String text;
   final bool isLoading;
-  const AddEditIngredientStockNameTextField({
+  const AddEditIngredientStockUnit({
     super.key,
     required this.text,
-    this.isLoading = false,
+    required this.isLoading,
   });
 
   @override
@@ -19,7 +19,7 @@ class AddEditIngredientStockNameTextField extends StatelessWidget {
             highlightColor: whiteColor,
             child: Container(
               height: 45,
-              width: MediaQuery.of(context).size.width / 2,
+              width: 50,
               decoration: BoxDecoration(
                 color: whiteColor,
                 borderRadius: BorderRadius.circular(5),
@@ -28,7 +28,7 @@ class AddEditIngredientStockNameTextField extends StatelessWidget {
           )
         : Container(
             height: 45,
-            width: MediaQuery.of(context).size.width / 2,
+            width: 50,
             padding: const EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
               color: greyColor,
@@ -36,16 +36,14 @@ class AddEditIngredientStockNameTextField extends StatelessWidget {
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  text,
+                  "${text.toLowerCase()}.",
                   style: const TextStyle(
                     fontSize: 13,
                     fontFamily: 'Inter',
                     fontStyle: FontStyle.normal,
                     fontWeight: FontWeight.w400,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
