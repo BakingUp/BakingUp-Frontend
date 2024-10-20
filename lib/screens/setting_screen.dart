@@ -1,5 +1,11 @@
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/constants/routes.dart';
+import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
+import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
+import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
+import 'package:bakingup_frontend/widgets/baking_up_loading_dialog.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -11,6 +17,50 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   final int _currentDrawerIndex = 10;
+  final String userID = "2";
+  User? user = FirebaseAuth.instance.currentUser;
+  Future<void> _deleteAccount() async {
+    showDialog(
+      context: context,
+      barrierColor: greyColor,
+      builder: (BuildContext context) {
+        return const BakingUpLoadingDialog();
+      },
+    );
+
+    try {
+      if (user != null) {
+        await user?.delete();
+      }
+
+      await NetworkService.instance
+          .delete('/api/settings/deleteAccount?user_id=$userID');
+
+      if (mounted) {
+        Navigator.of(context).pop();
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          loginRoute,
+          (route) => false,
+        );
+      }
+    } catch (error) {
+      if (mounted) {
+        Navigator.of(context).pop();
+
+        Navigator.of(context).overlay!.insert(
+          OverlayEntry(
+            builder: (BuildContext context) {
+              return const BakingUpErrorTopNotification(
+                message:
+                    "Sorry, we couldn’t delete the user account due to a system error. Please try again later.",
+              );
+            },
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -250,7 +300,28 @@ class _SettingScreenState extends State<SettingScreen> {
                         children: [
                           const Spacer(),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return BakingUpDialog(
+                                      title: "Confirm Delete?",
+                                      imgUrl: "assets/icons/delete_warning.png",
+                                      content:
+                                          "This will permanently delete this account. Are you sure you want to proceed?",
+                                      grayButtonTitle: "Cancel",
+                                      secondButtonTitle: "Delete",
+                                      secondButtonColor: lightRedColor,
+                                      grayButtonOnClick: () {
+                                        Navigator.pop(context);
+                                      },
+                                      secondButtonOnClick: () {
+                                        Navigator.of(context).pop();
+                                        _deleteAccount();
+                                      },
+                                    );
+                                  });
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: whiteColor,
                               shape: RoundedRectangleBorder(
