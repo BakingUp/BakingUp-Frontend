@@ -1,8 +1,10 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/constants/routes.dart';
+import 'package:bakingup_frontend/models/setting.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
+import 'package:bakingup_frontend/widgets/baking_up_dropdown_bottom_sheet.dart';
 import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
 import 'package:bakingup_frontend/widgets/baking_up_loading_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,9 +18,12 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
-  final int _currentDrawerIndex = 10;
-  final String userID = "2";
+  final int _currentDrawerIndex = 5;
   User? user = FirebaseAuth.instance.currentUser;
+  final user_id = "1";
+  final List<String> languageOption = ["English", "Thai"];
+  String selectedLanguage = "";
+
   Future<void> _deleteAccount() async {
     showDialog(
       context: context,
@@ -34,7 +39,7 @@ class _SettingScreenState extends State<SettingScreen> {
       }
 
       await NetworkService.instance
-          .delete('/api/settings/deleteAccount?user_id=$userID');
+          .delete('/api/settings/deleteAccount?user_id=${user?.uid}');
 
       if (mounted) {
         Navigator.of(context).pop();
@@ -59,6 +64,44 @@ class _SettingScreenState extends State<SettingScreen> {
         );
       }
     }
+  }
+
+  Future<void> _getUserLanguage() async {
+    final response = await NetworkService.instance
+        .get('/api/settings/getLanguage?user_id=$user_id');
+
+    final userLanguageResponse = UserLanguageResponse.fromJson(response);
+    final data = userLanguageResponse.data;
+    setState(() {
+      selectedLanguage = data.language;
+    });
+  }
+
+  Future<void> _changeUserLanguage() async {
+    final data = {"user_id": user_id, "language": selectedLanguage};
+    try {
+      await NetworkService.instance
+          .put('/api/settings/changeLanguage', data: data);
+    } catch (e) {
+      if (mounted) {
+        Navigator.of(context).overlay!.insert(
+          OverlayEntry(
+            builder: (BuildContext context) {
+              return const BakingUpErrorTopNotification(
+                message:
+                    "Sorry, we couldn’t update the user language due to a system error. Please try again later.",
+              );
+            },
+          ),
+        );
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    _getUserLanguage();
+    super.initState();
   }
 
   @override
@@ -193,6 +236,44 @@ class _SettingScreenState extends State<SettingScreen> {
                   ),
                 ),
                 trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  if (selectedLanguage != "") {
+                    showModalBottomSheet(
+                      context: context,
+                      backgroundColor: backgroundColor,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(40.0),
+                          topRight: Radius.circular(40.0),
+                        ),
+                      ),
+                      builder: (BuildContext context) {
+                        return BakingUpDropdownBottomSheet(
+                          options: languageOption,
+                          topic: 'Language',
+                          selectedOption: selectedLanguage,
+                          onApply: (String value) {
+                            setState(() {
+                              selectedLanguage = value;
+                            });
+                            _changeUserLanguage();
+                          },
+                        );
+                      },
+                    );
+                  } else {
+                    Navigator.of(context).overlay!.insert(
+                      OverlayEntry(
+                        builder: (BuildContext context) {
+                          return const BakingUpErrorTopNotification(
+                            message:
+                                "Sorry, we couldn’t get the user language due to a system error. Please try again later.",
+                          );
+                        },
+                      ),
+                    );
+                  }
+                },
               ),
               ListTile(
                 title: Padding(
