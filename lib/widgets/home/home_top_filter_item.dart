@@ -55,6 +55,14 @@ class HomeTopFilterItem extends StatelessWidget {
                       width: 100,
                       height: 70,
                       fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          'assets/icons/no-image.jpg',
+                          width: 100,
+                          height: 70,
+                          fit: BoxFit.cover,
+                        );
+                      },
                     ),
                   ),
                   const Padding(padding: EdgeInsets.only(right: 16.0)),

@@ -83,6 +83,11 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
                   _recipeImages.add(image);
                 });
               },
+              onImgDelete: (index) {
+                setState(() {
+                  _recipeImages.removeAt(index);
+                });
+              },
             ),
           ] else ...[
             AddEditRecipePageTwo(
@@ -96,6 +101,11 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
               onNewImage: (File image) {
                 setState(() {
                   _instructionImages.add(image);
+                });
+              },
+              onImgDelete: (index) {
+                setState(() {
+                  _instructionImages.removeAt(index);
                 });
               },
             ),
