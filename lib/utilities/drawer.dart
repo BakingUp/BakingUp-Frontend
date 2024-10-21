@@ -3,6 +3,7 @@ import 'package:bakingup_frontend/constants/routes.dart';
 import 'package:bakingup_frontend/models/user_info.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/menu_item.dart';
+import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
@@ -204,11 +205,28 @@ class _BakingUpDrawerState extends State<BakingUpDrawer> {
             ],
           ),
           const Spacer(),
-          GestureDetector(
-            onTap: () {
-              _signOut();
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil(loginRoute, (route) => false);
+          TextButton(
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  barrierColor: const Color(0xC7D9D9D9),
+                  builder: (BuildContext context) {
+                    return BakingUpDialog(
+                      title: 'Confirm Logout?',
+                      imgUrl: 'assets/icons/warning.png',
+                      content: 'Are you sure to logout from this account?',
+                      grayButtonTitle: 'Cancel',
+                      secondButtonTitle: 'Confirm',
+                      grayButtonOnClick: () {
+                        Navigator.pop(context);
+                      },
+                      secondButtonOnClick: () {
+                        _signOut();
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                            loginRoute, (route) => false);
+                      },
+                    );
+                  });
             },
             child: Text(
               "Log out",
