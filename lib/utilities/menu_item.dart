@@ -2,12 +2,14 @@ import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:flutter/material.dart';
 
 class MenuItem extends StatelessWidget {
+  final int index;
   final int currentDrawerIndex;
   final String url;
   final String title;
   final String routeName;
   const MenuItem(
       {super.key,
+      required this.index,
       required this.currentDrawerIndex,
       required this.url,
       required this.title,
@@ -16,7 +18,7 @@ class MenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      tileColor: currentDrawerIndex == 0 ? greyColor : whiteColor,
+      tileColor: index == currentDrawerIndex ? greyColor : whiteColor,
       title: Row(
         children: [
           const SizedBox(

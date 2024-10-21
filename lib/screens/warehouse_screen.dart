@@ -4,6 +4,7 @@ import 'package:bakingup_frontend/models/warehouse.dart';
 import 'package:bakingup_frontend/screens/add_edit_ingredient_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_recipe_screen.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:bakingup_frontend/utilities/bottom_navbar.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_modal_bottom.dart';
@@ -24,7 +25,7 @@ class WarehouseScreen extends StatefulWidget {
 
 class _WarehouseScreenState extends State<WarehouseScreen> {
   int tabIndex = 1;
-  final int _currentDrawerIndex = 3;
+  final int _currentDrawerIndex = 2;
   bool isLoading = true;
   bool isError = true;
   List<RecipeItemData> recipes = [];
@@ -313,6 +314,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
           drawer: BakingUpDrawer(
             currentDrawerIndex: _currentDrawerIndex,
           ),
+          bottomNavigationBar: const BottomNavbar(),
           body: Container(
               margin: const EdgeInsets.only(top: 15),
               child: Column(

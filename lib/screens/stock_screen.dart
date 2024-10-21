@@ -20,7 +20,7 @@ class StockScreen extends StatefulWidget {
 }
 
 class _StockScreenState extends State<StockScreen> {
-  final int _currentDrawerIndex = 9;
+  final int _currentDrawerIndex = 4;
   bool isLoading = false;
   bool isError = false;
   List<StockItemData> stocks = [];

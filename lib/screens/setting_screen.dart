@@ -9,7 +9,7 @@ class SettingScreen extends StatefulWidget {
 }
 
 class _SettingScreenState extends State<SettingScreen> {
-  final int _currentDrawerIndex = 10;
+  final int _currentDrawerIndex = 5;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
