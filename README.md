@@ -39,3 +39,11 @@ Welcome to the BakingUp Frontend Repository!
 ### 4. Start the Application
  - Select an iOS or android device to start the simulator.
  - Run the application by choosing either `Start Debugging` or `Run Without Debugging` from your IDE.
+
+### 5. Access API Documentation (Swagger)
+- Open your browser and go to the following URL to access the Swagger documentation for API endpoints:
+
+    ```env
+    http://localhost:8000/swagger/index.html
+    ```
+- Note: Ensure that the backend server is running on port 8000 for the documentation to load properly.
