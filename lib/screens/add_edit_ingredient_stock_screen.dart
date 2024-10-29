@@ -2,8 +2,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'package:bakingup_frontend/services/network_service.dart';
-import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
+import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_unit.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -12,14 +11,16 @@ import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ing
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_title.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_delete_button.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_expiration_date_field.dart';
-// import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_name_text_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_text_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_note_text_field.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
-// import 'package:bakingup_frontend/widgets/baking_up_dropdown.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_image_picker.dart';
 import 'package:bakingup_frontend/models/add_edit_ingredient_stock_controller.dart';
+import 'package:bakingup_frontend/models/add_edit_ingredient_stock_detail.dart';
+import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_name_text_field.dart';
+import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
 
 class AddEditIngredientStockScreen extends StatefulWidget {
   final String? ingredientId;
@@ -35,6 +36,12 @@ class _AddEditIngredientStockScreenState
   final bool _isEdit = false;
   final List<File> _images = [];
   String selectedUnit = '';
+  bool isLoading = true;
+  bool isError = false;
+  String ingredientEngName = '';
+  String ingredientThaiName = '';
+  String unit = '';
+
   final AddEditIngredientStockController _controller =
       AddEditIngredientStockController();
 
@@ -43,6 +50,42 @@ class _AddEditIngredientStockScreenState
       final bytes = file.readAsBytesSync();
       return base64Encode(bytes);
     }).toList();
+  }
+
+  Future<void> _fetchAddEditIngredientStockDetail() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final response = await NetworkService.instance.get(
+        '/api/ingredient/getAddEditIngredientStockDetail?ingredient_id=${widget.ingredientId}',
+      );
+
+      final addEditIngredientDetailResponse =
+          AddEditIngredientStockDetailResponse.fromJson(response);
+      final data = addEditIngredientDetailResponse.data;
+
+      setState(() {
+        ingredientEngName = data.ingredientEngName;
+        ingredientThaiName = data.ingredientThaiName;
+        unit = data.unit;
+      });
+    } catch (e) {
+      setState(() {
+        isError = true;
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchAddEditIngredientStockDetail();
   }
 
   @override
@@ -105,50 +148,51 @@ class _AddEditIngredientStockScreenState
               });
             },
           ),
-          // const SizedBox(height: 16),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.start,
-          //   crossAxisAlignment: CrossAxisAlignment.start,
-          //   children: [
-          //     Row(
-          //       children: [
-          //         const Text(
-          //           'Ingredient Name',
-          //           style: TextStyle(
-          //             fontSize: 16,
-          //             fontFamily: 'Inter',
-          //             fontStyle: FontStyle.normal,
-          //             fontWeight: FontWeight.w400,
-          //           ),
-          //         ),
-          //         Text(
-          //           '*',
-          //           style: TextStyle(
-          //             color: redColor,
-          //             fontSize: 20,
-          //             fontFamily: 'Inter',
-          //             fontStyle: FontStyle.normal,
-          //             fontWeight: FontWeight.w400,
-          //           ),
-          //         ),
-          //         const SizedBox(width: 16),
-          //       ],
-          //     ),
-          //     Column(
-          //       children: [
-          //         AddEditIngredientStockNameTextField(
-          //           label: 'English',
-          //           controller: _controller.engNameController,
-          //         ),
-          //         const SizedBox(height: 16),
-          //         AddEditIngredientStockNameTextField(
-          //           label: 'Thai',
-          //           controller: _controller.thaiNameController,
-          //         ),
-          //       ],
-          //     ),
-          //   ],
-          // ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Text(
+                    'Ingredient Name',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: 'Inter',
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  Text(
+                    '*',
+                    style: TextStyle(
+                      color: redColor,
+                      fontSize: 20,
+                      fontFamily: 'Inter',
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AddEditIngredientStockNameTextField(
+                    text: ingredientEngName,
+                    isLoading: isLoading,
+                  ),
+                  const SizedBox(height: 16),
+                  AddEditIngredientStockNameTextField(
+                    text: ingredientThaiName,
+                    isLoading: isLoading,
+                  ),
+                ],
+              ),
+            ],
+          ),
           const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -207,47 +251,36 @@ class _AddEditIngredientStockScreenState
                   const SizedBox(width: 16),
                 ],
               ),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.start,
-              //   crossAxisAlignment: CrossAxisAlignment.start,
-              //   children: [
-              //     const Text(
-              //       'Unit',
-              //       style: TextStyle(
-              //         fontSize: 16,
-              //         fontFamily: 'Inter',
-              //         fontStyle: FontStyle.normal,
-              //         fontWeight: FontWeight.w400,
-              //       ),
-              //     ),
-              //     Text(
-              //       '*',
-              //       style: TextStyle(
-              //         color: redColor,
-              //         fontSize: 20,
-              //         fontFamily: 'Inter',
-              //         fontStyle: FontStyle.normal,
-              //         fontWeight: FontWeight.w400,
-              //       ),
-              //     ),
-              //     const SizedBox(width: 8),
-              //     BakingUpDropdown(
-              //       options: const [
-              //         'Grams',
-              //         'Kilograms',
-              //         'Litres',
-              //         'Millilitres',
-              //       ],
-              //       topic: 'Unit',
-              //       selectedOption: selectedUnit,
-              //       onApply: (String value) {
-              //         setState(() {
-              //           selectedUnit = value;
-              //         });
-              //       },
-              //     ),
-              //   ],
-              // ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Unit',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: 'Inter',
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  Text(
+                    '*',
+                    style: TextStyle(
+                      color: redColor,
+                      fontSize: 20,
+                      fontFamily: 'Inter',
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  AddEditIngredientStockUnit(
+                    text: unit,
+                    isLoading: isLoading,
+                  ),
+                ],
+              ),
             ],
           ),
           const SizedBox(height: 16),
