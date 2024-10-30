@@ -7,6 +7,8 @@ import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dropdown_bottom_sheet.dart';
 import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
 import 'package:bakingup_frontend/widgets/baking_up_loading_dialog.dart';
+import 'package:bakingup_frontend/widgets/setting/setting_change_password_dialog.dart';
+import 'package:bakingup_frontend/widgets/setting/setting_change_password_email_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -23,6 +25,18 @@ class _SettingScreenState extends State<SettingScreen> {
   final user_id = "1";
   final List<String> languageOption = ["English", "Thai"];
   String selectedLanguage = "";
+  UserFixCostData fixcost = UserFixCostData(
+      rent: 0,
+      salaries: 0,
+      insurance: 0,
+      subscriptions: 0,
+      advertising: 0,
+      electricity: 0,
+      water: 0,
+      gas: 0,
+      other: 0);
+  UserExpiredColorData expirationDateColors = UserExpiredColorData(
+      blackExpirationDate: 0, redExpirationDate: 0, yellowExpirationDate: 0);
 
   Future<void> _deleteAccount() async {
     showDialog(
@@ -98,9 +112,136 @@ class _SettingScreenState extends State<SettingScreen> {
     }
   }
 
+  Future<void> _getFixCost() async {
+    try {
+      final response = await NetworkService.instance
+          .get('/api/settings/getFixCost?user_id=$user_id');
+
+      final fixcostResponse = UserFixCostResponse.fromJson(response);
+      final data = fixcostResponse.data;
+
+      setState(() {
+        fixcost = data;
+      });
+      print(fixcost);
+    } catch (e) {}
+  }
+
+  Future<void> _getExpirationDateColors() async {
+    print(expirationDateColors.blackExpirationDate);
+    try {
+      final response = await NetworkService.instance
+          .get('/api/settings/getColorExpired?user_id=$user_id');
+
+      final expirationColorsResponse =
+          UserExpiredColorResponse.fromJson(response);
+      final data = expirationColorsResponse.data;
+
+      setState(() {
+        expirationDateColors = data;
+      });
+    } catch (e) {}
+  }
+
+  void _showPasswordDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SettingChangePasswordDialog(
+          title: "Change Password",
+          content: "Enter your old password to create a new password",
+          redButtonFunction: () {
+            Navigator.of(context).pop();
+
+            _showForgotPasswordDialog();
+          },
+          grayButtonOnClick: () {
+            Navigator.of(context).pop();
+          },
+          secondButtonTitle: "Confirm",
+          secondButtonOnClick: () {
+            Navigator.of(context).pop();
+
+            _showSetNewPasswordDialog();
+          },
+        );
+      },
+    );
+  }
+
+  void _showSetNewPasswordDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SettingChangePasswordDialog(
+          title: "Password reset",
+          content: "Set a new password",
+          resetPasswordMode: true,
+          grayButtonOnClick: () {
+            Navigator.of(context).pop();
+          },
+          secondButtonTitle: "Set password",
+          secondButtonOnClick: () {
+            Navigator.of(context).pop();
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return BakingUpDialog(
+                    title: 'Password Changed Successfully',
+                    imgUrl: 'assets/icons/success.png',
+                    content:
+                        'For security purposes, you will need to log in again with your new password on other devices.',
+                    grayButtonTitle: 'OK',
+                    grayButtonOnClick: () {
+                      Navigator.of(context).pop();
+                    },
+                  );
+                });
+          },
+        );
+      },
+    );
+  }
+
+  void _showForgotPasswordDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SettingChangePasswordDialog(
+          title: "Change Password",
+          content: "Enter your email to create new password",
+          backButton: true,
+          backButtonFunction: () {
+            Navigator.of(context).pop();
+
+            _showPasswordDialog();
+          },
+          grayButtonOnClick: () {
+            Navigator.of(context).pop();
+          },
+          secondButtonTitle: "Confirm",
+          secondButtonOnClick: () {
+            Navigator.of(context).pop();
+            _showVerifyEmailDialog();
+          },
+        );
+      },
+    );
+  }
+
+  void _showVerifyEmailDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return const SettingChangePasswordEmailDialog();
+        });
+  }
+
   @override
   void initState() {
     _getUserLanguage();
+    _getExpirationDateColors();
+    _getFixCost();
     super.initState();
   }
 
@@ -201,6 +342,9 @@ class _SettingScreenState extends State<SettingScreen> {
                   ),
                 ),
                 trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () async {
+                  _showPasswordDialog();
+                },
               ),
               const Text(
                 "Setting",
