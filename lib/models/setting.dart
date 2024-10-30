@@ -91,7 +91,7 @@ class UserExpiredColorResponse {
 class UserExpiredColorData {
   @JsonKey(name: 'black_expiration_date')
   final int blackExpirationDate;
-  @JsonKey(name: 'red_expiration_data')
+  @JsonKey(name: 'red_expiration_date')
   final int redExpirationDate;
   @JsonKey(name: 'yellow_expiration_date')
   final int yellowExpirationDate;

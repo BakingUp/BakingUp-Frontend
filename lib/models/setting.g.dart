@@ -93,7 +93,7 @@ UserExpiredColorData _$UserExpiredColorDataFromJson(
         Map<String, dynamic> json) =>
     UserExpiredColorData(
       blackExpirationDate: (json['black_expiration_date'] as num).toInt(),
-      redExpirationDate: (json['red_expiration_data'] as num).toInt(),
+      redExpirationDate: (json['red_expiration_date'] as num).toInt(),
       yellowExpirationDate: (json['yellow_expiration_date'] as num).toInt(),
     );
 
@@ -101,6 +101,6 @@ Map<String, dynamic> _$UserExpiredColorDataToJson(
         UserExpiredColorData instance) =>
     <String, dynamic>{
       'black_expiration_date': instance.blackExpirationDate,
-      'red_expiration_data': instance.redExpirationDate,
+      'red_expiration_date': instance.redExpirationDate,
       'yellow_expiration_date': instance.yellowExpirationDate,
     };

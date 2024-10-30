@@ -9,6 +9,7 @@ import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart'
 import 'package:bakingup_frontend/widgets/baking_up_loading_dialog.dart';
 import 'package:bakingup_frontend/widgets/setting/setting_change_password_dialog.dart';
 import 'package:bakingup_frontend/widgets/setting/setting_change_password_email_dialog.dart';
+import 'package:bakingup_frontend/widgets/setting/setting_expired_color_icon_modal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -127,22 +128,6 @@ class _SettingScreenState extends State<SettingScreen> {
     } catch (e) {}
   }
 
-  Future<void> _getExpirationDateColors() async {
-    print(expirationDateColors.blackExpirationDate);
-    try {
-      final response = await NetworkService.instance
-          .get('/api/settings/getColorExpired?user_id=$user_id');
-
-      final expirationColorsResponse =
-          UserExpiredColorResponse.fromJson(response);
-      final data = expirationColorsResponse.data;
-
-      setState(() {
-        expirationDateColors = data;
-      });
-    } catch (e) {}
-  }
-
   void _showPasswordDialog() {
     showDialog(
       context: context,
@@ -240,7 +225,6 @@ class _SettingScreenState extends State<SettingScreen> {
   @override
   void initState() {
     _getUserLanguage();
-    _getExpirationDateColors();
     _getFixCost();
     super.initState();
   }
@@ -483,6 +467,20 @@ class _SettingScreenState extends State<SettingScreen> {
                   ),
                 ),
                 trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  showModalBottomSheet(
+                      context: context,
+                      backgroundColor: backgroundColor,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(40.0),
+                          topRight: Radius.circular(40.0),
+                        ),
+                      ),
+                      builder: (BuildContext context) {
+                        return const SettingExpiredColorIconModal();
+                      });
+                },
               ),
               Padding(
                   padding: EdgeInsets.only(
