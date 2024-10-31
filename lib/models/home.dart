@@ -54,15 +54,11 @@ class DashboardChartResponse {
 class DashboardChartData {
   @JsonKey(name: 'cost_revenue')
   final List<CostRevenueData> costRevenue;
-  @JsonKey(name: 'net_profit')
-  final List<NetProfitData> netProfit;
   @JsonKey(name: 'profit_threshold')
   final List<ProfitThreshold> profitThreshold;
 
   DashboardChartData(
-      {required this.costRevenue,
-      required this.netProfit,
-      required this.profitThreshold});
+      {required this.costRevenue, required this.profitThreshold});
 
   factory DashboardChartData.fromJson(Map<String, dynamic> json) =>
       _$DashboardChartDataFromJson(json);
@@ -86,18 +82,6 @@ class CostRevenueData {
   factory CostRevenueData.fromJson(Map<String, dynamic> json) =>
       _$CostRevenueDataFromJson(json);
   Map<String, dynamic> toJson() => _$CostRevenueDataToJson(this);
-}
-
-@JsonSerializable()
-class NetProfitData {
-  final String month;
-  final double profit;
-
-  NetProfitData({required this.month, required this.profit});
-
-  factory NetProfitData.fromJson(Map<String, dynamic> json) =>
-      _$NetProfitDataFromJson(json);
-  Map<String, dynamic> toJson() => _$NetProfitDataToJson(this);
 }
 
 @JsonSerializable()
