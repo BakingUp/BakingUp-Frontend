@@ -1,3 +1,4 @@
+import 'package:bakingup_frontend/utilities/bottom_navbar.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:flutter/material.dart';
 
@@ -9,7 +10,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final int _currentDrawerIndex = 8;
+  final int _currentDrawerIndex = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,6 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         drawer: BakingUpDrawer(
           currentDrawerIndex: _currentDrawerIndex,
         ),
+        bottomNavigationBar: const BottomNavbar(),
         body: const Text("Profile ja"));
   }
 }

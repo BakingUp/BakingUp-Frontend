@@ -1,15 +1,65 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/constants/routes.dart';
+import 'package:bakingup_frontend/models/user_info.dart';
+import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/menu_item.dart';
+import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
-class BakingUpDrawer extends StatelessWidget {
-  const BakingUpDrawer({super.key, required this.currentDrawerIndex});
+class BakingUpDrawer extends StatefulWidget {
   final int currentDrawerIndex;
+  const BakingUpDrawer({super.key, required this.currentDrawerIndex});
+
+  @override
+  State<BakingUpDrawer> createState() => _BakingUpDrawerState();
+}
+
+class _BakingUpDrawerState extends State<BakingUpDrawer> {
+  User? user;
+  UserInfoData userInfo =
+      UserInfoData(firstName: "", lastName: "", tel: "", storeName: "");
+  bool isLoading = true;
+  bool isError = false;
 
   Future<void> _signOut() async {
     await FirebaseAuth.instance.signOut();
+  }
+
+  Future<void> _getUserInfo() async {
+    setState(() {
+      isLoading = true;
+      user = FirebaseAuth.instance.currentUser;
+    });
+
+    try {
+      final userID = user!.uid;
+
+      final response = await NetworkService.instance
+          .get('/api/user/getUserInfo?user_id=$userID');
+
+      final userResponse = UserInfoResponse.fromJson(response);
+      final data = userResponse.data;
+
+      setState(() {
+        userInfo = data;
+      });
+    } catch (e) {
+      setState(() {
+        isError = true;
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserInfo();
   }
 
   @override
@@ -28,88 +78,158 @@ class BakingUpDrawer extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(13),
-                      child: Image.network(
-                        'https://s3-alpha-sig.figma.com/img/4a30/7ce0/21b6607d5de531d52805588265ca8b8c?Expires=1729468800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=DqHblQJTVuknYWdZNhk981CJgPQlvVgVVFwDDrq~uwTxKT0UCenjIoeYTcoG8Y~fdK15PSpNJqGg2U82aATQFNOyBjTr4J5iArqnKPWV1lUs2f9BVIt1WlvbCJ5AnUV273QDJTkxnHldua02Rfs9gzIhpTMvK2XCwgEOtJvUA51x8RfHUY8dqVu~sEqkC671N6DpyHLA9Tps89UjEjHHVfwWSXCkLD5-d8TFIjquLaJONAVeCoyopt01wGzNBDXhYxJi3E-39fGRcA3pyXHxQhV-zJIeAY0uyZc29oM3hCHxGTzMqr3n7KKeKWVGFMZDG9Z~N8SjzUXSHTP5~omIlg__',
-                        width: 45,
-                        height: 45,
-                        fit: BoxFit.cover,
-                      ),
+                    Stack(
+                      children: [
+                        if (isLoading)
+                          Shimmer.fromColors(
+                            baseColor: greyColor,
+                            highlightColor: whiteColor,
+                            child: Container(
+                              width: 50,
+                              height: 50,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          )
+                        else
+                          Container(
+                            width: 50,
+                            height: 50,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                                color: brownColor, shape: BoxShape.circle),
+                            child: Text(
+                              '${userInfo.firstName.isNotEmpty ? userInfo.firstName[0] : ''}'
+                              '${userInfo.lastName.isNotEmpty ? userInfo.lastName[0] : ''}',
+                              style: TextStyle(
+                                color: beigeColor,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w700,
+                                fontSize: 24,
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                     const SizedBox(
                       width: 10,
                     ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Orathai J.",
-                          style: TextStyle(
-                            color: blackColor,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          "orathai.jam@gmail.com",
-                          style: TextStyle(
-                            color: blackColor,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 12,
-                          ),
-                        )
-                      ],
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (isLoading)
+                            Shimmer.fromColors(
+                              baseColor: greyColor,
+                              highlightColor: whiteColor,
+                              child: Container(
+                                width: 100,
+                                height: 20,
+                                color: Colors.white,
+                              ),
+                            )
+                          else
+                            Text(
+                              '${userInfo.firstName} ${userInfo.lastName}',
+                              style: TextStyle(
+                                color: blackColor,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16,
+                              ),
+                            ),
+                          if (isLoading)
+                            Shimmer.fromColors(
+                              baseColor: greyColor,
+                              highlightColor: whiteColor,
+                              child: Container(
+                                width: 80,
+                                height: 15,
+                                color: Colors.white,
+                              ),
+                            )
+                          else
+                            Text(
+                              user?.email ?? '',
+                              style: TextStyle(
+                                color: blackColor,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,
+                                fontSize: 12,
+                              ),
+                            ),
+                        ],
+                      ),
                     )
                   ],
                 ),
               ),
-              const MenuItem(
-                  currentDrawerIndex: 0,
+              MenuItem(
+                  index: 0,
+                  currentDrawerIndex: widget.currentDrawerIndex,
                   url: "assets/icons/home_icon.png",
                   title: "Home",
                   routeName: homeRoute),
-              const MenuItem(
-                  currentDrawerIndex: 1,
+              MenuItem(
+                  index: 1,
+                  currentDrawerIndex: widget.currentDrawerIndex,
                   url: "assets/icons/profile_icon.png",
                   title: "Profile",
                   routeName: profileRoute),
-              const MenuItem(
-                  currentDrawerIndex: 2,
+              MenuItem(
+                  index: 2,
+                  currentDrawerIndex: widget.currentDrawerIndex,
                   url: "assets/icons/warehouse_icon.png",
                   title: "Warehouse",
                   routeName: warehouseRoute),
-              const MenuItem(
-                  currentDrawerIndex: 3,
+              MenuItem(
+                  index: 3,
+                  currentDrawerIndex: widget.currentDrawerIndex,
                   url: "assets/icons/order_icon.png",
                   title: "Order",
                   routeName: orderRoute),
-              const MenuItem(
-                  currentDrawerIndex: 4,
+              MenuItem(
+                  index: 4,
+                  currentDrawerIndex: widget.currentDrawerIndex,
                   url: "assets/icons/bakery_icon.png",
                   title: "Bakery Stock",
                   routeName: stockRoute),
-              const MenuItem(
-                  currentDrawerIndex: 5,
+              MenuItem(
+                  index: 5,
+                  currentDrawerIndex: widget.currentDrawerIndex,
                   url: "assets/icons/setting_icon.png",
                   title: "Setting",
                   routeName: settingsRoute),
             ],
           ),
           const Spacer(),
-          GestureDetector(
-            onTap: () {
-              _signOut();
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil(loginRoute, (route) => false);
+          TextButton(
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  barrierColor: const Color(0xC7D9D9D9),
+                  builder: (BuildContext context) {
+                    return BakingUpDialog(
+                      title: 'Confirm Logout?',
+                      imgUrl: 'assets/icons/warning.png',
+                      content: 'Are you sure to logout from this account?',
+                      grayButtonTitle: 'Cancel',
+                      secondButtonTitle: 'Confirm',
+                      grayButtonOnClick: () {
+                        Navigator.pop(context);
+                      },
+                      secondButtonOnClick: () {
+                        _signOut();
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                            loginRoute, (route) => false);
+                      },
+                    );
+                  });
             },
             child: Text(
-              "Logout",
+              "Log out",
               style: TextStyle(
                 color: redColor,
                 fontFamily: 'Poppins',
