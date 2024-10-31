@@ -24,20 +24,8 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
   final int _currentDrawerIndex = 5;
   User? user = FirebaseAuth.instance.currentUser;
-  final user_id = "1";
   final List<String> languageOption = ["English", "Thai"];
   String selectedLanguage = "";
-  // UserFixCostData fixcost = UserFixCostData(
-  //     rent: 0,
-  //     salaries: 0,
-  //     insurance: 0,
-  //     subscriptions: 0,
-  //     advertising: 0,
-  //     electricity: 0,
-  //     water: 0,
-  //     gas: 0,
-  //     other: 0);
-
   Future<void> _deleteAccount() async {
     showDialog(
       context: context,
@@ -82,7 +70,7 @@ class _SettingScreenState extends State<SettingScreen> {
 
   Future<void> _getUserLanguage() async {
     final response = await NetworkService.instance
-        .get('/api/settings/getLanguage?user_id=$user_id');
+        .get('/api/settings/getLanguage?user_id=1');
 
     final userLanguageResponse = UserLanguageResponse.fromJson(response);
     final data = userLanguageResponse.data;
@@ -92,7 +80,7 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   Future<void> _changeUserLanguage() async {
-    final data = {"user_id": user_id, "language": selectedLanguage};
+    final data = {"user_id": "1", "language": selectedLanguage};
     try {
       await NetworkService.instance
           .put('/api/settings/changeLanguage', data: data);
@@ -431,10 +419,9 @@ class _SettingScreenState extends State<SettingScreen> {
                             minChildSize: 1,
                             maxChildSize: 1,
                             builder: (context, scrollController) {
-                              return SettingFixCostModal();
+                              return const SettingFixCostModal();
                             },
                           ));
-                      ;
                     },
                   );
                 },

@@ -284,8 +284,7 @@ class _SettingChangePasswordDialogState
                               value.isEmpty && widget.backButton != true) {
                             setState(() => errorMessage = "");
                             return 'Please enter password';
-                          } else if ((value == null ||
-                                  value.isEmpty ||
+                          } else if ((value.isEmpty ||
                                   !RegExp(r'^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$')
                                       .hasMatch(value)) &&
                               widget.backButton == true) {

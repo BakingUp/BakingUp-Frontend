@@ -39,7 +39,7 @@ class _SettingFixCostModalState extends State<SettingFixCostModal> {
         fixcostController.note = data.note.toString();
       });
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 
@@ -61,9 +61,11 @@ class _SettingFixCostModalState extends State<SettingFixCostModal> {
 
       await NetworkService.instance
           .put('/api/settings/changeFixCost', data: data);
-
+//ignore: use_build_context_synchronously
       Navigator.of(context).pop();
-    } catch (e) {}
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   void handleNoErrorMessage() {
