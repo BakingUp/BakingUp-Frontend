@@ -49,6 +49,7 @@ Map<String, dynamic> _$UserFixCostResponseToJson(
 
 UserFixCostData _$UserFixCostDataFromJson(Map<String, dynamic> json) =>
     UserFixCostData(
+      id: json['id'] as String,
       rent: (json['rent'] as num).toDouble(),
       salaries: (json['salaries'] as num).toDouble(),
       insurance: (json['insurance'] as num).toDouble(),
@@ -58,10 +59,12 @@ UserFixCostData _$UserFixCostDataFromJson(Map<String, dynamic> json) =>
       water: (json['water'] as num).toDouble(),
       gas: (json['gas'] as num).toDouble(),
       other: (json['other'] as num).toDouble(),
+      note: json['note'] as String,
     );
 
 Map<String, dynamic> _$UserFixCostDataToJson(UserFixCostData instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'rent': instance.rent,
       'salaries': instance.salaries,
       'insurance': instance.insurance,
@@ -71,6 +74,7 @@ Map<String, dynamic> _$UserFixCostDataToJson(UserFixCostData instance) =>
       'water': instance.water,
       'gas': instance.gas,
       'other': instance.other,
+      'note': instance.note,
     };
 
 UserExpiredColorResponse _$UserExpiredColorResponseFromJson(

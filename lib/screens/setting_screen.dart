@@ -10,6 +10,7 @@ import 'package:bakingup_frontend/widgets/baking_up_loading_dialog.dart';
 import 'package:bakingup_frontend/widgets/setting/setting_change_password_dialog.dart';
 import 'package:bakingup_frontend/widgets/setting/setting_change_password_email_dialog.dart';
 import 'package:bakingup_frontend/widgets/setting/setting_expired_color_icon_modal.dart';
+import 'package:bakingup_frontend/widgets/setting/setting_fixcost_modal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -26,18 +27,16 @@ class _SettingScreenState extends State<SettingScreen> {
   final user_id = "1";
   final List<String> languageOption = ["English", "Thai"];
   String selectedLanguage = "";
-  UserFixCostData fixcost = UserFixCostData(
-      rent: 0,
-      salaries: 0,
-      insurance: 0,
-      subscriptions: 0,
-      advertising: 0,
-      electricity: 0,
-      water: 0,
-      gas: 0,
-      other: 0);
-  UserExpiredColorData expirationDateColors = UserExpiredColorData(
-      blackExpirationDate: 0, redExpirationDate: 0, yellowExpirationDate: 0);
+  // UserFixCostData fixcost = UserFixCostData(
+  //     rent: 0,
+  //     salaries: 0,
+  //     insurance: 0,
+  //     subscriptions: 0,
+  //     advertising: 0,
+  //     electricity: 0,
+  //     water: 0,
+  //     gas: 0,
+  //     other: 0);
 
   Future<void> _deleteAccount() async {
     showDialog(
@@ -111,21 +110,6 @@ class _SettingScreenState extends State<SettingScreen> {
         );
       }
     }
-  }
-
-  Future<void> _getFixCost() async {
-    try {
-      final response = await NetworkService.instance
-          .get('/api/settings/getFixCost?user_id=$user_id');
-
-      final fixcostResponse = UserFixCostResponse.fromJson(response);
-      final data = fixcostResponse.data;
-
-      setState(() {
-        fixcost = data;
-      });
-      print(fixcost);
-    } catch (e) {}
   }
 
   void _showPasswordDialog() {
@@ -225,7 +209,6 @@ class _SettingScreenState extends State<SettingScreen> {
   @override
   void initState() {
     _getUserLanguage();
-    _getFixCost();
     super.initState();
   }
 
@@ -429,6 +412,32 @@ class _SettingScreenState extends State<SettingScreen> {
                   ),
                 ),
                 trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    backgroundColor: backgroundColor,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(40.0),
+                        topRight: Radius.circular(40.0),
+                      ),
+                    ),
+                    isScrollControlled: true,
+                    builder: (BuildContext context) {
+                      return SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.90,
+                          child: DraggableScrollableSheet(
+                            initialChildSize: 1,
+                            minChildSize: 1,
+                            maxChildSize: 1,
+                            builder: (context, scrollController) {
+                              return SettingFixCostModal();
+                            },
+                          ));
+                      ;
+                    },
+                  );
+                },
               ),
               const SizedBox(
                 height: 20,

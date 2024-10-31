@@ -46,6 +46,7 @@ class UserFixCostResponse {
 
 @JsonSerializable()
 class UserFixCostData {
+  final String id;
   final double rent;
   final double salaries;
   final double insurance;
@@ -55,8 +56,10 @@ class UserFixCostData {
   final double water;
   final double gas;
   final double other;
+  final String note;
 
   UserFixCostData({
+    required this.id,
     required this.rent,
     required this.salaries,
     required this.insurance,
@@ -66,6 +69,7 @@ class UserFixCostData {
     required this.water,
     required this.gas,
     required this.other,
+    required this.note,
   });
 
   factory UserFixCostData.fromJson(Map<String, dynamic> json) =>
