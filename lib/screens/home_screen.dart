@@ -4,6 +4,7 @@ import 'package:bakingup_frontend/enum/order_type.dart';
 import 'package:bakingup_frontend/models/home.dart';
 import 'package:bakingup_frontend/screens/notification_screen.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:bakingup_frontend/utilities/bottom_navbar.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_two_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_no_result.dart';
@@ -21,7 +22,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final int _currentDrawerIndex = 2;
+  final int _currentDrawerIndex = 0;
   bool isLoading = true;
   bool isLoadingDashboard = true;
   bool isLoadingNoti = true;
@@ -296,6 +297,7 @@ class _HomeScreenState extends State<HomeScreen> {
       drawer: BakingUpDrawer(
         currentDrawerIndex: _currentDrawerIndex,
       ),
+      bottomNavigationBar: const BottomNavbar(),
       body: Container(
         padding: const EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 20),
         child: Column(
