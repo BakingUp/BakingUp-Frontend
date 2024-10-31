@@ -4,7 +4,6 @@ import 'package:bakingup_frontend/enum/order_type.dart';
 import 'package:bakingup_frontend/models/home.dart';
 import 'package:bakingup_frontend/screens/notification_screen.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
-import 'package:bakingup_frontend/utilities/bottom_navbar.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_two_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_no_result.dart';
@@ -29,7 +28,6 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isError = true;
   DashboardChartData chartData = DashboardChartData(
     costRevenue: [],
-    netProfit: [],
     profitThreshold: [],
   );
   int unreadNotiAmount = 0;
@@ -43,10 +41,10 @@ class _HomeScreenState extends State<HomeScreen> {
       isLoadingDashboard = true;
       isError = false;
     });
-    try {
-      final response = await NetworkService.instance
-          .get('/api/home/getDashboardChartData?user_id=1');
 
+    try {
+      final response = await NetworkService.instance.get(
+          '/api/home/getDashboardChartData?user_id=1&start_date_time=2024-09-01T15:30:00Z&end_date_time=2024-11-01T15:30:00Z');
       final chartDataResponse = DashboardChartResponse.fromJson(response);
       final data = chartDataResponse.data;
       setState(() {
@@ -167,6 +165,8 @@ class _HomeScreenState extends State<HomeScreen> {
           "filter_type": filterType,
           "order_types": orderType,
           "sales_channel": orderPlatform,
+          "start_date_time": "2024-09-01T15:30:00Z",
+          "end_date_time": "2024-10-01T15:30:00Z",
           "user_id": userID
         };
       } else if (filterType != "Wasted Ingredients") {
@@ -297,7 +297,6 @@ class _HomeScreenState extends State<HomeScreen> {
       drawer: BakingUpDrawer(
         currentDrawerIndex: _currentDrawerIndex,
       ),
-      bottomNavigationBar: const BottomNavbar(),
       body: Container(
         padding: const EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 20),
         child: Column(
