@@ -56,6 +56,26 @@ class NetworkService {
     }
   }
 
+  Future<dynamic> put(
+    String url, {
+    Map<String, dynamic>? data,
+  }) async {
+    try {
+      final response = await _dio.put(url, data: data);
+      return response.data;
+    } on DioException catch (e) {
+      log(e.toString());
+      final responseData = e.response?.data;
+      if (responseData != null && responseData is Map<String, dynamic>) {
+        throw Exception(responseData['message'] ?? "Error while updating data");
+      } else {
+        throw Exception("Error while updating data");
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<dynamic> delete(
     String url, {
     Map<String, dynamic>? queryParameters,
