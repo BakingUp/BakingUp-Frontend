@@ -26,6 +26,7 @@ class BakingUpDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: backgroundColor,
       content: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
         child: Column(
