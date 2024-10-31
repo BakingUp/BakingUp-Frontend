@@ -3,6 +3,7 @@ import 'package:bakingup_frontend/enum/lst_status.dart';
 import 'package:bakingup_frontend/models/stock.dart';
 import 'package:bakingup_frontend/screens/add_edit_stock_screen.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:bakingup_frontend/utilities/bottom_navbar.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_modal_bottom.dart';
@@ -185,6 +186,7 @@ class _StockScreenState extends State<StockScreen> {
             )
           ],
         ),
+        bottomNavigationBar: const BottomNavbar(),
         drawer: BakingUpDrawer(
           currentDrawerIndex: _currentDrawerIndex,
         ),

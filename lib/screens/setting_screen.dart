@@ -2,6 +2,7 @@ import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/constants/routes.dart';
 import 'package:bakingup_frontend/models/setting.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:bakingup_frontend/utilities/bottom_navbar.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dropdown_bottom_sheet.dart';
@@ -228,6 +229,7 @@ class _SettingScreenState extends State<SettingScreen> {
         drawer: BakingUpDrawer(
           currentDrawerIndex: _currentDrawerIndex,
         ),
+        bottomNavigationBar: const BottomNavbar(),
         body: Container(
           padding: EdgeInsets.only(
             top: 10,
