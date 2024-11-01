@@ -2,7 +2,8 @@ import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:flutter/material.dart';
 
 class AddEditStockTextField extends StatelessWidget {
-  const AddEditStockTextField({super.key});
+  final TextEditingController controller;
+  const AddEditStockTextField({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -11,6 +12,7 @@ class AddEditStockTextField extends StatelessWidget {
       height: 45,
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: TextField(
+        controller: controller,
         maxLines: 1,
         style: const TextStyle(
           fontSize: 12,

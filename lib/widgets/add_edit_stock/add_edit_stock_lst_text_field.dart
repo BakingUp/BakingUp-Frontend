@@ -2,7 +2,8 @@ import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:flutter/material.dart';
 
 class AddEditStockLstTextField extends StatelessWidget {
-  const AddEditStockLstTextField({super.key});
+  final TextEditingController lstController;
+  const AddEditStockLstTextField({super.key, required this.lstController});
 
   @override
   Widget build(BuildContext context) {
@@ -10,6 +11,7 @@ class AddEditStockLstTextField extends StatelessWidget {
       width: 120,
       height: 45,
       child: TextField(
+        controller: lstController,
         maxLines: 1,
         style: const TextStyle(
           fontSize: 12,

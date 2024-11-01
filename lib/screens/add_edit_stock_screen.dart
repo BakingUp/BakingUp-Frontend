@@ -1,4 +1,5 @@
 // Importing libraries
+import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -11,6 +12,10 @@ import 'package:bakingup_frontend/widgets/add_edit_stock/add_edit_stock_lst_text
 import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dropdown.dart';
+import 'package:bakingup_frontend/models/stock.dart';
+import 'package:bakingup_frontend/models/warehouse.dart';
+import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:bakingup_frontend/models/add_edit_stock_controller.dart';
 
 class AddEditStockScreen extends StatefulWidget {
   const AddEditStockScreen({super.key});
@@ -22,9 +27,61 @@ class AddEditStockScreen extends StatefulWidget {
 class _AddEditStockScreenState extends State<AddEditStockScreen> {
   final int _currentDrawerIndex = 4;
   final bool _isEdit = false;
-  final String recipeUrl =
-      'https://images.immediate.co.uk/production/volatile/sites/30/2021/09/butter-cookies-262c4fd.jpg';
+  final AddEditStockController _controller = AddEditStockController();
+  List<String> recipeList = [];
+  List<RecipeItemData> recipeObject = [];
   String selectedBakeryRecipe = '';
+  RecipeItemData? selectedBakeryRecipeObject;
+  bool isLoading = true;
+  bool isError = false;
+
+  Future<void> _fetchRecipeList() async {
+    setState(() {
+      isLoading = true;
+      isError = false;
+    });
+
+    try {
+      final recipeResponse = await NetworkService.instance
+          .get('/api/recipe/getAllRecipes?user_id=1');
+      final recipeListResponse = RecipeListResponse.fromJson(recipeResponse);
+      final recipeData = recipeListResponse.data;
+
+      final stockResponse = await NetworkService.instance
+          .get('/api/stock/getAllStocks?user_id=1');
+      final stockListResponse = StockListResponse.fromJson(stockResponse);
+      final stockData = stockListResponse.data;
+
+      final stockIDs = stockData.stocks.map((stock) => stock.stockID).toSet();
+      final filteredRecipeNames = recipeData.recipeList
+          .where((recipe) => !stockIDs.contains(recipe.recipeID))
+          .map((recipe) => recipe.recipeName)
+          .toList();
+
+      final filteredRecipeObjects = recipeData.recipeList
+          .where((recipe) => !stockIDs.contains(recipe.recipeID))
+          .toList();
+
+      setState(() {
+        recipeList = filteredRecipeNames;
+        recipeObject = filteredRecipeObjects;
+      });
+    } catch (e) {
+      setState(() {
+        isError = true;
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchRecipeList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,35 +140,44 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
               ),
               const SizedBox(width: 8),
               BakingUpDropdown(
-                options: const [
-                  "Option 1",
-                  "Option 2",
-                  "Option 3",
-                ],
-                topic: "Bakery Recipe",
-                selectedOption: selectedBakeryRecipe,
-                onApply: (String value) {
-                  setState(() {
-                    selectedBakeryRecipe = value;
-                  });
-                },
-              )
+                  options: recipeList,
+                  topic: "Bakery Recipe",
+                  selectedOption: selectedBakeryRecipe,
+                  onApply: (String value) {
+                    setState(() {
+                      selectedBakeryRecipe = value;
+                    });
+                  },
+                  onApplyIndex: (int value) {
+                    setState(() {
+                      selectedBakeryRecipeObject = recipeObject[value];
+                    });
+                  })
             ],
           ),
-          const SizedBox(height: 16.0),
-          ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: double.infinity,
-              maxHeight: 200.0,
-            ),
-            child: SizedBox(
-              width: double.infinity,
-              child: Image.network(
-                recipeUrl,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
+          selectedBakeryRecipe.isEmpty ||
+                  (selectedBakeryRecipeObject != null &&
+                      selectedBakeryRecipeObject!.recipeImg.isEmpty)
+              ? Container()
+              : const SizedBox(height: 16.0),
+          selectedBakeryRecipe.isNotEmpty
+              ? ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth: double.infinity,
+                    maxHeight: 200.0,
+                  ),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: selectedBakeryRecipeObject != null &&
+                            selectedBakeryRecipeObject!.recipeImg.isNotEmpty
+                        ? Image.network(
+                            selectedBakeryRecipeObject!.recipeImg,
+                            fit: BoxFit.cover,
+                          )
+                        : const SizedBox(),
+                  ),
+                )
+              : const SizedBox(),
           const SizedBox(height: 30.0),
           Row(
             children: [
@@ -135,7 +201,9 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                 ),
               ),
               const SizedBox(width: 8),
-              const AddEditStockLstTextField(),
+              AddEditStockLstTextField(
+                lstController: _controller.lstController,
+              ),
             ],
           ),
           const SizedBox(height: 8.0),
@@ -155,9 +223,9 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
           const SizedBox(height: 50),
           const AddEditStockTitle(title: "Notification Setting"),
           const SizedBox(height: 16),
-          const Row(
+          Row(
             children: [
-              Text(
+              const Text(
                 'Notify me',
                 style: TextStyle(
                   fontSize: 16,
@@ -166,8 +234,10 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              AddEditStockTextField(),
-              Text(
+              AddEditStockTextField(
+                controller: _controller.expirationDateController,
+              ),
+              const Text(
                 'days before expiration',
                 style: TextStyle(
                   fontSize: 16,
@@ -179,9 +249,9 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
             ],
           ),
           const SizedBox(height: 16),
-          const Row(
+          Row(
             children: [
-              Flexible(
+              const Flexible(
                 child: Text(
                   'Notify me when an ingredient falls below',
                   style: TextStyle(
@@ -192,8 +262,10 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                   ),
                 ),
               ),
-              AddEditStockTextField(),
-              Text(
+              AddEditStockTextField(
+                controller: _controller.stockLessThanController,
+              ),
+              const Text(
                 'unit',
                 style: TextStyle(
                   fontSize: 16,
@@ -224,6 +296,44 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                         grayButtonTitle: 'Cancel',
                         secondButtonTitle: 'Confirm',
                         secondButtonColor: lightGreenColor,
+                        secondButtonOnClick: () async {
+                          try {
+                            final data = {
+                              "stock_id": selectedBakeryRecipeObject!.recipeID
+                                  .toString(),
+                              "lst": _controller.lstController.text,
+                              "expiration_date":
+                                  _controller.expirationDateController.text,
+                              "stock_less_than":
+                                  _controller.stockLessThanController.text,
+                            };
+                            await NetworkService.instance
+                                .post(
+                              "/api/stock/addStock",
+                              data: data,
+                            )
+                                .then(
+                              (value) {
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pop();
+                              },
+                            );
+                          } catch (e) {
+                            // ignore: use_build_context_synchronously
+                            Navigator.of(context).pop();
+                            // ignore: use_build_context_synchronously
+                            Navigator.of(context).overlay!.insert(
+                              OverlayEntry(
+                                builder: (BuildContext context) {
+                                  return const BakingUpErrorTopNotification(
+                                    message:
+                                        "Sorry, we couldn’t add the stock due to a system error. Please try again later.",
+                                  );
+                                },
+                              ),
+                            );
+                          }
+                        },
                       ),
                     )
             ],
