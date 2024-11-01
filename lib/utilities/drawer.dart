@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class BakingUpDrawer extends StatefulWidget {
-  final int currentDrawerIndex;
-  const BakingUpDrawer({super.key, required this.currentDrawerIndex});
+  final int? currentDrawerIndex;
+  const BakingUpDrawer({super.key, this.currentDrawerIndex});
 
   @override
   State<BakingUpDrawer> createState() => _BakingUpDrawerState();
@@ -168,37 +168,37 @@ class _BakingUpDrawerState extends State<BakingUpDrawer> {
               ),
               MenuItem(
                   index: 0,
-                  currentDrawerIndex: widget.currentDrawerIndex,
+                  currentDrawerIndex: widget.currentDrawerIndex ?? -1,
                   url: "assets/icons/home_icon.png",
                   title: "Home",
                   routeName: homeRoute),
               MenuItem(
                   index: 1,
-                  currentDrawerIndex: widget.currentDrawerIndex,
+                  currentDrawerIndex: widget.currentDrawerIndex ?? -1,
                   url: "assets/icons/profile_icon.png",
                   title: "Profile",
                   routeName: profileRoute),
               MenuItem(
                   index: 2,
-                  currentDrawerIndex: widget.currentDrawerIndex,
+                  currentDrawerIndex: widget.currentDrawerIndex ?? -1,
                   url: "assets/icons/warehouse_icon.png",
                   title: "Warehouse",
                   routeName: warehouseRoute),
               MenuItem(
                   index: 3,
-                  currentDrawerIndex: widget.currentDrawerIndex,
+                  currentDrawerIndex: widget.currentDrawerIndex ?? -1,
                   url: "assets/icons/order_icon.png",
                   title: "Order",
                   routeName: orderRoute),
               MenuItem(
                   index: 4,
-                  currentDrawerIndex: widget.currentDrawerIndex,
+                  currentDrawerIndex: widget.currentDrawerIndex ?? -1,
                   url: "assets/icons/bakery_icon.png",
                   title: "Bakery Stock",
                   routeName: stockRoute),
               MenuItem(
                   index: 5,
-                  currentDrawerIndex: widget.currentDrawerIndex,
+                  currentDrawerIndex: widget.currentDrawerIndex ?? -1,
                   url: "assets/icons/setting_icon.png",
                   title: "Setting",
                   routeName: settingsRoute),
