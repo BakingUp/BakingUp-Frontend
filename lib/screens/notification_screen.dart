@@ -3,7 +3,6 @@ import 'package:bakingup_frontend/models/notification.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/bottom_navbar.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
-import 'package:bakingup_frontend/widgets/baking_up_loading_dialog.dart';
 import 'package:bakingup_frontend/widgets/notifications/notifications_message_box.dart';
 import 'package:flutter/material.dart';
 
@@ -48,17 +47,17 @@ class _NotificationScreenState extends State<NotificationScreen> {
     }
   }
 
-  Future<void> _deleteNotification(String notiId) async {
-    showDialog(
-      context: context,
-      barrierColor: greyColor,
-      builder: (BuildContext context) {
-        return const BakingUpLoadingDialog();
-      },
-    );
-    await NetworkService.instance
-        .delete('/api/noti/deleteNotification?noti_id=$notiId');
-  }
+  // Future<void> _deleteNotification(String notiId) async {
+  //   showDialog(
+  //     context: context,
+  //     barrierColor: greyColor,
+  //     builder: (BuildContext context) {
+  //       return const BakingUpLoadingDialog();
+  //     },
+  //   );
+  //   await NetworkService.instance
+  //       .delete('/api/noti/deleteNotification?noti_id=$notiId');
+  // }
 
   Future<void> _readAllNotifications() async {
     setState(() {
