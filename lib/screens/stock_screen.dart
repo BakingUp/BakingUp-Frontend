@@ -184,9 +184,13 @@ class _StockScreenState extends State<StockScreen> {
                 child: BakingUpCircularAddButton(
                   onPressed: () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AddEditStockScreen()));
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AddEditStockScreen(),
+                      ),
+                    ).then((value) {
+                      _fetchStockList();
+                    });
                   },
                 ),
               )
