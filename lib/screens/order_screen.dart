@@ -185,7 +185,7 @@ class _OrderScreenState extends State<OrderScreen> {
           }),
           actions: [
             Padding(
-              padding: EdgeInsets.only(right: 14),
+              padding: const EdgeInsets.only(right: 14),
               child: BakingUpCircularAddButton(
                 onPressed: () {
                   if (tabIndex == 1 || tabIndex == 2) {

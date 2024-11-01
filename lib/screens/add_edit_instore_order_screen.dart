@@ -459,28 +459,26 @@ class _AddEditInstoreOrderScreenState extends State<AddEditInstoreOrderScreen> {
                         const SizedBox(
                           height: 30,
                         ),
-                        Container(
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            padding: const EdgeInsets.all(0),
-                            itemCount: selectedStockList.length,
-                            itemBuilder: (context, index) {
-                              var maxValue = 0;
-                              for (var stock in originalStockList) {
-                                if (stock.recipeID ==
-                                    selectedStockList[index].recipeID) {
-                                  maxValue = stock.quantity;
-                                }
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          padding: const EdgeInsets.all(0),
+                          itemCount: selectedStockList.length,
+                          itemBuilder: (context, index) {
+                            var maxValue = 0;
+                            for (var stock in originalStockList) {
+                              if (stock.recipeID ==
+                                  selectedStockList[index].recipeID) {
+                                maxValue = stock.quantity;
                               }
-                              return AddEditOrderStockMain(
-                                stocks: selectedStockList,
-                                index: index,
-                                isPreOrder: false,
-                                maxQuantity: maxValue,
-                              );
-                            },
-                          ),
+                            }
+                            return AddEditOrderStockMain(
+                              stocks: selectedStockList,
+                              index: index,
+                              isPreOrder: false,
+                              maxQuantity: maxValue,
+                            );
+                          },
                         ),
                         const SizedBox(
                           height: 10,
@@ -594,7 +592,6 @@ class _AddEditInstoreOrderScreenState extends State<AddEditInstoreOrderScreen> {
                                       ),
                                     );
                                   }
-                                  ;
                                 },
                               ),
                             )

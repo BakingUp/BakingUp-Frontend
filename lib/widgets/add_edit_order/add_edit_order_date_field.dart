@@ -15,7 +15,6 @@ class AddEditOrderDateField extends StatefulWidget {
 }
 
 class _AddEditOrderDateFieldState extends State<AddEditOrderDateField> {
-  final TextEditingController _controller = TextEditingController();
   List<DateTime> dates = [
     DateTime.now(),
   ];

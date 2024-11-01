@@ -28,7 +28,7 @@ class _AddEditOrderStockScreenState extends State<AddEditOrderStockScreen> {
   List<StockOrderItemData> selectedStocks = [];
   List<StockOrderItemData> filteredSelectedStocks = [];
   final TextEditingController _searchController = TextEditingController();
-  FocusNode _searchFocusNode = FocusNode();
+  // FocusNode _searchFocusNode = FocusNode();
 
   String userID = "1";
 
