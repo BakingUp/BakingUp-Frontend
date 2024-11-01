@@ -1,5 +1,7 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/models/order.dart';
+import 'package:bakingup_frontend/screens/add_edit_instore_order_screen.dart';
+import 'package:bakingup_frontend/screens/add_edit_preorder_order_screen.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/bottom_navbar.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
@@ -181,10 +183,26 @@ class _OrderScreenState extends State<OrderScreen> {
               },
             );
           }),
-          actions: const [
+          actions: [
             Padding(
               padding: EdgeInsets.only(right: 14),
-              child: BakingUpCircularAddButton(),
+              child: BakingUpCircularAddButton(
+                onPressed: () {
+                  if (tabIndex == 1 || tabIndex == 2) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const AddEditInstoreOrderScreen()));
+                  } else if (tabIndex == 3) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                const AddEditPreorderOrderScreen()));
+                  }
+                },
+              ),
             )
           ],
         ),

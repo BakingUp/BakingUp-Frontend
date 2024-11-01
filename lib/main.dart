@@ -2,7 +2,7 @@ import 'package:bakingup_frontend/constants/routes.dart';
 import 'package:bakingup_frontend/firebase_options.dart';
 import 'package:bakingup_frontend/screens/add_edit_ingredient_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_ingredient_stock_screen.dart';
-import 'package:bakingup_frontend/screens/add_edit_order_screen.dart';
+import 'package:bakingup_frontend/screens/add_edit_instore_order_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_recipe_ingredient_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_recipe_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_stock_information_screen.dart';
@@ -102,7 +102,7 @@ class _MainAppState extends State<MainApp> {
                 builder: (context) => const AddEditRecipeScreen());
           case addEditOrderRoute:
             return MaterialPageRoute(
-                builder: (context) => const AddEditOrderScreen());
+                builder: (context) => const AddEditInstoreOrderScreen());
           case addEditRecipeIngredientRoute:
             return MaterialPageRoute(
                 builder: (context) => const AddEditRecipeIngredientScreen());
