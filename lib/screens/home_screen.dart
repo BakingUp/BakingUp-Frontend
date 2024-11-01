@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     try {
       final response = await NetworkService.instance.get(
-          '/api/home/getDashboardChartData?user_id=1&start_date_time=2024-09-01T15:30:00Z&end_date_time=2024-11-01T15:30:00Z');
+          '/api/home/getDashboardChartData?user_id=1&start_date_time=2024-09-01T15:30:00Z&end_date_time=2024-11-02T15:30:00Z');
       final chartDataResponse = DashboardChartResponse.fromJson(response);
       final data = chartDataResponse.data;
       setState(() {
@@ -166,7 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
           "order_types": orderType,
           "sales_channel": orderPlatform,
           "start_date_time": "2024-09-01T15:30:00Z",
-          "end_date_time": "2024-10-01T15:30:00Z",
+          "end_date_time": "2024-11-02T15:30:00Z",
           "user_id": userID
         };
       } else if (filterType != "Wasted Ingredients") {
