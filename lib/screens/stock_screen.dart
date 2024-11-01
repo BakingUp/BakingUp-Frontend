@@ -145,15 +145,16 @@ class _StockScreenState extends State<StockScreen> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        stockSearchFocusNode.unfocus();
-      },
-      child: MaterialApp(
-        theme: ThemeData(
-            tooltipTheme: const TooltipThemeData(
-          preferBelow: false,
-        )),
-        home: Scaffold(
+        onTap: () {
+          stockSearchFocusNode.unfocus();
+        },
+        // child: MaterialApp(
+        //   theme: ThemeData(
+        //       tooltipTheme: const TooltipThemeData(
+        //     preferBelow: false,
+        //   )),
+        //   home:
+        child: Scaffold(
           backgroundColor: backgroundColor,
           appBar: AppBar(
             backgroundColor: backgroundColor,
@@ -310,8 +311,8 @@ class _StockScreenState extends State<StockScreen> {
                   )
                 ],
               )),
-        ),
-      ),
-    );
+        ));
+    // ),
+    // );
   }
 }
