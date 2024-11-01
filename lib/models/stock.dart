@@ -8,7 +8,6 @@ class StockListResponse {
   final int status;
   final String message;
   final StockListData data;
-
   StockListResponse({
     required this.status,
     required this.message,
