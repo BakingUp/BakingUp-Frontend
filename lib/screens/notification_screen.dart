@@ -32,6 +32,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       isError = false;
       notiList = [];
       noResult = false;
+      date = "";
     });
 
     try {
@@ -196,6 +197,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
                         NotificationItem item = notiList[index];
                         String currentDate = item.createdAt.substring(0, 10);
+
                         if (date != currentDate) {
                           date = currentDate;
                           widgets.add(Row(
