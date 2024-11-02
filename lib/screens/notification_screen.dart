@@ -90,7 +90,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
     try {
       await NetworkService.instance
-          .put('/api/noti/readNotification?noti=$notiID');
+          .put('/api/noti/readNotification?noti_id=$notiID');
     } catch (e) {
       setState(() {
         isError = true;
@@ -190,6 +190,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 widgets.add(NotificationsMessageBox(
                   noti: item,
                   readFunction: _readNotification,
+                  fetchAllNotis: _getAllNotifications,
                 ));
 
                 return Column(children: widgets);

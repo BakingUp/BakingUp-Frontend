@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 class PreorderOrderDetailScreen extends StatefulWidget {
-  const PreorderOrderDetailScreen({super.key});
+  final String orderId;
+  const PreorderOrderDetailScreen({super.key, required this.orderId});
 
   @override
-  State<PreorderOrderDetailScreen> createState() => _PreorderOrderDetailScreenState();
+  State<PreorderOrderDetailScreen> createState() =>
+      _PreorderOrderDetailScreenState();
 }
 
 class _PreorderOrderDetailScreenState extends State<PreorderOrderDetailScreen> {
