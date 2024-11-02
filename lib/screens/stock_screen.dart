@@ -260,6 +260,7 @@ class _StockScreenState extends State<StockScreen> {
                     StockList(
                       stockList: filteredStocks,
                       isLoading: isLoading,
+                      fetchStocks: _fetchStockList,
                     ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,

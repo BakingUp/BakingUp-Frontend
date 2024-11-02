@@ -11,10 +11,12 @@ import 'package:flutter/material.dart';
 class StockList extends StatefulWidget {
   final List<StockItemData> stockList;
   final bool isLoading;
+  final VoidCallback fetchStocks;
   const StockList({
     super.key,
     required this.isLoading,
     required this.stockList,
+    required this.fetchStocks,
   });
 
   @override
@@ -33,6 +35,9 @@ class _StockListState extends State<StockList> {
 
     await NetworkService.instance
         .delete('/api/stock/deleteStock?recipe_id=$stockId');
+    if (widget.stockList.length == 1) {
+      widget.fetchStocks();
+    }
   }
 
   @override
