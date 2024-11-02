@@ -7,6 +7,7 @@ import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/bottom_navbar.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
+import 'package:bakingup_frontend/widgets/baking_up_error.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_modal_bottom.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_two_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_no_result.dart';
@@ -435,7 +436,12 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                       isLoading: isLoading,
                       fetchRecipeList: _fetchRecipeList,
                     ),
-                  if (tabIndex == 2 && noResult)
+                  if (tabIndex == 2 && isError)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: const BakingUpError(),
+                    )
+                  else if (tabIndex == 2 && noResult)
                     Container(
                       margin: EdgeInsets.only(
                           top: MediaQuery.of(context).size.height * 0.1),
