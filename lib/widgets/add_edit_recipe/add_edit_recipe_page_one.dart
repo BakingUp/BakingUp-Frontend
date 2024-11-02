@@ -246,7 +246,7 @@ class AddEditRecipePageOne extends StatelessWidget {
                   ),
                 ),
                 confirmDismiss: (direction) async {
-                  onIngredientDelete(recipeIngredients[index].id);
+                  return onIngredientDelete(recipeIngredients[index].id);
                 },
                 child: AddEditRecipeIngredient(
                   recipeIngredients: recipeIngredients,
