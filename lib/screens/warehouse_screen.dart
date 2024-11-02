@@ -411,7 +411,12 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                       ],
                     ),
                   ),
-                  if (tabIndex == 1 && noResult)
+                  if (tabIndex == 1 && isError)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: const BakingUpError(),
+                    )
+                  else if (tabIndex == 1 && noResult)
                     Container(
                       margin: EdgeInsets.only(
                           top: MediaQuery.of(context).size.height * 0.1),
