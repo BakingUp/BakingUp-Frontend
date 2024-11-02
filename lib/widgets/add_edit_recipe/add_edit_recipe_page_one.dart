@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/models/add_edit_recipe_controller.dart';
 import 'package:bakingup_frontend/screens/add_edit_recipe_ingredient_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_recipe_screen.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_ingredient.dart';
@@ -17,6 +18,8 @@ class AddEditRecipePageOne extends StatelessWidget {
   final VoidCallback onClick;
   final Function(File) onNewImage;
   final Function(int) onImgDelete;
+  final AddEditRecipeController controller;
+  final void Function(RecipeIngredient ingredient) addIngredient;
   const AddEditRecipePageOne({
     super.key,
     required this.recipeIngredients,
@@ -24,6 +27,8 @@ class AddEditRecipePageOne extends StatelessWidget {
     required this.onClick,
     required this.onNewImage,
     required this.onImgDelete,
+    required this.controller,
+    required this.addIngredient,
   });
 
   @override
@@ -67,12 +72,18 @@ class AddEditRecipePageOne extends StatelessWidget {
                 ),
               ],
             ),
-            const Column(
+            Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                AddEditRecipeNameTextField(label: 'English'),
-                SizedBox(height: 16),
-                AddEditRecipeNameTextField(label: 'Thai')
+                AddEditRecipeNameTextField(
+                  label: 'English',
+                  controller: controller.engNameController,
+                ),
+                const SizedBox(height: 16),
+                AddEditRecipeNameTextField(
+                  label: 'Thai',
+                  controller: controller.thaiNameController,
+                )
               ],
             ),
           ],
@@ -102,7 +113,11 @@ class AddEditRecipePageOne extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 16),
-            const AddEditRecipeTextField(label: "Hr", width: 46),
+            AddEditRecipeTextField(
+              label: "Hr",
+              width: 46,
+              controller: controller.totalHoursController,
+            ),
             const SizedBox(width: 16),
             const Text(
               'hrs.',
@@ -114,7 +129,11 @@ class AddEditRecipePageOne extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 16),
-            const AddEditRecipeTextField(label: "Min", width: 46),
+            AddEditRecipeTextField(
+              label: "Min",
+              width: 46,
+              controller: controller.totalMinsController,
+            ),
             const SizedBox(width: 16),
             const Text(
               'mins.',
@@ -152,7 +171,11 @@ class AddEditRecipePageOne extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 16),
-            const AddEditRecipeTextField(label: "Servings", width: 150)
+            AddEditRecipeTextField(
+              label: "Servings",
+              width: 150,
+              controller: controller.servingsController,
+            )
           ],
         ),
         const SizedBox(height: 50),
@@ -168,11 +191,14 @@ class AddEditRecipePageOne extends StatelessWidget {
             Align(
               alignment: Alignment.centerRight,
               heightFactor: 0.5,
-              child: BakingUpCircularAddButton(onPressed: () {
+              child: BakingUpCircularAddButton(onPressed: () async {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const AddEditRecipeIngredientScreen(),
+                    builder: (context) => AddEditRecipeIngredientScreen(
+                      recipeIngredients: recipeIngredients,
+                      addIngredient: addIngredient,
+                    ),
                   ),
                 );
               }),
