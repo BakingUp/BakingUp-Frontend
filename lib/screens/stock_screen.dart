@@ -6,6 +6,7 @@ import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/bottom_navbar.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
+import 'package:bakingup_frontend/widgets/baking_up_error.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_modal_bottom.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_two_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_no_result.dart';
@@ -148,12 +149,6 @@ class _StockScreenState extends State<StockScreen> {
         onTap: () {
           stockSearchFocusNode.unfocus();
         },
-        // child: MaterialApp(
-        //   theme: ThemeData(
-        //       tooltipTheme: const TooltipThemeData(
-        //     preferBelow: false,
-        //   )),
-        //   home:
         child: Scaffold(
           backgroundColor: backgroundColor,
           appBar: AppBar(
@@ -238,7 +233,15 @@ class _StockScreenState extends State<StockScreen> {
                       ],
                     ),
                   ),
-                  if (noResult)
+                  if (isError)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 40,
+                        vertical: 10,
+                      ),
+                      child: const BakingUpError(),
+                    )
+                  else if (noResult)
                     Container(
                       margin: EdgeInsets.only(
                           top: MediaQuery.of(context).size.height * 0.15),
@@ -313,7 +316,5 @@ class _StockScreenState extends State<StockScreen> {
                 ],
               )),
         ));
-    // ),
-    // );
   }
 }
