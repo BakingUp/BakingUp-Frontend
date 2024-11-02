@@ -60,6 +60,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   }
 
   Future<void> _deleteNotification(String notiId) async {
+    if (!mounted) return;
     showDialog(
       context: context,
       barrierColor: greyColor,
@@ -67,15 +68,34 @@ class _NotificationScreenState extends State<NotificationScreen> {
         return const BakingUpLoadingDialog();
       },
     );
-    await NetworkService.instance
-        .delete('/api/noti/deleteNotification?noti_id=$notiId');
 
-    if (notiList.length == 1) {
-      _getAllNotifications();
-    } else {
+    try {
+      await NetworkService.instance
+          .delete('/api/noti/deleteNotification?noti_id=$notiId');
+
+      if (mounted) Navigator.of(context).pop();
+
       setState(() {
-        notiList.removeWhere((noti) => noti.notiID == notiId);
+        if (notiList.length == 1) {
+          _getAllNotifications();
+        } else {
+          notiList.removeWhere((noti) => noti.notiID == notiId);
+        }
       });
+    } catch (error) {
+      if (mounted) Navigator.of(context).pop();
+      if (mounted) {
+        OverlayEntry overlay = OverlayEntry(
+          builder: (BuildContext context) {
+            return const BakingUpErrorTopNotification(
+              message:
+                  "Sorry, we couldn’t delete the notification due to a system error. Please try again later.",
+            );
+          },
+        );
+        Overlay.of(context).insert(overlay);
+        Future.delayed(const Duration(seconds: 3), overlay.remove);
+      }
     }
   }
 
@@ -278,22 +298,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       secondButtonOnClick: () {
                                         Navigator.of(context).pop();
                                         _deleteNotification(
-                                                notiList[index].notiID)
-                                            .then((_) {
-                                          Navigator.of(context).pop();
-                                        }).catchError((error) {
-                                          Navigator.of(context).pop();
-                                          Navigator.of(context)
-                                              .overlay!
-                                              .insert(OverlayEntry(
-                                            builder: (BuildContext context) {
-                                              return const BakingUpErrorTopNotification(
-                                                message:
-                                                    "Sorry, we couldn’t delete the notification due to a system error. Please try again later.",
-                                              );
-                                            },
-                                          ));
-                                        });
+                                            notiList[index].notiID);
                                       },
                                     );
                                   });
