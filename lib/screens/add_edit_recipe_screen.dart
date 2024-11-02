@@ -23,7 +23,7 @@ class AddEditRecipeScreen extends StatefulWidget {
 
 class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
   final int _currentDrawerIndex = 5;
-  final bool _isEdit = true;
+  final bool _isEdit = false;
   bool _isFirstPage = true;
   final List<File> _recipeImages = [];
   final List<File> _instructionImages = [];
