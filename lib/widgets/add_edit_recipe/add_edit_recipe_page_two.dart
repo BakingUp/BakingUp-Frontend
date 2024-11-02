@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/models/add_edit_recipe_controller.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_instruction_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_title.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
@@ -13,6 +14,8 @@ class AddEditRecipePageTwo extends StatelessWidget {
   final bool isEdit;
   final Function(File) onNewImage;
   final Function(int) onImgDelete;
+  final VoidCallback onSave;
+  final AddEditRecipeController controller;
   const AddEditRecipePageTwo({
     super.key,
     required this.onClick,
@@ -20,6 +23,8 @@ class AddEditRecipePageTwo extends StatelessWidget {
     required this.isEdit,
     required this.onNewImage,
     required this.onImgDelete,
+    required this.onSave,
+    required this.controller,
   });
 
   @override
@@ -42,15 +47,20 @@ class AddEditRecipePageTwo extends StatelessWidget {
           fontWeight: FontWeight.w400,
         ),
         const SizedBox(height: 16),
-        const AddEditRecipeInstructionField(label: 'English'),
+        AddEditRecipeInstructionField(
+            label: 'English', controller: controller.engInstructionController),
         const SizedBox(height: 30),
-        const AddEditRecipeInstructionField(label: 'Thai'),
+        AddEditRecipeInstructionField(
+            label: 'Thai', controller: controller.thaiInstructionController),
         const SizedBox(height: 80),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             BakingUpLongActionButton(
-                title: 'Back', color: greyColor, onClick: onClick),
+              title: 'Back',
+              color: greyColor,
+              onClick: onClick,
+            ),
             const SizedBox(width: 8),
             BakingUpLongActionButton(
               title: 'Save',
@@ -66,6 +76,7 @@ class AddEditRecipePageTwo extends StatelessWidget {
                 grayButtonTitle: 'Cancel',
                 secondButtonTitle: 'Confirm',
                 secondButtonColor: lightGreenColor,
+                secondButtonOnClick: onSave,
               ),
             ),
           ],
