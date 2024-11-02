@@ -8,7 +8,7 @@ import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/add_edit_stock/add_edit_stock_container.dart';
 import 'package:bakingup_frontend/widgets/add_edit_stock/add_edit_stock_text_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_stock/add_edit_stock_title.dart';
-import 'package:bakingup_frontend/widgets/add_edit_stock/add_edit_stock_lst_text_field.dart';
+import 'package:bakingup_frontend/widgets/add_edit_stock/add_edit_stock_text_field_with_label.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dropdown.dart';
@@ -201,12 +201,13 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                 ),
               ),
               const SizedBox(width: 8),
-              AddEditStockLstTextField(
-                lstController: _controller.lstController,
+              AddEditStockTextFieldWithLabel(
+                controller: _controller.lstController,
+                labelText: 'LST',
               ),
             ],
           ),
-          const SizedBox(height: 8.0),
+          const SizedBox(height: 8),
           const Row(
             children: [
               Text(
@@ -216,6 +217,45 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                   fontFamily: 'Inter',
                   fontStyle: FontStyle.normal,
                   fontWeight: FontWeight.w300,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              const Text(
+                'Selling price',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontFamily: 'Inter',
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              Text(
+                '*',
+                style: TextStyle(
+                  color: redColor,
+                  fontSize: 20,
+                  fontFamily: 'Inter',
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              const SizedBox(width: 8),
+              AddEditStockTextFieldWithLabel(
+                controller: _controller.sellingPriceController,
+                labelText: 'Selling price',
+              ),
+              const SizedBox(width: 8),
+              const Text(
+                '฿',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontFamily: 'Inter',
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
             ],
@@ -301,6 +341,8 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                             final data = {
                               "stock_id": selectedBakeryRecipeObject!.recipeID
                                   .toString(),
+                              "selling_price":
+                                  _controller.sellingPriceController.text,
                               "lst": _controller.lstController.text,
                               "expiration_date":
                                   _controller.expirationDateController.text,

@@ -12,9 +12,16 @@ import 'package:bakingup_frontend/widgets/baking_up_filter_two_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_search_bar.dart';
 import 'package:bakingup_frontend/models/warehouse.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:bakingup_frontend/screens/add_edit_recipe_screen.dart';
 
 class AddEditRecipeIngredientScreen extends StatefulWidget {
-  const AddEditRecipeIngredientScreen({super.key});
+  final List<RecipeIngredient>? recipeIngredients;
+  final void Function(RecipeIngredient ingredient)? addIngredient;
+  const AddEditRecipeIngredientScreen({
+    super.key,
+    this.recipeIngredients,
+    this.addIngredient,
+  });
 
   @override
   State<AddEditRecipeIngredientScreen> createState() =>
@@ -39,8 +46,15 @@ class _AddEditRecipeIngredientScreenState
 
       final ingredientListResponse = IngredientListResponse.fromJson(response);
       final data = ingredientListResponse.data;
+
+      final filteredIngredientsList = data.ingredientList
+          .where((element) => !widget.recipeIngredients!.any(
+              (recipeIngredient) =>
+                  recipeIngredient.id == element.ingredientId))
+          .toList();
+
       setState(() {
-        recipeIngredientDetails = data.ingredientList;
+        recipeIngredientDetails = filteredIngredientsList;
       });
     } catch (e) {
       setState(() {
@@ -115,6 +129,7 @@ class _AddEditRecipeIngredientScreenState
                         return AddEditRecipeIngredientDetail(
                           recipeIngredientDetails: recipeIngredientDetails,
                           index: index,
+                          addIngredient: widget.addIngredient,
                         );
                       } else {
                         return AddEditAddRecipeIngredientButton(onTap: () {

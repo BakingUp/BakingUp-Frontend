@@ -38,7 +38,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
   int score = 0;
   int tabIndex = 1;
   List<String> instructionUrls = [];
-  List<String> instructionSteps = [];
+  String instructionSteps = "";
   List<RecipeIngredient> recipeIngredients = [];
   bool isLoading = false;
   bool isError = false;
@@ -69,7 +69,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
         score = data.numOfOrder;
         recipeIngredients = data.recipeIngredients ?? [];
         instructionUrls = data.instructionUrl ?? [];
-        instructionSteps = data.instructionSteps ?? [];
+        instructionSteps = data.instructionSteps;
       });
     } catch (e) {
       setState(() {
@@ -91,7 +91,6 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
           BakingUpDetailImage(
             imageUrl: recipeUrl,
             isLoading: isLoading,
-            noBaseURL: true,
           ),
           const RecipeDetailEditButtonContainer(
             children: [

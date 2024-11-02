@@ -7,7 +7,7 @@ import 'package:shimmer/shimmer.dart';
 
 class RecipeDetailInstructionsSection extends StatelessWidget {
   final List<String> instructionUrls;
-  final List<String> instructionSteps;
+  final String instructionSteps;
   final bool isLoading;
   const RecipeDetailInstructionsSection({
     super.key,

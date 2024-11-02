@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class RecipeDetailInstructions extends StatelessWidget {
-  final List<String> instructionSteps;
+  final String instructionSteps;
   final bool isLoading;
   const RecipeDetailInstructions({
     super.key,
@@ -51,42 +51,16 @@ class RecipeDetailInstructions extends StatelessWidget {
                   );
                 },
               )
-            : ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(0),
-                itemCount: instructionSteps.length,
-                itemBuilder: (context, index) {
-                  return Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "• ",
-                        style: TextStyle(
-                          color: blackColor,
-                          fontFamily: 'Inter',
-                          fontStyle: FontStyle.normal,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 13,
-                          overflow: TextOverflow.visible,
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          instructionSteps[index],
-                          style: TextStyle(
-                            color: blackColor,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 13,
-                            overflow: TextOverflow.visible,
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
+            : Text(
+                instructionSteps,
+                style: TextStyle(
+                  color: blackColor,
+                  fontFamily: 'Inter',
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 13,
+                  overflow: TextOverflow.visible,
+                ),
               ),
       ),
     );
