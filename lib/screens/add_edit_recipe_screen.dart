@@ -1,5 +1,9 @@
 // Importing libraries
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
+import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -8,6 +12,7 @@ import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_container.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_page_one.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_page_two.dart';
+import 'package:bakingup_frontend/models/add_edit_recipe_controller.dart';
 
 class AddEditRecipeScreen extends StatefulWidget {
   const AddEditRecipeScreen({super.key});
@@ -22,20 +27,16 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
   bool _isFirstPage = true;
   final List<File> _recipeImages = [];
   final List<File> _instructionImages = [];
+  final AddEditRecipeController controller = AddEditRecipeController();
 
-  List<RecipeIngredient> recipeIngredients = [
-    RecipeIngredient(
-      imgUrl: "https://i.imgur.com/RLsjqFm.png",
-      name: "All-purpose flour",
-      quantity: "250 g",
-    ),
-    RecipeIngredient(
-      imgUrl:
-          "https://img.freepik.com/free-photo/world-diabetes-day-sugar-wooden-bowl-dark-surface_1150-26666.jpg",
-      name: "Sugar",
-      quantity: "150 g",
-    ),
-  ];
+  List<RecipeIngredient> recipeIngredients = [];
+
+  List<String> convertFilesToBase64(List<File> files) {
+    return files.map((file) {
+      final bytes = file.readAsBytesSync();
+      return base64Encode(bytes);
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,6 +74,20 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
             AddEditRecipePageOne(
               recipeIngredients: recipeIngredients,
               recipeImages: _recipeImages,
+              controller: controller,
+              addIngredient: (RecipeIngredient ingredient) {
+                setState(() {
+                  recipeIngredients.add(
+                    RecipeIngredient(
+                      id: ingredient.id,
+                      imgUrl: ingredient.imgUrl,
+                      name: ingredient.name,
+                      quantity: ingredient.quantity,
+                      unit: ingredient.unit,
+                    ),
+                  );
+                });
+              },
               onClick: () {
                 setState(() {
                   _isFirstPage = false;
@@ -92,6 +107,7 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
           ] else ...[
             AddEditRecipePageTwo(
               instructionImages: _instructionImages,
+              controller: controller,
               onClick: () {
                 setState(() {
                   _isFirstPage = true;
@@ -108,6 +124,56 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
                   _instructionImages.removeAt(index);
                 });
               },
+              onSave: () async {
+                try {
+                  final data = {
+                    "user_id": "1",
+                    "recipe_eng_name": controller.engNameController.text,
+                    "recipe_thai_name": controller.thaiNameController.text,
+                    "recipe_img": convertFilesToBase64(_recipeImages),
+                    "total_hours": controller.totalHoursController.text,
+                    "total_mins": controller.totalMinsController.text,
+                    "servings": controller.servingsController.text,
+                    "ingredients": recipeIngredients
+                        .map((ingredient) => {
+                              "ingredient_id": ingredient.id,
+                              "ingredient_quantity": ingredient.quantity,
+                            })
+                        .toList(),
+                    "instruction_img": convertFilesToBase64(_instructionImages),
+                    "eng_instruction": controller.engInstructionController.text,
+                    "thai_instruction":
+                        controller.thaiInstructionController.text,
+                  };
+                  log(data.toString());
+                  await NetworkService.instance
+                      .post(
+                    "/api/recipe/addRecipe",
+                    data: data,
+                  )
+                      .then(
+                    (value) {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                    },
+                  );
+                } catch (e) {
+                  log(e.toString());
+                  // ignore: use_build_context_synchronously
+                  Navigator.of(context).pop();
+                  // ignore: use_build_context_synchronously
+                  Navigator.of(context).overlay!.insert(
+                    OverlayEntry(
+                      builder: (BuildContext context) {
+                        return const BakingUpErrorTopNotification(
+                          message:
+                              "Sorry, we couldn’t add the recipe due to a system error. Please try again later.",
+                        );
+                      },
+                    ),
+                  );
+                }
+              },
             ),
           ]
         ],
@@ -117,13 +183,17 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
 }
 
 class RecipeIngredient {
+  final String id;
   final String imgUrl;
   final String name;
   final String quantity;
+  final String unit;
 
   RecipeIngredient({
+    required this.id,
     required this.imgUrl,
     required this.name,
     required this.quantity,
+    required this.unit,
   });
 }

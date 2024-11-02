@@ -39,9 +39,7 @@ RecipeDetailData _$RecipeDetailDataFromJson(Map<String, dynamic> json) =>
       instructionUrl: (json['instruction_url'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
-      instructionSteps: (json['instruction_steps'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
+      instructionSteps: json['instruction_steps'] as String,
     );
 
 Map<String, dynamic> _$RecipeDetailDataToJson(RecipeDetailData instance) =>
