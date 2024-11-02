@@ -5,6 +5,7 @@ import 'package:bakingup_frontend/utilities/bottom_navbar.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/baking_up_error.dart';
 import 'package:bakingup_frontend/widgets/notifications/notifications_message_box.dart';
+import 'package:bakingup_frontend/widgets/notifications/notifications_message_section_loading.dart';
 import 'package:flutter/material.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -147,55 +148,64 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 children: [BakingUpError()],
               ),
             )
-          : ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
-              itemCount: notiList.length,
-              itemBuilder: (context, index) {
-                NotificationItem item = notiList[index];
-                String currentDate = item.createdAt.substring(0, 10);
+          : isLoading
+              ? ListView.builder(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+                  itemCount: 4,
+                  itemBuilder: (context, index) {
+                    return const NotificationMessageSectionLoading();
+                  },
+                )
+              : ListView.builder(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+                  itemCount: notiList.length,
+                  itemBuilder: (context, index) {
+                    List<Widget> widgets = [];
 
-                List<Widget> widgets = [];
+                    NotificationItem item = notiList[index];
+                    String currentDate = item.createdAt.substring(0, 10);
+                    if (date != currentDate) {
+                      date = currentDate;
+                      widgets.add(Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            currentDate,
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontFamily: 'Inter',
+                                fontStyle: FontStyle.normal,
+                                fontWeight: FontWeight.w500,
+                                color: blackColor),
+                          ),
+                          index == 0
+                              ? TextButton(
+                                  onPressed: _readAllNotifications,
+                                  child: Text(
+                                    'Mark all as Read',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontFamily: 'Inter',
+                                        fontStyle: FontStyle.normal,
+                                        fontWeight: FontWeight.w500,
+                                        color: blackColor),
+                                  ))
+                              : const SizedBox(),
+                        ],
+                      ));
+                    }
 
-                if (date != currentDate) {
-                  date = currentDate;
-                  widgets.add(Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        currentDate,
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w500,
-                            color: blackColor),
-                      ),
-                      index == 0
-                          ? TextButton(
-                              onPressed: _readAllNotifications,
-                              child: Text(
-                                'Mark all as Read',
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontFamily: 'Inter',
-                                    fontStyle: FontStyle.normal,
-                                    fontWeight: FontWeight.w500,
-                                    color: blackColor),
-                              ))
-                          : const SizedBox(),
-                    ],
-                  ));
-                }
+                    widgets.add(NotificationsMessageBox(
+                      noti: item,
+                      readFunction: _readNotification,
+                      fetchAllNotis: _getAllNotifications,
+                    ));
 
-                widgets.add(NotificationsMessageBox(
-                  noti: item,
-                  readFunction: _readNotification,
-                  fetchAllNotis: _getAllNotifications,
-                ));
-
-                return Column(children: widgets);
-              },
-            ),
+                    return Column(children: widgets);
+                  },
+                ),
     );
   }
 }
