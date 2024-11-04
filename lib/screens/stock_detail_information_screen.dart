@@ -77,9 +77,9 @@ class _StockDetailInformationScreenState
       appBar: AppBar(
         backgroundColor: backgroundColor,
         scrolledUnderElevation: 0,
-        title: const Text(
-          "Butter Cookie",
-          style: TextStyle(
+        title: Text(
+          recipeName,
+          style: const TextStyle(
             fontSize: 24,
             fontFamily: 'Inter',
             fontStyle: FontStyle.normal,
@@ -137,7 +137,10 @@ class _StockDetailInformationScreenState
                     ],
                   ),
                   const SizedBox(height: 16),
-                  StockDetailInformationBakerySellByDate(isLoading: isLoading),
+                  StockDetailInformationBakerySellByDate(
+                    isLoading: isLoading,
+                    sellByDate: sellByDate,
+                  ),
                   if (note.isNotEmpty || isLoading) ...[
                     const SizedBox(height: 50),
                     const StockDetailInformationTitle(title: "Note:"),
