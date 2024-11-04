@@ -16,6 +16,7 @@ import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_notify_me.da
 import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_quantity.dart';
 import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_selling_price.dart';
 import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_stock_name.dart';
+import 'package:intl/intl.dart';
 
 class StockDetailScreen extends StatefulWidget {
   final String? recipeId;
@@ -35,6 +36,13 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
   List<StockDetail> stockDetails = [];
   bool isLoading = true;
   bool isError = false;
+  final List<String> stockFilterList = [
+    'Quantity',
+    'Sell-By Date',
+  ];
+  String selectedStockFiltering = "Quantity";
+  String selectedStockSorting = "Ascending Order";
+  final DateFormat dateFormat = DateFormat('dd/MM/yyyy');
 
   @override
   void initState() {
@@ -70,6 +78,45 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
       setState(() {
         isLoading = false;
       });
+    }
+  }
+
+  void _filterStock(
+      String selectingStockFiltering, String selectingStockSorting) {
+    setState(() {
+      selectedStockFiltering = selectingStockFiltering;
+      selectedStockSorting = selectingStockSorting;
+    });
+    if (selectedStockSorting == "Ascending Order") {
+      switch (selectedStockFiltering) {
+        case "Quantity":
+          stockDetails.sort((a, b) => a.quantity.compareTo(b.quantity));
+          break;
+        case "Sell-By Date":
+          stockDetails.sort((a, b) {
+            DateTime dateA = dateFormat.parse(a.sellByDate);
+            DateTime dateB = dateFormat.parse(b.sellByDate);
+            return dateA.compareTo(dateB);
+          });
+          break;
+        default:
+          stockDetails.sort((a, b) => a.quantity.compareTo(b.quantity));
+      }
+    } else {
+      switch (selectedStockFiltering) {
+        case "Quantity":
+          stockDetails.sort((a, b) => b.quantity.compareTo(a.quantity));
+          break;
+        case "Sell-By Date":
+          stockDetails.sort((a, b) {
+            DateTime dateA = dateFormat.parse(a.sellByDate);
+            DateTime dateB = dateFormat.parse(b.sellByDate);
+            return dateB.compareTo(dateA);
+          });
+          break;
+        default:
+          stockDetails.sort((a, b) => b.quantity.compareTo(a.quantity));
+      }
     }
   }
 
@@ -116,12 +163,18 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                     ),
                   )
                 ] else ...[
-                  const Padding(
-                    padding: EdgeInsets.all(20.0),
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        BakingUpFilterButton(),
+                        BakingUpFilterButton(
+                          optionsOne: stockFilterList,
+                          optionOneName: "Filter by",
+                          defaultFilteringValue: selectedStockFiltering,
+                          defaultSortingValue: selectedStockSorting,
+                          filterFunction: _filterStock,
+                        ),
                       ],
                     ),
                   ),
