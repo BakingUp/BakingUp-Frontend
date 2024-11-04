@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/models/recipe_detail.dart';
+import 'package:bakingup_frontend/models/recipe_detail_controller.dart';
+import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_hidden_costs.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_labor_costs.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_price_detail.dart';
@@ -8,15 +12,32 @@ import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_raw_materi
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_text_field.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_title.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class RecipeDetailCostSection extends StatelessWidget {
+  final String recipeId;
   final List<RecipeIngredient> recipeIngredients;
   final bool isLoading;
+  final RecipeDetailController controller;
+  final String totalTime;
+  final int servings;
+  final FocusNode hiddenCostFocusNode;
+  final FocusNode laborCostFocusNode;
+  final FocusNode profitMarginFocusNode;
+  final VoidCallback onTextChanged;
 
   const RecipeDetailCostSection({
     super.key,
+    required this.recipeId,
     required this.recipeIngredients,
     required this.isLoading,
+    required this.controller,
+    required this.totalTime,
+    required this.servings,
+    required this.hiddenCostFocusNode,
+    required this.laborCostFocusNode,
+    required this.profitMarginFocusNode,
+    required this.onTextChanged,
   });
 
   double calculateTotalIngredientCost(
@@ -29,6 +50,71 @@ class RecipeDetailCostSection extends StatelessWidget {
       totalCost += ingredient.ingredientPrice;
     }
     return double.parse(totalCost.toStringAsFixed(2));
+  }
+
+  double calculateTotalCost() {
+    if (calculateTotalIngredientCost(recipeIngredients) == -1) {
+      return -1;
+    }
+    double totalCost = 0.0;
+    totalCost += calculateTotalIngredientCost(recipeIngredients);
+    totalCost += calculateTotalIngredientCost(recipeIngredients) *
+        double.parse(controller.hiddenCostController.text.isNotEmpty
+            ? controller.hiddenCostController.text
+            : '0') /
+        100;
+    totalCost += convertTotalTimeToMins(totalTime) *
+        double.parse(controller.laborCostController.text.isNotEmpty
+            ? controller.laborCostController.text
+            : '0') /
+        60;
+    return totalCost;
+  }
+
+  double calculateTotalPrice() {
+    if (calculateTotalCost() == -1) {
+      return -1;
+    }
+    double totalPrice = 0.0;
+    totalPrice += calculateTotalCost();
+    totalPrice += calculateTotalCost() *
+        double.parse(controller.profitMarginController.text.isNotEmpty
+            ? controller.profitMarginController.text
+            : '0') /
+        100;
+    return totalPrice;
+  }
+
+  int convertTotalTimeToMins(String totalTime) {
+    final regex = RegExp(r'(\d+)\s*hrs?\s*(\d+)?\s*mins?');
+    final match = regex.firstMatch(totalTime);
+
+    int hours = 0;
+    int minutes = 0;
+
+    if (match != null) {
+      if (match.group(1) != null) {
+        hours = int.parse(match.group(1)!);
+      }
+      if (match.group(2) != null) {
+        minutes = int.parse(match.group(2)!);
+      }
+    } else {
+      final hourRegex = RegExp(r'(\d+)\s*hrs?');
+      final minuteRegex = RegExp(r'(\d+)\s*mins?');
+
+      final hourMatch = hourRegex.firstMatch(totalTime);
+      final minuteMatch = minuteRegex.firstMatch(totalTime);
+
+      if (hourMatch != null) {
+        hours = int.parse(hourMatch.group(1)!);
+      }
+      if (minuteMatch != null) {
+        minutes = int.parse(minuteMatch.group(1)!);
+      }
+    }
+
+    return hours * 60 + minutes;
   }
 
   @override
@@ -73,7 +159,7 @@ class RecipeDetailCostSection extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  "Total: ${calculateTotalIngredientCost(recipeIngredients) == -1 ? "-" : calculateTotalIngredientCost(recipeIngredients)} ฿",
+                  "Total: ${calculateTotalIngredientCost(recipeIngredients) == -1 ? "-" : NumberFormat('#,##0').format(calculateTotalIngredientCost(recipeIngredients))} ฿",
                   style: TextStyle(
                     color: blackColor,
                     fontFamily: 'Inter',
@@ -110,12 +196,33 @@ class RecipeDetailCostSection extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Row(
+                Row(
                   children: [
-                    SizedBox(width: 36),
-                    RecipeDetailTextField(width: 50),
-                    SizedBox(width: 10),
-                    Text(
+                    const SizedBox(width: 36),
+                    RecipeDetailTextField(
+                      width: 50,
+                      controller: controller.hiddenCostController,
+                      min: 0,
+                      max: 999,
+                      focusNode: hiddenCostFocusNode,
+                      onTextChanged: () async {
+                        onTextChanged();
+                        try {
+                          await NetworkService.instance.put(
+                            '/api/recipe/updateHiddenCost',
+                            data: {
+                              'recipe_id': recipeId,
+                              'hidden_cost':
+                                  controller.hiddenCostController.text
+                            },
+                          );
+                        } catch (e) {
+                          log(e.toString());
+                        }
+                      },
+                    ),
+                    const SizedBox(width: 10),
+                    const Text(
                       '%',
                       style: TextStyle(
                         fontSize: 16,
@@ -124,8 +231,8 @@ class RecipeDetailCostSection extends StatelessWidget {
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    SizedBox(width: 20),
-                    Text(
+                    const SizedBox(width: 20),
+                    const Text(
                       'Hidden costs',
                       style: TextStyle(
                         fontSize: 16,
@@ -140,6 +247,16 @@ class RecipeDetailCostSection extends StatelessWidget {
                   children: [
                     RecipeDetailHiddenCosts(
                       isLoading: isLoading,
+                      hiddenCost:
+                          calculateTotalIngredientCost(recipeIngredients) == -1
+                              ? -1
+                              : calculateTotalIngredientCost(
+                                      recipeIngredients) *
+                                  double.parse(controller
+                                          .hiddenCostController.text.isNotEmpty
+                                      ? controller.hiddenCostController.text
+                                      : '0') /
+                                  100,
                     ),
                     const SizedBox(width: 30),
                   ],
@@ -171,12 +288,32 @@ class RecipeDetailCostSection extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Row(
+                Row(
                   children: [
-                    SizedBox(width: 36),
-                    RecipeDetailTextField(width: 75),
-                    SizedBox(width: 20),
-                    Text(
+                    const SizedBox(width: 36),
+                    RecipeDetailTextField(
+                      width: 75,
+                      controller: controller.laborCostController,
+                      min: 0,
+                      max: 9999,
+                      focusNode: laborCostFocusNode,
+                      onTextChanged: () async {
+                        onTextChanged();
+                        try {
+                          await NetworkService.instance.put(
+                            '/api/recipe/updateLaborCost',
+                            data: {
+                              'recipe_id': recipeId,
+                              'labor_cost': controller.laborCostController.text
+                            },
+                          );
+                        } catch (e) {
+                          log(e.toString());
+                        }
+                      },
+                    ),
+                    const SizedBox(width: 20),
+                    const Text(
                       'Baht per hour',
                       style: TextStyle(
                         fontSize: 16,
@@ -189,7 +326,15 @@ class RecipeDetailCostSection extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    RecipeDetailLaborCosts(isLoading: isLoading),
+                    RecipeDetailLaborCosts(
+                      isLoading: isLoading,
+                      laborCost: convertTotalTimeToMins(totalTime) *
+                          double.parse(
+                              controller.laborCostController.text.isNotEmpty
+                                  ? controller.laborCostController.text
+                                  : '0') /
+                          60,
+                    ),
                     const SizedBox(width: 30),
                   ],
                 )
@@ -199,13 +344,15 @@ class RecipeDetailCostSection extends StatelessWidget {
             RecipeDetailPriceDetail(
               color: beigeColor,
               header: "Total cost:",
-              price: 390.8,
+              price: calculateTotalCost(),
               isLoading: isLoading,
             ),
             RecipeDetailPriceDetail(
               color: darkBeigeColor,
               header: "Cost per Serving:",
-              price: 10.86,
+              price: calculateTotalIngredientCost(recipeIngredients) == -1
+                  ? -1
+                  : calculateTotalCost() / servings,
               isLoading: isLoading,
             ),
             const SizedBox(height: 30.0),
@@ -237,12 +384,33 @@ class RecipeDetailCostSection extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Row(
+                Row(
                   children: [
-                    SizedBox(width: 36),
-                    RecipeDetailTextField(width: 50),
-                    SizedBox(width: 10),
-                    Text(
+                    const SizedBox(width: 36),
+                    RecipeDetailTextField(
+                      width: 50,
+                      controller: controller.profitMarginController,
+                      min: 0,
+                      max: 999,
+                      focusNode: profitMarginFocusNode,
+                      onTextChanged: () async {
+                        onTextChanged();
+                        try {
+                          await NetworkService.instance.put(
+                            '/api/recipe/updateProfitMargin',
+                            data: {
+                              'recipe_id': recipeId,
+                              'profit_margin':
+                                  controller.profitMarginController.text
+                            },
+                          );
+                        } catch (e) {
+                          log(e.toString());
+                        }
+                      },
+                    ),
+                    const SizedBox(width: 10),
+                    const Text(
                       '%',
                       style: TextStyle(
                         fontSize: 16,
@@ -251,8 +419,8 @@ class RecipeDetailCostSection extends StatelessWidget {
                         fontWeight: FontWeight.w400,
                       ),
                     ),
-                    SizedBox(width: 20),
-                    Text(
+                    const SizedBox(width: 20),
+                    const Text(
                       'Profit margin',
                       style: TextStyle(
                         fontSize: 16,
@@ -267,6 +435,15 @@ class RecipeDetailCostSection extends StatelessWidget {
                   children: [
                     RecipeDetailProfitMargin(
                       isLoading: isLoading,
+                      profitMargin:
+                          calculateTotalIngredientCost(recipeIngredients) == -1
+                              ? -1
+                              : calculateTotalCost() *
+                                  double.parse(controller.profitMarginController
+                                          .text.isNotEmpty
+                                      ? controller.profitMarginController.text
+                                      : '0') /
+                                  100,
                     ),
                     const SizedBox(width: 30),
                   ],
@@ -277,13 +454,15 @@ class RecipeDetailCostSection extends StatelessWidget {
             RecipeDetailPriceDetail(
               color: beigeColor,
               header: "Price:",
-              price: 508.4,
+              price: calculateTotalPrice(),
               isLoading: isLoading,
             ),
             RecipeDetailPriceDetail(
               color: darkBeigeColor,
               header: "Price per Serving:",
-              price: 14.11,
+              price: calculateTotalIngredientCost(recipeIngredients) == -1
+                  ? -1
+                  : calculateTotalPrice() / servings,
               isLoading: isLoading,
             ),
             const SizedBox(height: 30.0),

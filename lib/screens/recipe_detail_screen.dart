@@ -20,6 +20,8 @@ import 'package:bakingup_frontend/widgets/baking_up_detail_image.dart';
 import 'package:bakingup_frontend/models/recipe_detail.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/widgets/baking_up_no_result.dart';
+import 'package:bakingup_frontend/models/recipe_detail_controller.dart';
+import 'package:bakingup_frontend/utilities/regex.dart';
 
 class RecipeDetailScreen extends StatefulWidget {
   final String? recipeId;
@@ -30,6 +32,7 @@ class RecipeDetailScreen extends StatefulWidget {
 }
 
 class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
+  String recipeId = '';
   List<String> recipeUrl = [];
   String recipeName = '';
   int servings = 0;
@@ -42,7 +45,10 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
   List<RecipeIngredient> recipeIngredients = [];
   bool isLoading = false;
   bool isError = false;
-
+  FocusNode hiddenCostFocusNode = FocusNode();
+  FocusNode laborCostFocusNode = FocusNode();
+  FocusNode profitMarginFocusNode = FocusNode();
+  final RecipeDetailController _controller = RecipeDetailController();
   @override
   void initState() {
     super.initState();
@@ -61,6 +67,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       final recipeDetailResponse = RecipeDetailResponse.fromJson(response);
       final data = recipeDetailResponse.data;
       setState(() {
+        recipeId = widget.recipeId ?? '';
         recipeName = data.recipeName;
         recipeUrl = data.recipeUrl ?? [];
         totalTime = data.totalTime;
@@ -70,6 +77,12 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
         recipeIngredients = data.recipeIngredients ?? [];
         instructionUrls = data.instructionUrl ?? [];
         instructionSteps = data.instructionSteps;
+        _controller.hiddenCostController.text =
+            data.hiddenCost.toString().replaceAll(removeTrailingZeros, '');
+        _controller.laborCostController.text =
+            data.laborCost.toString().replaceAll(removeTrailingZeros, '');
+        _controller.profitMarginController.text =
+            data.profitMargin.toString().replaceAll(removeTrailingZeros, '');
       });
     } catch (e) {
       setState(() {
@@ -84,201 +97,218 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          BakingUpDetailImage(
-            imageUrl: recipeUrl,
-            isLoading: isLoading,
-          ),
-          const RecipeDetailEditButtonContainer(
-            children: [
-              BakingUpCircularEditButton(),
-            ],
-          ),
-          const RecipeDetailBackButtonContainer(
-            children: [
-              BakingUpCircularBackButton(),
-            ],
-          ),
-          Positioned(
-            top: (MediaQuery.of(context).size.width / 1.5) + 125,
-            left: 0,
-            right: 0,
-            child: Container(
-              height: MediaQuery.of(context).size.height -
-                  (MediaQuery.of(context).size.width / 1.5) -
-                  125,
-              decoration: const BoxDecoration(
-                color: Colors.white,
+    return GestureDetector(
+      onTap: () {
+        hiddenCostFocusNode.unfocus();
+        laborCostFocusNode.unfocus();
+        profitMarginFocusNode.unfocus();
+      },
+      child: Scaffold(
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            BakingUpDetailImage(
+              imageUrl: recipeUrl,
+              isLoading: isLoading,
+            ),
+            const RecipeDetailEditButtonContainer(
+              children: [
+                BakingUpCircularEditButton(),
+              ],
+            ),
+            const RecipeDetailBackButtonContainer(
+              children: [
+                BakingUpCircularBackButton(),
+              ],
+            ),
+            Positioned(
+              top: (MediaQuery.of(context).size.width / 1.5) + 125,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: MediaQuery.of(context).size.height -
+                    (MediaQuery.of(context).size.width / 1.5) -
+                    125,
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                ),
+                padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+                child: Column(
+                  children: [
+                    IntrinsicHeight(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            RecipeDetailTabButton(
+                              text: "Ingredients",
+                              isSelected: tabIndex == 1,
+                              onClick: () {
+                                setState(() {
+                                  tabIndex = 1;
+                                });
+                              },
+                            ),
+                            RecipeDetailTabButton(
+                              text: "Instructions",
+                              isSelected: tabIndex == 2,
+                              onClick: () {
+                                setState(() {
+                                  tabIndex = 2;
+                                });
+                              },
+                            ),
+                            RecipeDetailTabButton(
+                              text: "Cost & Price",
+                              isSelected: tabIndex == 3,
+                              onClick: () {
+                                setState(() {
+                                  tabIndex = 3;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    if (tabIndex == 1) ...[
+                      if (recipeIngredients.isEmpty && !isLoading) ...[
+                        const Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              BakingUpNoResult(
+                                  message:
+                                      "This recipe currently has no ingredients."),
+                              SizedBox(
+                                height: 60,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ] else ...[
+                        RecipeDetailIngredientsSection(
+                          recipeIngredients: recipeIngredients,
+                          isLoading: isLoading,
+                        ),
+                      ]
+                    ] else if (tabIndex == 2) ...[
+                      if (instructionUrls.isEmpty &&
+                          instructionSteps.isEmpty &&
+                          !isLoading) ...[
+                        const Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              BakingUpNoResult(
+                                  message:
+                                      "This recipe currently has no instructions."),
+                              SizedBox(
+                                height: 60,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ] else ...[
+                        RecipeDetailInstructionsSection(
+                          instructionUrls: instructionUrls,
+                          instructionSteps: instructionSteps,
+                          isLoading: isLoading,
+                        ),
+                      ],
+                    ] else if (tabIndex == 3) ...[
+                      if (recipeIngredients.isEmpty && !isLoading) ...[
+                        const Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              BakingUpNoResult(
+                                  message:
+                                      "This recipe currently has no ingredients."),
+                              SizedBox(
+                                height: 60,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ] else ...[
+                        RecipeDetailCostSection(
+                          recipeId: recipeId,
+                          recipeIngredients: recipeIngredients,
+                          isLoading: isLoading,
+                          controller: _controller,
+                          totalTime: totalTime,
+                          servings: servings,
+                          hiddenCostFocusNode: hiddenCostFocusNode,
+                          laborCostFocusNode: laborCostFocusNode,
+                          profitMarginFocusNode: profitMarginFocusNode,
+                          onTextChanged: () {
+                            setState(() {});
+                          },
+                        ),
+                      ],
+                    ]
+                  ],
+                ),
               ),
-              padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+            ),
+            RecipeDetailContainer(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  IntrinsicHeight(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
                         children: [
-                          RecipeDetailTabButton(
-                            text: "Ingredients",
-                            isSelected: tabIndex == 1,
-                            onClick: () {
-                              setState(() {
-                                tabIndex = 1;
-                              });
-                            },
+                          RecipeDetailRecipeName(
+                            recipeName: recipeName,
+                            isLoading: isLoading,
                           ),
-                          RecipeDetailTabButton(
-                            text: "Instructions",
-                            isSelected: tabIndex == 2,
-                            onClick: () {
-                              setState(() {
-                                tabIndex = 2;
-                              });
-                            },
-                          ),
-                          RecipeDetailTabButton(
-                            text: "Cost & Price",
-                            isSelected: tabIndex == 3,
-                            onClick: () {
-                              setState(() {
-                                tabIndex = 3;
-                              });
-                            },
+                          const Padding(
+                            padding: EdgeInsets.only(bottom: 8.0),
                           ),
                         ],
                       ),
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: RecipeDetailRecipeScore(
+                          score: score,
+                          star: star,
+                          isLoading: isLoading,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 20),
-                  if (tabIndex == 1) ...[
-                    if (recipeIngredients.isEmpty && !isLoading) ...[
-                      const Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            BakingUpNoResult(
-                                message:
-                                    "This recipe currently has no ingredients."),
-                            SizedBox(
-                              height: 60,
-                            ),
-                          ],
-                        ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RecipeDetailTotalTime(
+                            totalTime: totalTime,
+                            isLoading: isLoading,
+                          ),
+                          RecipeDetailServings(
+                            servings: servings,
+                            isLoading: isLoading,
+                          ),
+                        ],
                       ),
-                    ] else ...[
-                      RecipeDetailIngredientsSection(
-                        recipeIngredients: recipeIngredients,
-                        isLoading: isLoading,
-                      ),
-                    ]
-                  ] else if (tabIndex == 2) ...[
-                    if (instructionUrls.isEmpty &&
-                        instructionSteps.isEmpty &&
-                        !isLoading) ...[
-                      const Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            BakingUpNoResult(
-                                message:
-                                    "This recipe currently has no instructions."),
-                            SizedBox(
-                              height: 60,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ] else ...[
-                      RecipeDetailInstructionsSection(
-                        instructionUrls: instructionUrls,
-                        instructionSteps: instructionSteps,
-                        isLoading: isLoading,
-                      ),
+                      RecipeDetailScaleButton(servings: servings)
                     ],
-                  ] else if (tabIndex == 3) ...[
-                    if (recipeIngredients.isEmpty && !isLoading) ...[
-                      const Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            BakingUpNoResult(
-                                message:
-                                    "This recipe currently has no ingredients."),
-                            SizedBox(
-                              height: 60,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ] else ...[
-                      RecipeDetailCostSection(
-                        recipeIngredients: recipeIngredients,
-                        isLoading: isLoading,
-                      ),
-                    ],
-                  ]
+                  ),
                 ],
               ),
             ),
-          ),
-          RecipeDetailContainer(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Column(
-                      children: [
-                        RecipeDetailRecipeName(
-                          recipeName: recipeName,
-                          isLoading: isLoading,
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.only(bottom: 8.0),
-                        ),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: RecipeDetailRecipeScore(
-                        score: score,
-                        star: star,
-                        isLoading: isLoading,
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        RecipeDetailTotalTime(
-                          totalTime: totalTime,
-                          isLoading: isLoading,
-                        ),
-                        RecipeDetailServings(
-                          servings: servings,
-                          isLoading: isLoading,
-                        ),
-                      ],
-                    ),
-                    RecipeDetailScaleButton(servings: servings)
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

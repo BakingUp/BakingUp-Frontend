@@ -1,12 +1,16 @@
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/utilities/regex.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 
 class RecipeDetailProfitMargin extends StatelessWidget {
   final bool isLoading;
+  final double profitMargin;
   const RecipeDetailProfitMargin({
     super.key,
     required this.isLoading,
+    required this.profitMargin,
   });
 
   @override
@@ -21,9 +25,9 @@ class RecipeDetailProfitMargin extends StatelessWidget {
               color: Colors.white,
             ),
           )
-        : const Text(
-            '117.24 ฿',
-            style: TextStyle(
+        : Text(
+            '${profitMargin == -1 ? "-" : NumberFormat('#,##0.00').format(profitMargin).replaceAll(removeTrailingZeros, '')} ฿',
+            style: const TextStyle(
               fontSize: 16,
               fontFamily: 'Inter',
               fontStyle: FontStyle.normal,
