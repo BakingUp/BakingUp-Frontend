@@ -373,6 +373,7 @@ class _SettingChangePasswordDialogState
                         color: greyColor,
                         width: 120,
                         onClick: widget.grayButtonOnClick,
+                        isDisabled: false,
                       ),
                       const SizedBox(
                         width: 15,
@@ -381,6 +382,7 @@ class _SettingChangePasswordDialogState
                         title: widget.secondButtonTitle,
                         color: lightGreenColor,
                         width: 130,
+                        isDisabled: false,
                         onClick: () async {
                           if (_formKey.currentState!.validate()) {
                             if (widget.resetPasswordMode != true &&

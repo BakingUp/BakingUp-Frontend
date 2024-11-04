@@ -324,10 +324,12 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                   ? BakingUpLongActionButton(
                       title: 'Confirm',
                       color: lightGreenColor,
+                      isDisabled: false,
                     )
                   : BakingUpLongActionButton(
                       title: 'Confirm',
                       color: lightGreenColor,
+                      isDisabled: false,
                       dialogParams: BakingUpDialogParams(
                         title: 'Confirm Adding Stock?',
                         imgUrl: 'assets/icons/warning.png',

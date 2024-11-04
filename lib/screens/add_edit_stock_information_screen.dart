@@ -307,6 +307,7 @@ class _AddEditStockInformationScreenState
               BakingUpLongActionButton(
                 title: 'Confirm',
                 color: lightGreenColor,
+                isDisabled: false,
                 dialogParams: BakingUpDialogParams(
                   title: 'Confirm Production?',
                   imgUrl: 'assets/icons/confirm_production.png',

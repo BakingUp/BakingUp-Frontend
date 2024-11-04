@@ -68,6 +68,7 @@ class BakingUpDialog extends StatelessWidget {
                   color: greyColor,
                   width: 120,
                   onClick: grayButtonOnClick,
+                  isDisabled: false,
                 ),
                 secondButtonTitle != null &&
                         secondButtonTitle?.isNotEmpty == true
@@ -79,6 +80,7 @@ class BakingUpDialog extends StatelessWidget {
                             color: secondButtonColor ?? lightGreenColor,
                             width: 120,
                             onClick: secondButtonOnClick,
+                            isDisabled: false,
                           ),
                         ],
                       )

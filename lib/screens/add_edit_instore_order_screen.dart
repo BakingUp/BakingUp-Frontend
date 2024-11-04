@@ -532,6 +532,7 @@ class _AddEditInstoreOrderScreenState extends State<AddEditInstoreOrderScreen> {
                             BakingUpLongActionButton(
                               title: 'Confirm',
                               color: lightGreenColor,
+                              isDisabled: false,
                               dialogParams: BakingUpDialogParams(
                                 title: _isEdit
                                     ? 'Confirm Order Changes?'

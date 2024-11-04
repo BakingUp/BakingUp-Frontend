@@ -134,6 +134,7 @@ class _AddEditRecipeIngredientDialogState
                   title: "Cancel",
                   color: greyColor,
                   width: 120,
+                  isDisabled: false,
                   onClick: () {
                     Navigator.pop(context);
                   },
@@ -143,6 +144,7 @@ class _AddEditRecipeIngredientDialogState
                   title: "Confirm",
                   color: lightGreenColor,
                   width: 120,
+                  isDisabled: false,
                   onClick: () {
                     Navigator.pop(context);
                     Navigator.pop(context);

@@ -114,6 +114,7 @@ class RecipeDetailScaleDialog extends StatelessWidget {
                   title: "Cancel",
                   color: greyColor,
                   width: 120,
+                  isDisabled: false,
                 ),
                 Row(
                   children: [
@@ -122,6 +123,7 @@ class RecipeDetailScaleDialog extends StatelessWidget {
                       title: "Confirm",
                       color: lightGreenColor,
                       width: 120,
+                      isDisabled: false,
                     ),
                   ],
                 )

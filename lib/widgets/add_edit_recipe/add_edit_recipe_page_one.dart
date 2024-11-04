@@ -222,7 +222,11 @@ class AddEditRecipePageOne extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             BakingUpLongActionButton(
-                title: 'Next', color: greyColor, onClick: onClick),
+              title: 'Next',
+              color: greyColor,
+              onClick: onClick,
+              isDisabled: false,
+            ),
           ],
         )
       ],
