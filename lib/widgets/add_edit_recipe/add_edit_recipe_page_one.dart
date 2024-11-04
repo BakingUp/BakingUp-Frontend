@@ -18,6 +18,7 @@ class AddEditRecipePageOne extends StatelessWidget {
   final VoidCallback onClick;
   final Function(File) onNewImage;
   final Function(int) onImgDelete;
+  final Function(String) onIngredientDelete;
   final AddEditRecipeController controller;
   final void Function(RecipeIngredient ingredient) addIngredient;
   const AddEditRecipePageOne({
@@ -27,6 +28,7 @@ class AddEditRecipePageOne extends StatelessWidget {
     required this.onClick,
     required this.onNewImage,
     required this.onImgDelete,
+    required this.onIngredientDelete,
     required this.controller,
     required this.addIngredient,
   });
@@ -212,9 +214,44 @@ class AddEditRecipePageOne extends StatelessWidget {
             padding: const EdgeInsets.all(0),
             itemCount: recipeIngredients.length,
             itemBuilder: (context, index) {
-              return AddEditRecipeIngredient(
-                recipeIngredients: recipeIngredients,
-                index: index,
+              return Dismissible(
+                key: Key(recipeIngredients[index].id),
+                direction: DismissDirection.startToEnd,
+                background: Container(
+                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+                  padding: const EdgeInsets.only(left: 20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(13),
+                    color: redColor,
+                  ),
+                  alignment: Alignment.centerLeft,
+                  child: const Row(
+                    children: [
+                      Icon(
+                        Icons.delete,
+                        color: Colors.white,
+                      ),
+                      SizedBox(width: 8),
+                      Text(
+                        'Delete',
+                        style: TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 16,
+                          fontStyle: FontStyle.normal,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                confirmDismiss: (direction) async {
+                  return onIngredientDelete(recipeIngredients[index].id);
+                },
+                child: AddEditRecipeIngredient(
+                  recipeIngredients: recipeIngredients,
+                  index: index,
+                ),
               );
             }),
         const SizedBox(height: 80),
