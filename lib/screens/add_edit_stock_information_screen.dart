@@ -1,4 +1,8 @@
 // Importing libraries
+import 'dart:developer';
+
+import 'package:bakingup_frontend/models/stock_recipe_detail.dart';
+import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/widgets/add_edit_stock_information/add_edit_stock_information_text_field.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +19,11 @@ import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 
 class AddEditStockInformationScreen extends StatefulWidget {
-  const AddEditStockInformationScreen({super.key});
+  final String? recipeId;
+  const AddEditStockInformationScreen({
+    super.key,
+    this.recipeId,
+  });
 
   @override
   State<AddEditStockInformationScreen> createState() =>
@@ -25,27 +33,48 @@ class AddEditStockInformationScreen extends StatefulWidget {
 class _AddEditStockInformationScreenState
     extends State<AddEditStockInformationScreen> {
   final int _currentDrawerIndex = 4;
-  final String stockUrl =
-      'https://images.immediate.co.uk/production/volatile/sites/30/2021/09/butter-cookies-262c4fd.jpg';
-  final String stockName = 'Butter Cookies';
-  final List<StockIngredient> stockIngredients = [
-    StockIngredient(
-      ingredientUrl:
-          'https://images.immediate.co.uk/production/volatile/sites/30/2021/09/butter-cookies-262c4fd.jpg',
-      ingredientName: 'All-purpose flour',
-      unit: 'g',
-      totalQuantity: 250,
-      usedQuantity: 200,
-    ),
-    StockIngredient(
-      ingredientUrl:
-          'https://img.freepik.com/free-photo/world-diabetes-day-sugar-wooden-bowl-dark-surface_1150-26666.jpg',
-      ingredientName: 'Sugar',
-      unit: 'g',
-      totalQuantity: 150,
-      usedQuantity: 211,
-    ),
-  ];
+  String stockName = '';
+  bool isLoading = false;
+  bool isError = false;
+  List<StockRecipeIngredientData> stockIngredients = [];
+  String totalTime = '';
+  String servings = '';
+
+  Future<void> _fetchRecipeDetails() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final response = await NetworkService.instance.get(
+        '/api/stock/getStockRecipeDetail?recipe_id=${widget.recipeId}',
+      );
+      log('response: $response');
+      final stockDetailResponse = StockRecipeDetailResponse.fromJson(response);
+      log('stockDetailResponse: $stockDetailResponse');
+      final data = stockDetailResponse.data;
+      setState(() {
+        stockName = data.recipeName;
+        stockIngredients = data.ingredients;
+        totalTime = data.totalTime;
+        servings = data.servings.toString();
+      });
+    } catch (e) {
+      setState(() {
+        isError = true;
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchRecipeDetails();
+  }
 
   @override
   Widget build(BuildContext context) {
