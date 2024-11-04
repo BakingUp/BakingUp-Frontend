@@ -19,6 +19,18 @@ class RecipeDetailCostSection extends StatelessWidget {
     required this.isLoading,
   });
 
+  double calculateTotalIngredientCost(
+      List<RecipeIngredient> recipeIngredients) {
+    double totalCost = 0.0;
+    for (var ingredient in recipeIngredients) {
+      if (ingredient.ingredientPrice == -1) {
+        return -1;
+      }
+      totalCost += ingredient.ingredientPrice;
+    }
+    return double.parse(totalCost.toStringAsFixed(2));
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -55,6 +67,23 @@ class RecipeDetailCostSection extends StatelessWidget {
             RecipeDetailRawMaterials(
               recipeIngredients: recipeIngredients,
               isLoading: isLoading,
+            ),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  "Total: ${calculateTotalIngredientCost(recipeIngredients) == -1 ? "-" : calculateTotalIngredientCost(recipeIngredients)} ฿",
+                  style: TextStyle(
+                    color: blackColor,
+                    fontFamily: 'Inter',
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w400,
+                    fontSize: 15,
+                  ),
+                ),
+                const SizedBox(width: 30)
+              ],
             ),
             const SizedBox(height: 16),
             const Row(

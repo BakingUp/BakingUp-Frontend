@@ -1,5 +1,6 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/models/recipe_detail.dart';
+import 'package:bakingup_frontend/utilities/regex.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -74,7 +75,9 @@ class RecipeDetailRawMaterials extends StatelessWidget {
                         ),
                       )
                     : Text(
-                        "${recipeIngredients[index].ingredientPrice} ฿",
+                        recipeIngredients[index].ingredientPrice == -1
+                            ? "- ฿"
+                            : "${recipeIngredients[index].ingredientPrice.toString().replaceAll(removeTrailingZeros, '')} ฿",
                         style: TextStyle(
                           color: blackColor,
                           fontFamily: 'Inter',
