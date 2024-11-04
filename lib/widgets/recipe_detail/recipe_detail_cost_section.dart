@@ -4,6 +4,7 @@ import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/models/recipe_detail.dart';
 import 'package:bakingup_frontend/models/recipe_detail_controller.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:bakingup_frontend/utilities/regex.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_hidden_costs.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_labor_costs.dart';
 import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_price_detail.dart';
@@ -159,7 +160,7 @@ class RecipeDetailCostSection extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  "Total: ${calculateTotalIngredientCost(recipeIngredients) == -1 ? "-" : NumberFormat('#,##0').format(calculateTotalIngredientCost(recipeIngredients))} ฿",
+                  "Total: ${calculateTotalIngredientCost(recipeIngredients) == -1 ? "-" : NumberFormat('#,##0.00').format(calculateTotalIngredientCost(recipeIngredients)).replaceAll(removeTrailingZeros, '')} ฿",
                   style: TextStyle(
                     color: blackColor,
                     fontFamily: 'Inter',
