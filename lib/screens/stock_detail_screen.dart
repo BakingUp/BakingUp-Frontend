@@ -168,6 +168,45 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
+                        Tooltip(
+                          verticalOffset: -20,
+                          showDuration: const Duration(seconds: 5),
+                          margin: const EdgeInsets.only(right: 40, top: 45),
+                          triggerMode: TooltipTriggerMode.tap,
+                          padding: EdgeInsets.zero,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[700],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          richMessage: TextSpan(
+                            children: [
+                              WidgetSpan(
+                                child: Container(
+                                  width: 200,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 8),
+                                  child: const Text(
+                                    "These color on each stock refer to its low stock threshold.",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 13,
+                                        fontFamily: 'Inter',
+                                        fontStyle: FontStyle.normal,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          child: Image.asset(
+                            'assets/icons/info_icon.png',
+                            width: 20,
+                            height: 20,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 13,
+                        ),
                         BakingUpFilterButton(
                           optionsOne: stockFilterList,
                           optionOneName: "Filter by",
