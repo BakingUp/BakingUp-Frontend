@@ -1,4 +1,5 @@
 // Importing libraries
+import 'package:bakingup_frontend/screens/add_edit_stock_information_screen.dart';
 import 'package:flutter/material.dart';
 // Importing files
 import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
@@ -210,7 +211,20 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                         ),
                       ],
                     ),
-                    const BakingUpCircularAddButton(),
+                    BakingUpCircularAddButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddEditStockInformationScreen(
+                              recipeId: widget.recipeId,
+                            ),
+                          ),
+                        ).then((_) {
+                          _fetchStockDetails();
+                        });
+                      },
+                    ),
                   ],
                 ),
                 Row(

@@ -1,4 +1,9 @@
 // Importing libraries
+import 'dart:developer';
+
+import 'package:bakingup_frontend/models/stock_recipe_detail.dart';
+import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:bakingup_frontend/widgets/add_edit_stock_information/add_edit_stock_information_ingredient_loading.dart';
 import 'package:bakingup_frontend/widgets/add_edit_stock_information/add_edit_stock_information_text_field.dart';
 import 'package:flutter/material.dart';
 
@@ -13,9 +18,14 @@ import 'package:bakingup_frontend/widgets/add_edit_stock_information/add_edit_st
 import 'package:bakingup_frontend/widgets/add_edit_stock_information/add_edit_stock_information_quantity_field.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
+import 'package:shimmer/shimmer.dart';
 
 class AddEditStockInformationScreen extends StatefulWidget {
-  const AddEditStockInformationScreen({super.key});
+  final String? recipeId;
+  const AddEditStockInformationScreen({
+    super.key,
+    this.recipeId,
+  });
 
   @override
   State<AddEditStockInformationScreen> createState() =>
@@ -25,27 +35,48 @@ class AddEditStockInformationScreen extends StatefulWidget {
 class _AddEditStockInformationScreenState
     extends State<AddEditStockInformationScreen> {
   final int _currentDrawerIndex = 4;
-  final String stockUrl =
-      'https://images.immediate.co.uk/production/volatile/sites/30/2021/09/butter-cookies-262c4fd.jpg';
-  final String stockName = 'Butter Cookies';
-  final List<StockIngredient> stockIngredients = [
-    StockIngredient(
-      ingredientUrl:
-          'https://images.immediate.co.uk/production/volatile/sites/30/2021/09/butter-cookies-262c4fd.jpg',
-      ingredientName: 'All-purpose flour',
-      unit: 'g',
-      totalQuantity: 250,
-      usedQuantity: 200,
-    ),
-    StockIngredient(
-      ingredientUrl:
-          'https://img.freepik.com/free-photo/world-diabetes-day-sugar-wooden-bowl-dark-surface_1150-26666.jpg',
-      ingredientName: 'Sugar',
-      unit: 'g',
-      totalQuantity: 150,
-      usedQuantity: 211,
-    ),
-  ];
+  String stockName = '';
+  bool isLoading = false;
+  bool isError = false;
+  List<StockRecipeIngredientData> stockIngredients = [];
+  String totalTime = '';
+  String servings = '';
+
+  Future<void> _fetchRecipeDetails() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final response = await NetworkService.instance.get(
+        '/api/stock/getStockRecipeDetail?recipe_id=${widget.recipeId}',
+      );
+      log('response: $response');
+      final stockDetailResponse = StockRecipeDetailResponse.fromJson(response);
+      log('stockDetailResponse: $stockDetailResponse');
+      final data = stockDetailResponse.data;
+      setState(() {
+        stockName = data.recipeName;
+        stockIngredients = data.ingredients;
+        totalTime = data.totalTime;
+        servings = data.servings.toString();
+      });
+    } catch (e) {
+      setState(() {
+        isError = true;
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchRecipeDetails();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,28 +126,41 @@ class _AddEditStockInformationScreenState
                 ),
               ),
               const SizedBox(width: 16),
-              Container(
-                height: 45,
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  color: greyColor,
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      stockName,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontFamily: 'Inter',
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.w400,
+              isLoading
+                  ? Shimmer.fromColors(
+                      baseColor: greyColor,
+                      highlightColor: whiteColor,
+                      child: Container(
+                        width: 120,
+                        height: 45,
+                        decoration: BoxDecoration(
+                          color: whiteColor,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              )
+                    )
+                  : Container(
+                      height: 45,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: greyColor,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            stockName,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontFamily: 'Inter',
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
             ],
           ),
           const SizedBox(height: 16.0),
@@ -207,15 +251,27 @@ class _AddEditStockInformationScreenState
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      stockName,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontFamily: 'Inter',
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    isLoading
+                        ? Shimmer.fromColors(
+                            baseColor: greyColor,
+                            highlightColor: whiteColor,
+                            child: Container(
+                              width: 80,
+                              height: 23,
+                              decoration: BoxDecoration(
+                                color: whiteColor,
+                              ),
+                            ),
+                          )
+                        : Text(
+                            stockName,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'Inter',
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -224,23 +280,75 @@ class _AddEditStockInformationScreenState
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          "Total Time: 1 hr 40 mins",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w400,
-                          ),
+                        Row(
+                          children: [
+                            const Text(
+                              "Total Time: ",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontFamily: 'Inter',
+                                fontStyle: FontStyle.normal,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            isLoading
+                                ? Shimmer.fromColors(
+                                    baseColor: greyColor,
+                                    highlightColor: whiteColor,
+                                    child: Container(
+                                      width: 120,
+                                      height: 20,
+                                      padding: const EdgeInsets.only(bottom: 3),
+                                      decoration: BoxDecoration(
+                                        color: whiteColor,
+                                      ),
+                                    ),
+                                  )
+                                : Text(
+                                    totalTime,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontFamily: 'Inter',
+                                      fontStyle: FontStyle.normal,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                          ],
                         ),
-                        const Text(
-                          "Baseline servings: 36",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontFamily: 'Inter',
-                            fontStyle: FontStyle.normal,
-                            fontWeight: FontWeight.w400,
-                          ),
+                        Row(
+                          children: [
+                            const Text(
+                              "Baseline servings: ",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontFamily: 'Inter',
+                                fontStyle: FontStyle.normal,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            isLoading
+                                ? Shimmer.fromColors(
+                                    baseColor: greyColor,
+                                    highlightColor: whiteColor,
+                                    child: Container(
+                                      width: 20,
+                                      height: 20,
+                                      padding: const EdgeInsets.only(top: 3),
+                                      decoration: BoxDecoration(
+                                        color: whiteColor,
+                                      ),
+                                    ),
+                                  )
+                                : Text(
+                                    servings,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontFamily: 'Inter',
+                                      fontStyle: FontStyle.normal,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                          ],
                         ),
                         const SizedBox(height: 16),
                         Row(
@@ -282,10 +390,14 @@ class _AddEditStockInformationScreenState
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            isLoading
+                                ? const AddEditStockInformationIngredientLoading()
+                                : Container(),
                             ...stockIngredients.asMap().entries.map((entry) {
                               int index = entry.key;
                               return AddEditStockInformationIngredient(
-                                  stockIngredient: stockIngredients[index]);
+                                stockIngredient: stockIngredients[index],
+                              );
                             }),
                           ],
                         ),
