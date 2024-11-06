@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/constants/routes.dart';
-import 'package:bakingup_frontend/screens/home_screen.dart';
+import 'package:bakingup_frontend/screens/auth/login_screen.dart';
 import 'package:bakingup_frontend/widgets/baking_up_theme_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
@@ -95,7 +95,7 @@ class _VerifyEmailState extends State<VerifyEmailScreen> {
 
   @override
   Widget build(BuildContext context) => isEmailVerified
-      ? const HomeScreen()
+      ? const LoginScreen()
       : Container(
           padding: const EdgeInsets.all(30),
           decoration: BoxDecoration(
