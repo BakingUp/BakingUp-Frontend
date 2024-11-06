@@ -241,6 +241,7 @@ class _SettingFixCostModalState extends State<SettingFixCostModal> {
                     onClick: () {
                       Navigator.of(context).pop();
                     },
+                    isDisabled: false,
                   ),
                   const SizedBox(
                     width: 15,
@@ -254,6 +255,7 @@ class _SettingFixCostModalState extends State<SettingFixCostModal> {
                         _changeFixCost();
                       }
                     },
+                    isDisabled: false,
                   )
                 ],
               )

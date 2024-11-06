@@ -60,11 +60,13 @@ class AddEditRecipePageTwo extends StatelessWidget {
               title: 'Back',
               color: greyColor,
               onClick: onClick,
+              isDisabled: false,
             ),
             const SizedBox(width: 8),
             BakingUpLongActionButton(
               title: 'Save',
               color: lightGreenColor,
+              isDisabled: false,
               dialogParams: BakingUpDialogParams(
                 title: isEdit
                     ? 'Confirm Recipe Changes?'

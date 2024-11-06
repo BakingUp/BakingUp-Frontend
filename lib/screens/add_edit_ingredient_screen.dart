@@ -49,6 +49,44 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
     }
   }
 
+  int getUnitLengthLimit(String unit) {
+    switch (unit) {
+      case 'Grams':
+        return 5;
+      case 'Kilograms':
+        return 2;
+      case 'Litres':
+        return 2;
+      case 'Millilitres':
+        return 5;
+      default:
+        return 5;
+    }
+  }
+
+  int getUnitMax(String unit) {
+    switch (unit) {
+      case 'Grams':
+        return 99000;
+      case 'Kilograms':
+        return 99;
+      case 'Litres':
+        return 99;
+      case 'Millilitres':
+        return 99000;
+      default:
+        return 99000;
+    }
+  }
+
+  bool getIsDisabled() {
+    return (_controller.engNameController.text.isEmpty &&
+            _controller.thaiNameController.text.isEmpty) ||
+        selectedUnit.isEmpty ||
+        _controller.ingredientLessThanController.text.isEmpty ||
+        _controller.daysBeforeExpireController.text.isEmpty;
+  }
+
   List<String> convertFilesToBase64(List<File> files) {
     return files.map((file) {
       final bytes = file.readAsBytesSync();
@@ -135,12 +173,20 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   AddEditIngredientNameTextField(
-                      label: 'English',
-                      controller: _controller.engNameController),
+                    label: 'English',
+                    controller: _controller.engNameController,
+                    onTextChanged: () {
+                      setState(() {});
+                    },
+                  ),
                   const SizedBox(height: 16),
                   AddEditIngredientNameTextField(
-                      label: 'Thai',
-                      controller: _controller.thaiNameController),
+                    label: 'Thai',
+                    controller: _controller.thaiNameController,
+                    onTextChanged: () {
+                      setState(() {});
+                    },
+                  ),
                 ],
               ),
             ],
@@ -184,6 +230,7 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
                 onApply: (String value) {
                   setState(() {
                     selectedUnit = value;
+                    _controller.ingredientLessThanController.text = '';
                   });
                 },
               )
@@ -207,6 +254,12 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
               ),
               AddEditIngredientTextField(
                 controller: _controller.ingredientLessThanController,
+                lengthLimit: getUnitLengthLimit(selectedUnit),
+                min: 1,
+                max: getUnitMax(selectedUnit),
+                onTextChanged: () {
+                  setState(() {});
+                },
               ),
               const Text(
                 'unit',
@@ -233,6 +286,12 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
               ),
               AddEditIngredientTextField(
                 controller: _controller.daysBeforeExpireController,
+                lengthLimit: 3,
+                min: 1,
+                max: 365,
+                onTextChanged: () {
+                  setState(() {});
+                },
               ),
               const Text(
                 'days before expiration',
@@ -251,10 +310,14 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
             children: [
               _isEdit
                   ? BakingUpLongActionButton(
-                      title: 'Save', color: lightGreenColor)
-                  : BakingUpLongActionButton(
                       title: 'Save',
                       color: lightGreenColor,
+                      isDisabled: false,
+                    )
+                  : BakingUpLongActionButton(
+                      title: 'Save',
+                      color: getIsDisabled() ? greyColor : lightGreenColor,
+                      isDisabled: getIsDisabled(),
                       dialogParams: BakingUpDialogParams(
                         title: 'Confirm Adding Ingredient?',
                         imgUrl: 'assets/icons/warning.png',
