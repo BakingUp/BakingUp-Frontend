@@ -311,7 +311,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           "user_id": user.currentUser?.uid,
                                           "device_token": token,
                                         };
-                                        
+
                                         final response =
                                             await NetworkService.instance
                                                 .post(
@@ -322,6 +322,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                           debugPrint(
                                               "Post request failed: $error");
                                         });
+
+                                        if (response == null) {
+                                          debugPrint('API response is null');
+                                        } else if (response is! Map) {
+                                          debugPrint(
+                                              'Unexpected response type: ${response.runtimeType}');
+                                        } else {
+                                          debugPrint('API response: $response');
+                                        }
 
                                         debugPrint("Successfully login");
                                         Navigator.of(context).pop();

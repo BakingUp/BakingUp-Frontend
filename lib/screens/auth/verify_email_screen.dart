@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/constants/routes.dart';
 import 'package:bakingup_frontend/screens/auth/login_screen.dart';
-import 'package:bakingup_frontend/screens/home_screen.dart';
 import 'package:bakingup_frontend/widgets/baking_up_theme_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';

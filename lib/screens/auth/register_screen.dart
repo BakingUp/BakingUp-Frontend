@@ -287,18 +287,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                   password: _registerController
                                                       .password
                                                       .trim());
-
-                                      // debugPrint('Sending data: ${{
-                                      //   "user_id": userCredential.user?.uid,
-                                      //   "first_name":
-                                      //       _registerController.firstname,
-                                      //   "last_name":
-                                      //       _registerController.lastname,
-                                      //   "tel": _registerController.phoneNumber,
-                                      //   "store_name":
-                                      //       _registerController.storeName,
-                                      // }}');
-
+                                                      
                                       final response =
                                           await NetworkService.instance.post(
                                               "/api/auth/register",
