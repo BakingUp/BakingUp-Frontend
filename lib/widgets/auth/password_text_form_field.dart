@@ -32,6 +32,7 @@ class _PasswordTextFormFieldState extends State<PasswordTextFormField> {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: widget.controller,
+      cursorColor: darkBrownColor,
       validator: widget.validate,
       obscureText: passwordVisible,
       decoration: InputDecoration(
