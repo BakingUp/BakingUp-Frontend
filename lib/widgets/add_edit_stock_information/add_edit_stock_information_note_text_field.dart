@@ -1,14 +1,23 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AddEditStockInformationNoteTextField extends StatelessWidget {
-  const AddEditStockInformationNoteTextField({super.key});
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  const AddEditStockInformationNoteTextField({
+    super.key,
+    required this.controller,
+    required this.focusNode,
+  });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width - 60,
       child: TextField(
+        focusNode: focusNode,
+        controller: controller,
         maxLines: null,
         style: const TextStyle(
           fontSize: 12,
@@ -16,6 +25,9 @@ class AddEditStockInformationNoteTextField extends StatelessWidget {
           fontStyle: FontStyle.normal,
           fontWeight: FontWeight.w300,
         ),
+        inputFormatters: [
+          LengthLimitingTextInputFormatter(999),
+        ],
         cursorColor: blackColor,
         decoration: InputDecoration(
           border: const OutlineInputBorder(),
