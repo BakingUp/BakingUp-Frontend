@@ -333,7 +333,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                         }
 
                                         debugPrint("Successfully login");
-                                        Navigator.of(context).pop();
                                         navigate();
                                       } on FirebaseAuthException catch (e) {
                                         // ignore: use_build_context_synchronously
