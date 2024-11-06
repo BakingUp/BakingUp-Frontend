@@ -1,4 +1,4 @@
-RegExp removeTrailingZeros = RegExp(r'([.]*0)(?!.*\d)');
+RegExp removeTrailingZeros = RegExp(r'([.]*0+)(?!.*\d)');
 
 String extractUnit(String unitString) {
   final RegExp unitRegExp = RegExp(r'\b(kg|l|ml|g)\b');

@@ -1,5 +1,7 @@
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/utilities/regex.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 
 class RecipeDetailPriceDetail extends StatelessWidget {
@@ -62,7 +64,7 @@ class RecipeDetailPriceDetail extends StatelessWidget {
                   ),
                 )
               : Text(
-                  "$price ฿",
+                  '${price == -1 ? '-' : NumberFormat('#,##0.00').format(price).replaceAll(removeTrailingZeros, '')} ฿',
                   style: const TextStyle(
                     fontSize: 16,
                     fontFamily: 'Inter',
