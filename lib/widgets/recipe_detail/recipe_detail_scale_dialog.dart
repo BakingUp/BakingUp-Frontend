@@ -146,14 +146,11 @@ class _RecipeDetailScaleDialogState extends State<RecipeDetailScaleDialog> {
                       const SizedBox(width: 8),
                       BakingUpLongActionButton(
                         title: "Confirm",
-                        color: _scaleController.text.isEmpty ||
-                                widget.servings ==
-                                    int.parse(_scaleController.text)
+                        color: _scaleController.text.isEmpty
                             ? greyColor
                             : lightGreenColor,
                         width: 120,
-                        isDisabled: _scaleController.text.isEmpty ||
-                            widget.servings == int.parse(_scaleController.text),
+                        isDisabled: _scaleController.text.isEmpty,
                         onClick: () {
                           widget.onScale(_scaleController.text);
                           Navigator.of(context).pop();

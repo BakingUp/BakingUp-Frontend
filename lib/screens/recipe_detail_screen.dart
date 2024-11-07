@@ -408,9 +408,15 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                         servings: servings,
                         focusNode: scaleFocusNode,
                         onScale: (p0) {
-                          setState(() {
-                            scaledServings = p0;
-                          });
+                          if (scaledServings != "" && int.parse(scaledServings) == servings) {
+                            setState(() {
+                              scaledServings = "";
+                            });
+                          } else {
+                            setState(() {
+                              scaledServings = p0;
+                            });
+                          }
                           _fetchRecipeDetails();
                         },
                         onDismissed: () {
