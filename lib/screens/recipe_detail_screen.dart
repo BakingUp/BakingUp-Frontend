@@ -146,6 +146,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
           children: [
             BakingUpDetailImage(
               imageUrl: recipeUrl,
+              isScaled: scaledServings != "",
               isLoading: isLoading,
             ),
             const RecipeDetailEditButtonContainer(
