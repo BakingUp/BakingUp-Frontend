@@ -1,6 +1,8 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
+import 'package:bakingup_frontend/widgets/recipe_detail/recipe_detail_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class RecipeDetailScaleDialog extends StatefulWidget {
   final int servings;
@@ -90,6 +92,10 @@ class _RecipeDetailScaleDialogState extends State<RecipeDetailScaleDialog> {
                                 fontStyle: FontStyle.normal,
                                 fontWeight: FontWeight.w300,
                               ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                CustomRangeTextInputFormatter(1, 99999),
+                              ],
                               cursorColor: blackColor,
                               decoration: InputDecoration(
                                 border: const OutlineInputBorder(),
