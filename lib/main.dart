@@ -4,14 +4,16 @@ import 'package:bakingup_frontend/screens/add_ingredient_screen.dart';
 import 'package:bakingup_frontend/screens/add_ingredient_stock_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_instore_order_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_recipe_ingredient_screen.dart';
-import 'package:bakingup_frontend/screens/add_edit_recipe_screen.dart';
+import 'package:bakingup_frontend/screens/add_recipe_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_stock_information_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_stock_screen.dart';
 import 'package:bakingup_frontend/screens/add_ingredient_receipt_screen.dart';
 import 'package:bakingup_frontend/screens/auth/login_screen.dart';
 import 'package:bakingup_frontend/screens/auth/register_screen.dart';
 import 'package:bakingup_frontend/screens/change_password_screen.dart';
+import 'package:bakingup_frontend/screens/edit_ingredient_screen.dart';
 import 'package:bakingup_frontend/screens/edit_ingredient_stock_screen.dart';
+import 'package:bakingup_frontend/screens/edit_recipe_screen.dart';
 import 'package:bakingup_frontend/screens/home_screen.dart';
 import 'package:bakingup_frontend/screens/ingredient_detail_screen.dart';
 import 'package:bakingup_frontend/screens/ingredient_stock_detail_screen.dart';
@@ -128,9 +130,9 @@ class _MainAppState extends State<MainApp> {
           case addIngredientStockRoute:
             return MaterialPageRoute(
                 builder: (context) => const AddIngredientStockScreen());
-          case addEditRecipeRoute:
+          case addRecipeRoute:
             return MaterialPageRoute(
-                builder: (context) => const AddEditRecipeScreen());
+                builder: (context) => const AddRecipeScreen());
           case addEditOrderRoute:
             return MaterialPageRoute(
                 builder: (context) => const AddEditInstoreOrderScreen());
@@ -154,9 +156,12 @@ class _MainAppState extends State<MainApp> {
           case stockDetailInformationRoute:
             return MaterialPageRoute(
                 builder: (context) => const StockDetailInformationScreen());
+          case editRecipeRoute:
+            return MaterialPageRoute(
+                builder: (context) => const EditRecipeScreen());
           case editIngredientRoute:
             return MaterialPageRoute(
-                builder: (context) => const AddIngredientScreen());
+                builder: (context) => const EditIngredientScreen());
           case editIngredientStockRoute:
             return MaterialPageRoute(
                 builder: (context) => const EditIngredientStockScreen());

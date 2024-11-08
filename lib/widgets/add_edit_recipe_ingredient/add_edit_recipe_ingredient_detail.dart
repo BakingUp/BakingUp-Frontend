@@ -1,6 +1,6 @@
 import 'package:bakingup_frontend/enum/expiration_status.dart';
 import 'package:bakingup_frontend/models/warehouse.dart';
-import 'package:bakingup_frontend/screens/add_edit_recipe_screen.dart';
+import 'package:bakingup_frontend/screens/add_recipe_screen.dart';
 import 'package:bakingup_frontend/utilities/regex.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe_ingredient/add_edit_recipe_ingredient_dialog.dart';
 import 'package:bakingup_frontend/widgets/ingredient_detail/expiration_status_indicator.dart';

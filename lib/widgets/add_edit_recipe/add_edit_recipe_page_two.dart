@@ -7,6 +7,7 @@ import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
 import 'package:bakingup_frontend/widgets/baking_up_image_picker.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 class AddEditRecipePageTwo extends StatelessWidget {
   final VoidCallback onClick;
@@ -16,6 +17,7 @@ class AddEditRecipePageTwo extends StatelessWidget {
   final Function(int) onImgDelete;
   final VoidCallback onSave;
   final AddEditRecipeController controller;
+  final bool? isLoading;
   const AddEditRecipePageTwo({
     super.key,
     required this.onClick,
@@ -25,6 +27,7 @@ class AddEditRecipePageTwo extends StatelessWidget {
     required this.onImgDelete,
     required this.onSave,
     required this.controller,
+    this.isLoading,
   });
 
   @override
@@ -32,26 +35,56 @@ class AddEditRecipePageTwo extends StatelessWidget {
     return Column(
       children: [
         const AddEditRecipeTitle(title: "Instructions"),
-        BakingUpImagePicker(
-          images: instructionImages,
-          onNewImage: onNewImage,
-          isOneImage: false,
-          onDelete: (index) {
-            onImgDelete(index);
-          },
-        ),
-        const SizedBox(height: 16),
+        !isEdit
+            ? BakingUpImagePicker(
+                images: instructionImages,
+                onNewImage: onNewImage,
+                isOneImage: false,
+                onDelete: (index) {
+                  onImgDelete(index);
+                },
+              )
+            : Container(),
+        SizedBox(height: isEdit ? 24 : 16),
         const AddEditRecipeTitle(
           title: "Instruction detail :",
           fontSize: 16,
           fontWeight: FontWeight.w400,
         ),
         const SizedBox(height: 16),
-        AddEditRecipeInstructionField(
-            label: 'English', controller: controller.engInstructionController),
+        isLoading != null && isLoading!
+            ? Shimmer.fromColors(
+                baseColor: greyColor,
+                highlightColor: whiteColor,
+                child: Container(
+                  height: 87,
+                  width: MediaQuery.of(context).size.width - 60,
+                  decoration: BoxDecoration(
+                    color: whiteColor,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+              )
+            : AddEditRecipeInstructionField(
+                label: 'English',
+                controller: controller.engInstructionController),
         const SizedBox(height: 30),
-        AddEditRecipeInstructionField(
-            label: 'Thai', controller: controller.thaiInstructionController),
+        isLoading != null && isLoading!
+            ? Shimmer.fromColors(
+                baseColor: greyColor,
+                highlightColor: whiteColor,
+                child: Container(
+                  height: 87,
+                  width: MediaQuery.of(context).size.width - 60,
+                  decoration: BoxDecoration(
+                    color: whiteColor,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+              )
+            : AddEditRecipeInstructionField(
+                label: 'Thai',
+                controller: controller.thaiInstructionController),
         const SizedBox(height: 80),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,

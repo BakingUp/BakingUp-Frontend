@@ -14,14 +14,14 @@ import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
 import 'package:bakingup_frontend/models/add_edit_recipe_controller.dart';
 
-class AddEditRecipeScreen extends StatefulWidget {
-  const AddEditRecipeScreen({super.key});
+class AddRecipeScreen extends StatefulWidget {
+  const AddRecipeScreen({super.key});
 
   @override
-  State<AddEditRecipeScreen> createState() => _AddEditRecipeScreenState();
+  State<AddRecipeScreen> createState() => _AddRecipeScreenState();
 }
 
-class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
+class _AddRecipeScreenState extends State<AddRecipeScreen> {
   final int _currentDrawerIndex = 5;
   final bool _isEdit = false;
   bool _isFirstPage = true;
