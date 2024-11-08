@@ -386,6 +386,7 @@ class _AddEditIngredientStockScreenState
               BakingUpLongActionButton(
                 title: 'Save',
                 color: lightGreenColor,
+                isDisabled: false,
                 dialogParams: BakingUpDialogParams(
                   title: _isEdit
                       ? 'Confirm Ingredient Changes?'

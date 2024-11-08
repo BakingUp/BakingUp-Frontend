@@ -137,6 +137,7 @@ class _SettingExpiredColorIconModalState
                     onClick: () {
                       Navigator.of(context).pop();
                     },
+                    isDisabled: false,
                   ),
                   const SizedBox(
                     width: 15,
@@ -149,6 +150,7 @@ class _SettingExpiredColorIconModalState
                         _changeExpiredColorIcon();
                       }
                     },
+                    isDisabled: false,
                   )
                 ],
               )

@@ -108,12 +108,17 @@ class _AddIngredientReceiptScreenState
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                BakingUpLongActionButton(title: 'Cancel', color: greyColor),
+                BakingUpLongActionButton(
+                  title: 'Cancel',
+                  color: greyColor,
+                  isDisabled: false,
+                ),
                 const SizedBox(width: 8),
                 _isAllEdited
                     ? BakingUpLongActionButton(
                         title: 'Confirm',
                         color: lightGreenColor,
+                        isDisabled: false,
                         dialogParams: BakingUpDialogParams(
                           title: 'Confirm Adding Ingredient?',
                           imgUrl: 'assets/icons/warning.png',
@@ -127,6 +132,7 @@ class _AddIngredientReceiptScreenState
                     : BakingUpLongActionButton(
                         title: 'Confirm',
                         color: lightGreenColor,
+                        isDisabled: false,
                         dialogParams: BakingUpDialogParams(
                           title: 'Required Fields',
                           imgUrl: 'assets/icons/warning.png',

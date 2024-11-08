@@ -1,12 +1,16 @@
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/utilities/regex.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 
 class RecipeDetailLaborCosts extends StatelessWidget {
   final bool isLoading;
+  final double laborCost;
   const RecipeDetailLaborCosts({
     super.key,
     required this.isLoading,
+    required this.laborCost,
   });
 
   @override
@@ -21,9 +25,9 @@ class RecipeDetailLaborCosts extends StatelessWidget {
               color: Colors.white,
             ),
           )
-        : const Text(
-            '250 ฿',
-            style: TextStyle(
+        : Text(
+            '${NumberFormat('#,##0.00').format(laborCost).replaceAll(removeTrailingZeros, '')} ฿',
+            style: const TextStyle(
               fontSize: 16,
               fontFamily: 'Inter',
               fontStyle: FontStyle.normal,

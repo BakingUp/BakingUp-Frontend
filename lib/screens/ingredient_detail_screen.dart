@@ -16,6 +16,7 @@ import 'package:bakingup_frontend/models/ingredient_detail.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/widgets/baking_up_detail_image.dart';
 import 'package:bakingup_frontend/screens/add_edit_ingredient_stock_screen.dart';
+import 'package:intl/intl.dart';
 
 class IngredientDetailScreen extends StatefulWidget {
   final String? ingredientId;
@@ -34,6 +35,10 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
   bool isLoading = true;
   bool isError = true;
   List<IngredientStock> ingredientStocks = [];
+  final List<String> ingredientFilterList = ['Quantity', 'Expiration Date'];
+  String selectedIngredientFiltering = "Quantity";
+  String selectedIngredientSorting = "Ascending Order";
+  final DateFormat dateFormat = DateFormat('dd/MM/yyyy');
 
   @override
   void initState() {
@@ -72,6 +77,45 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
     }
   }
 
+  void _filterIngredient(
+      String selectingIngredientFiltering, String selectingIngredientSorting) {
+    setState(() {
+      selectedIngredientFiltering = selectingIngredientFiltering;
+      selectedIngredientSorting = selectingIngredientSorting;
+    });
+    if (selectedIngredientSorting == "Ascending Order") {
+      switch (selectedIngredientFiltering) {
+        case "Quantity":
+          ingredientStocks.sort((a, b) => a.quantity.compareTo(b.quantity));
+          break;
+        case "Expiration Date":
+          ingredientStocks.sort((a, b) {
+            DateTime dateA = dateFormat.parse(a.expirationDate);
+            DateTime dateB = dateFormat.parse(b.expirationDate);
+            return dateA.compareTo(dateB);
+          });
+          break;
+        default:
+          ingredientStocks.sort((a, b) => a.quantity.compareTo(b.quantity));
+      }
+    } else {
+      switch (selectedIngredientFiltering) {
+        case "Quantity":
+          ingredientStocks.sort((a, b) => b.quantity.compareTo(a.quantity));
+          break;
+        case "Expiration Date":
+          ingredientStocks.sort((a, b) {
+            DateTime dateA = dateFormat.parse(a.expirationDate);
+            DateTime dateB = dateFormat.parse(b.expirationDate);
+            return dateB.compareTo(dateA);
+          });
+          break;
+        default:
+          ingredientStocks.sort((a, b) => b.quantity.compareTo(a.quantity));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,12 +145,57 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
               child: Column(
                 children: [
                   if (ingredientStocks.isNotEmpty) ...[
-                    const Padding(
-                      padding: EdgeInsets.all(20.0),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          BakingUpFilterButton(),
+                          Tooltip(
+                            verticalOffset: -20,
+                            showDuration: const Duration(seconds: 5),
+                            margin: const EdgeInsets.only(right: 40, top: 45),
+                            triggerMode: TooltipTriggerMode.tap,
+                            padding: EdgeInsets.zero,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[700],
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            richMessage: TextSpan(
+                              children: [
+                                WidgetSpan(
+                                  child: Container(
+                                    width: 200,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 8),
+                                    child: const Text(
+                                      "These color icons in this page refer to your expiring threshold.",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 13,
+                                          fontFamily: 'Inter',
+                                          fontStyle: FontStyle.normal,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            child: Image.asset(
+                              'assets/icons/info_icon.png',
+                              width: 20,
+                              height: 20,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 13,
+                          ),
+                          BakingUpFilterButton(
+                            optionsOne: ingredientFilterList,
+                            optionOneName: "Filter by",
+                            defaultFilteringValue: selectedIngredientFiltering,
+                            defaultSortingValue: selectedIngredientSorting,
+                            filterFunction: _filterIngredient,
+                          ),
                         ],
                       ),
                     ),

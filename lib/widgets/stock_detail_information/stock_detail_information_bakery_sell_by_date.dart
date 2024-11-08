@@ -4,9 +4,11 @@ import 'package:shimmer/shimmer.dart';
 
 class StockDetailInformationBakerySellByDate extends StatelessWidget {
   final bool isLoading;
+  final String sellByDate;
   const StockDetailInformationBakerySellByDate({
     super.key,
     required this.isLoading,
+    required this.sellByDate,
   });
 
   @override
@@ -26,11 +28,11 @@ class StockDetailInformationBakerySellByDate extends StatelessWidget {
               ),
             ],
           )
-        : const Row(
+        : Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Sell-By Date:',
                 style: TextStyle(
                   fontSize: 16,
@@ -39,10 +41,10 @@ class StockDetailInformationBakerySellByDate extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text(
-                '29/03/2024',
-                style: TextStyle(
+                sellByDate,
+                style: const TextStyle(
                   fontSize: 16,
                   fontFamily: 'Inter',
                   fontStyle: FontStyle.normal,

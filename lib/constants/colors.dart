@@ -22,3 +22,4 @@ Color darkBrownColor = const Color(0xFF5D4037);
 Color errorLightRedColor = const Color(0xFFF8C8C8);
 Color errorRedColor = const Color(0xFFD80808);
 Color blueColor = const Color(0xFF0D6EFF);
+Color lightPinkColor = const Color(0xFFFFCDD2);

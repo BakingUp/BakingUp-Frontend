@@ -161,6 +161,7 @@ class _AddEditOrderStockScreenState extends State<AddEditOrderStockScreen> {
                     filteredSelectedStocks = selectedStocks.where((stock) => stock.quantity > 0).toList();
                      Navigator.pop(context, filteredSelectedStocks);
                   },
+                  isDisabled: false,
                 )
               ],
             ),

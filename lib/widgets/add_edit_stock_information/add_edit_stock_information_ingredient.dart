@@ -1,12 +1,32 @@
-import 'package:bakingup_frontend/screens/add_edit_stock_information_screen.dart';
+import 'package:bakingup_frontend/models/stock_recipe_detail.dart';
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/utilities/regex.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:intl/intl.dart';
 
 class AddEditStockInformationIngredient extends StatelessWidget {
-  final StockIngredient stockIngredient;
-  const AddEditStockInformationIngredient(
-      {super.key, required this.stockIngredient});
+  final StockRecipeIngredientData stockIngredient;
+  final int quantity;
+  final int servings;
+  const AddEditStockInformationIngredient({
+    super.key,
+    required this.stockIngredient,
+    required this.quantity,
+    required this.servings,
+  });
+
+  double calculateIngredientQuantity() {
+    if (quantity == -1) {
+      return stockIngredient.ingredientQuantity;
+    }
+
+    return stockIngredient.ingredientQuantity * quantity / servings;
+  }
+
+  bool isQuantityMoreThanStock() {
+    return calculateIngredientQuantity() > stockIngredient.stockQuantity;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +41,18 @@ class AddEditStockInformationIngredient extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(13),
                 child: Image.network(
-                  stockIngredient.ingredientUrl,
+                  "${dotenv.env['API_BASE_URL']}/${stockIngredient.ingredientUrl}",
                   width: 80,
                   height: 50,
                   fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset(
+                      'assets/icons/no-image.jpg',
+                      width: 80,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    );
+                  },
                 ),
               ),
               const Padding(padding: EdgeInsets.only(right: 12.0)),
@@ -36,7 +64,9 @@ class AddEditStockInformationIngredient extends StatelessWidget {
                       Text(
                         stockIngredient.ingredientName,
                         style: TextStyle(
-                          color: blackColor,
+                          color: isQuantityMoreThanStock()
+                              ? errorRedColor
+                              : blackColor,
                           fontFamily: 'Inter',
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w500,
@@ -47,9 +77,11 @@ class AddEditStockInformationIngredient extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    'Quantity: ${stockIngredient.totalQuantity.toString().replaceAll(removeTrailingZeros, '')} ${stockIngredient.unit}',
+                    'Quantity: ${NumberFormat('#,##0.00').format(stockIngredient.stockQuantity).replaceAll(removeTrailingZeros, '')} ${stockIngredient.unit.toLowerCase()}',
                     style: TextStyle(
-                      color: blackColor,
+                      color: isQuantityMoreThanStock()
+                          ? errorRedColor
+                          : blackColor,
                       fontFamily: 'Inter',
                       fontStyle: FontStyle.normal,
                       fontWeight: FontWeight.w300,
@@ -63,9 +95,9 @@ class AddEditStockInformationIngredient extends StatelessWidget {
           Row(
             children: [
               Text(
-                "${stockIngredient.usedQuantity.toString().replaceAll(removeTrailingZeros, '')} ${stockIngredient.unit}",
+                "${NumberFormat('#,##0.00').format(calculateIngredientQuantity()).replaceAll(removeTrailingZeros, '')} ${stockIngredient.unit.toLowerCase()}",
                 style: TextStyle(
-                  color: blackColor,
+                  color: isQuantityMoreThanStock() ? errorRedColor : blackColor,
                   fontFamily: 'Inter',
                   fontStyle: FontStyle.normal,
                   fontWeight: FontWeight.w400,

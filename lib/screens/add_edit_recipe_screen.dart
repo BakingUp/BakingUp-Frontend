@@ -2,8 +2,6 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'package:bakingup_frontend/services/network_service.dart';
-import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -12,6 +10,8 @@ import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_container.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_page_one.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_page_two.dart';
+import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
 import 'package:bakingup_frontend/models/add_edit_recipe_controller.dart';
 
 class AddEditRecipeScreen extends StatefulWidget {
@@ -75,6 +75,12 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
               recipeIngredients: recipeIngredients,
               recipeImages: _recipeImages,
               controller: controller,
+              onIngredientDelete: (ingredientId) {
+                setState(() {
+                  recipeIngredients
+                      .removeWhere((element) => element.id == ingredientId);
+                });
+              },
               addIngredient: (RecipeIngredient ingredient) {
                 setState(() {
                   recipeIngredients.add(

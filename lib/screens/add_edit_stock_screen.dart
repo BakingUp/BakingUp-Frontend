@@ -293,7 +293,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
             children: [
               const Flexible(
                 child: Text(
-                  'Notify me when an ingredient falls below',
+                  'Notify me when stock is less than',
                   style: TextStyle(
                     fontSize: 16,
                     fontFamily: 'Inter',
@@ -324,10 +324,12 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                   ? BakingUpLongActionButton(
                       title: 'Confirm',
                       color: lightGreenColor,
+                      isDisabled: false,
                     )
                   : BakingUpLongActionButton(
                       title: 'Confirm',
                       color: lightGreenColor,
+                      isDisabled: false,
                       dialogParams: BakingUpDialogParams(
                         title: 'Confirm Adding Stock?',
                         imgUrl: 'assets/icons/warning.png',
