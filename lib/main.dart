@@ -8,17 +8,17 @@ import 'package:bakingup_frontend/screens/add_edit_recipe_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_stock_information_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_stock_screen.dart';
 import 'package:bakingup_frontend/screens/add_ingredient_receipt_screen.dart';
+import 'package:bakingup_frontend/screens/auth/login_screen.dart';
+import 'package:bakingup_frontend/screens/auth/register_screen.dart';
 import 'package:bakingup_frontend/screens/change_password_screen.dart';
 import 'package:bakingup_frontend/screens/home_screen.dart';
 import 'package:bakingup_frontend/screens/ingredient_detail_screen.dart';
 import 'package:bakingup_frontend/screens/ingredient_stock_detail_screen.dart';
-import 'package:bakingup_frontend/screens/auth/login_screen.dart';
-import 'package:bakingup_frontend/screens/notification_screen.dart';
 import 'package:bakingup_frontend/screens/instore_order_detail_screen.dart';
+import 'package:bakingup_frontend/screens/notification_screen.dart';
 import 'package:bakingup_frontend/screens/order_screen.dart';
 import 'package:bakingup_frontend/screens/profile_screen.dart';
 import 'package:bakingup_frontend/screens/recipe_detail_screen.dart';
-import 'package:bakingup_frontend/screens/auth/register_screen.dart';
 import 'package:bakingup_frontend/screens/setting_screen.dart';
 import 'package:bakingup_frontend/screens/stock_detail_information_screen.dart';
 import 'package:bakingup_frontend/screens/stock_detail_screen.dart';
@@ -26,13 +26,34 @@ import 'package:bakingup_frontend/screens/stock_screen.dart';
 import 'package:bakingup_frontend/screens/warehouse_screen.dart';
 import 'package:bakingup_frontend/services/auth/auth_gate.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:bakingup_frontend/services/noti_service.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseMessaging.instance.setAutoInitEnabled(true);
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+
   await dotenv.load(fileName: ".env");
   await NetworkService.instance.initClient();
 
@@ -47,8 +68,17 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
+  static final navigatorKey = GlobalKey<NavigatorState>();
   @override
   Widget build(BuildContext context) {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      NotificationService(navigatorKey: navigatorKey).showNotification(
+          id: DateTime.now().millisecond,
+          title: message.notification!.title,
+          body: message.notification!.body);
+    });
+
+    NotificationService(navigatorKey: navigatorKey).initNotification();
     return MaterialApp(
       // Setting the initial routes
       home: const AuthGate(),
