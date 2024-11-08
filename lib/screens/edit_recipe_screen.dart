@@ -2,6 +2,8 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:bakingup_frontend/models/get_edit_recipe_detail.dart';
+import 'package:bakingup_frontend/screens/add_recipe_screen.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -14,20 +16,23 @@ import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
 import 'package:bakingup_frontend/models/add_edit_recipe_controller.dart';
 
-class AddEditRecipeScreen extends StatefulWidget {
-  const AddEditRecipeScreen({super.key});
+class EditRecipeScreen extends StatefulWidget {
+  final String? recipeId;
+  const EditRecipeScreen({super.key, this.recipeId});
 
   @override
-  State<AddEditRecipeScreen> createState() => _AddEditRecipeScreenState();
+  State<EditRecipeScreen> createState() => _EditRecipeScreenState();
 }
 
-class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
+class _EditRecipeScreenState extends State<EditRecipeScreen> {
   final int _currentDrawerIndex = 5;
-  final bool _isEdit = false;
+  final bool _isEdit = true;
   bool _isFirstPage = true;
   final List<File> _recipeImages = [];
   final List<File> _instructionImages = [];
   final AddEditRecipeController controller = AddEditRecipeController();
+  bool isLoading = false;
+  bool isError = false;
 
   List<RecipeIngredient> recipeIngredients = [];
 
@@ -36,6 +41,54 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
       final bytes = file.readAsBytesSync();
       return base64Encode(bytes);
     }).toList();
+  }
+
+  Future<void> _fetchRecipe() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final response = await NetworkService.instance
+          .get('/api/recipe/getEditRecipeDetail?recipe_id=${widget.recipeId}');
+      log(response.toString());
+      final getEditRecipeDetailResponse =
+          GetEditRecipeDetailResponse.fromJson(response);
+      final data = getEditRecipeDetailResponse.data;
+
+      setState(() {
+        controller.engNameController.text = data.recipeEngName;
+        controller.thaiNameController.text = data.recipeThaiName;
+        controller.totalHoursController.text = data.totalHours;
+        controller.totalMinsController.text = data.totalMins;
+        controller.servingsController.text = data.servings;
+        controller.engInstructionController.text = data.engInstruction;
+        controller.thaiInstructionController.text = data.thaiInstruction;
+        recipeIngredients = data.ingredients.map((ingredient) {
+          return RecipeIngredient(
+            id: ingredient.ingredientId,
+            imgUrl: ingredient.ingredientUrl,
+            name: ingredient.ingredientName,
+            quantity: ingredient.ingredientQuantity,
+            unit: ingredient.ingredientUnit.toLowerCase(),
+          );
+        }).toList();
+      });
+    } catch (e) {
+      setState(() {
+        isError = true;
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchRecipe();
   }
 
   @override
@@ -75,6 +128,7 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
               recipeIngredients: recipeIngredients,
               recipeImages: _recipeImages,
               controller: controller,
+              isEdit: _isEdit,
               onIngredientDelete: (ingredientId) {
                 setState(() {
                   recipeIngredients
@@ -109,9 +163,11 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
                   _recipeImages.removeAt(index);
                 });
               },
+              isLoading: isLoading,
             ),
           ] else ...[
             AddEditRecipePageTwo(
+              isLoading: isLoading,
               instructionImages: _instructionImages,
               controller: controller,
               onClick: () {
@@ -133,10 +189,9 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
               onSave: () async {
                 try {
                   final data = {
-                    "user_id": "1",
+                    "recipe_id": widget.recipeId,
                     "recipe_eng_name": controller.engNameController.text,
                     "recipe_thai_name": controller.thaiNameController.text,
-                    "recipe_img": convertFilesToBase64(_recipeImages),
                     "total_hours": controller.totalHoursController.text,
                     "total_mins": controller.totalMinsController.text,
                     "servings": controller.servingsController.text,
@@ -146,15 +201,14 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
                               "ingredient_quantity": ingredient.quantity,
                             })
                         .toList(),
-                    "instruction_img": convertFilesToBase64(_instructionImages),
                     "eng_instruction": controller.engInstructionController.text,
                     "thai_instruction":
                         controller.thaiInstructionController.text,
                   };
                   log(data.toString());
                   await NetworkService.instance
-                      .post(
-                    "/api/recipe/addRecipe",
+                      .put(
+                    "/api/recipe/editRecipe",
                     data: data,
                   )
                       .then(
@@ -186,20 +240,4 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
       ),
     );
   }
-}
-
-class RecipeIngredient {
-  final String id;
-  final String imgUrl;
-  final String name;
-  final String quantity;
-  final String unit;
-
-  RecipeIngredient({
-    required this.id,
-    required this.imgUrl,
-    required this.name,
-    required this.quantity,
-    required this.unit,
-  });
 }

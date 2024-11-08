@@ -24,6 +24,7 @@ import 'package:bakingup_frontend/models/recipe_detail_controller.dart';
 import 'package:bakingup_frontend/utilities/regex.dart';
 import 'package:intl/intl.dart';
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/screens/edit_recipe_screen.dart';
 
 class RecipeDetailScreen extends StatefulWidget {
   final String? recipeId;
@@ -149,9 +150,21 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
               isScaled: scaledServings != "",
               isLoading: isLoading,
             ),
-            const RecipeDetailEditButtonContainer(
+            RecipeDetailEditButtonContainer(
               children: [
-                BakingUpCircularEditButton(),
+                BakingUpCircularEditButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            EditRecipeScreen(recipeId: widget.recipeId),
+                      ),
+                    ).then((_) {
+                      _fetchRecipeDetails();
+                    });
+                  },
+                ),
               ],
             ),
             const RecipeDetailBackButtonContainer(
@@ -408,7 +421,8 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                         servings: servings,
                         focusNode: scaleFocusNode,
                         onScale: (p0) {
-                          if (scaledServings != "" && int.parse(scaledServings) == servings) {
+                          if (scaledServings != "" &&
+                              int.parse(scaledServings) == servings) {
                             setState(() {
                               scaledServings = "";
                             });
