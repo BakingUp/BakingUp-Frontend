@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Importing files
 import 'package:bakingup_frontend/constants/colors.dart';
-import 'package:bakingup_frontend/screens/add_edit_ingredient_screen.dart';
+import 'package:bakingup_frontend/screens/add_ingredient_screen.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe_ingredient/add_edit_recipe_ingredient_detail_loading.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe_ingredient/add_edit_add_recipe_ingredient_button.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe_ingredient/add_edit_recipe_ingredient_container.dart';
@@ -233,8 +233,7 @@ class _AddEditRecipeIngredientScreenState
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  const AddEditIngredientScreen(),
+                              builder: (context) => const AddIngredientScreen(),
                             ),
                           ).then((_) {
                             _fetchIngredientList();

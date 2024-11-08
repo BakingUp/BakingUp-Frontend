@@ -1,4 +1,5 @@
 import 'package:bakingup_frontend/models/ingredient_detail.dart';
+import 'package:bakingup_frontend/screens/edit_ingredient_stock_screen.dart';
 import 'package:bakingup_frontend/screens/ingredient_stock_detail_screen.dart';
 import 'package:bakingup_frontend/widgets/ingredient_detail/expiration_status_indicator.dart';
 import 'package:bakingup_frontend/constants/colors.dart';
@@ -9,14 +10,18 @@ import 'package:shimmer/shimmer.dart';
 
 class IngredientStockDetail extends StatelessWidget {
   final List<IngredientStock> ingredientStocks;
+  final String ingredientId;
   final int index;
   final bool isLoading;
+  final VoidCallback fetchIngredientList;
 
   const IngredientStockDetail({
     super.key,
     required this.ingredientStocks,
+    required this.ingredientId,
     required this.index,
     required this.isLoading,
+    required this.fetchIngredientList,
   });
 
   @override
@@ -138,9 +143,22 @@ class IngredientStockDetail extends StatelessWidget {
                 ExpirationStatusIndicator(
                     status: ingredientStocks[index].expirationStatus),
                 const Padding(padding: EdgeInsets.only(right: 20.0)),
-                Image.asset(
-                  'assets/icons/edit.png',
-                  scale: 0.7,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditIngredientStockScreen(
+                          ingredientId: ingredientId,
+                          ingredientStockId: ingredientStocks[index].stockId,
+                        ),
+                      ),
+                    ).then((value) => fetchIngredientList());
+                  },
+                  child: Image.asset(
+                    'assets/icons/edit.png',
+                    scale: 0.7,
+                  ),
                 ),
                 const Padding(padding: EdgeInsets.only(right: 8.0)),
               ],
