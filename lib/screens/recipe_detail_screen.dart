@@ -22,6 +22,8 @@ import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/widgets/baking_up_no_result.dart';
 import 'package:bakingup_frontend/models/recipe_detail_controller.dart';
 import 'package:bakingup_frontend/utilities/regex.dart';
+import 'package:intl/intl.dart';
+import 'package:bakingup_frontend/constants/colors.dart';
 
 class RecipeDetailScreen extends StatefulWidget {
   final String? recipeId;
@@ -48,7 +50,10 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
   FocusNode hiddenCostFocusNode = FocusNode();
   FocusNode laborCostFocusNode = FocusNode();
   FocusNode profitMarginFocusNode = FocusNode();
+  FocusNode scaleFocusNode = FocusNode();
   final RecipeDetailController _controller = RecipeDetailController();
+  String scaledServings = "";
+
   @override
   void initState() {
     super.initState();
@@ -66,6 +71,37 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       );
       final recipeDetailResponse = RecipeDetailResponse.fromJson(response);
       final data = recipeDetailResponse.data;
+
+      final newRecipeIngredients = data.recipeIngredients!.map((ingredient) {
+        if (scaledServings == "") {
+          return RecipeIngredient(
+            ingredientName: ingredient.ingredientName,
+            ingredientUrl: ingredient.ingredientUrl,
+            ingredientQuantity: ingredient.ingredientQuantity,
+            ingredientPrice: ingredient.ingredientPrice,
+          );
+        }
+        final quantityParts = ingredient.ingredientQuantity.split(' ');
+        final quantityValue = int.parse(quantityParts[0]);
+        final unit = quantityParts[1];
+
+        final scale = int.parse(scaledServings);
+        final scaledQuantity = (quantityValue / data.servings) * scale;
+
+        final newQuantity =
+            '${NumberFormat('#,##0.00').format(scaledQuantity).replaceAll(removeTrailingZeros, '')} $unit';
+
+        final newPrice =
+            ingredient.ingredientPrice / quantityValue * scaledQuantity;
+
+        return RecipeIngredient(
+          ingredientName: ingredient.ingredientName,
+          ingredientUrl: ingredient.ingredientUrl,
+          ingredientQuantity: newQuantity,
+          ingredientPrice: newPrice,
+        );
+      }).toList();
+
       setState(() {
         recipeId = widget.recipeId ?? '';
         recipeName = data.recipeName;
@@ -74,7 +110,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
         servings = data.servings;
         star = data.stars;
         score = data.numOfOrder;
-        recipeIngredients = data.recipeIngredients ?? [];
+        recipeIngredients = newRecipeIngredients;
         instructionUrls = data.instructionUrl ?? [];
         instructionSteps = data.instructionSteps;
         _controller.hiddenCostController.text =
@@ -102,6 +138,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
         hiddenCostFocusNode.unfocus();
         laborCostFocusNode.unfocus();
         profitMarginFocusNode.unfocus();
+        scaleFocusNode.unfocus();
       },
       child: Scaffold(
         body: Stack(
@@ -109,6 +146,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
           children: [
             BakingUpDetailImage(
               imageUrl: recipeUrl,
+              isScaled: scaledServings != "",
               isLoading: isLoading,
             ),
             const RecipeDetailEditButtonContainer(
@@ -241,7 +279,9 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                           isLoading: isLoading,
                           controller: _controller,
                           totalTime: totalTime,
-                          servings: servings,
+                          servings: scaledServings != ""
+                              ? int.parse(scaledServings)
+                              : servings,
                           hiddenCostFocusNode: hiddenCostFocusNode,
                           laborCostFocusNode: laborCostFocusNode,
                           profitMarginFocusNode: profitMarginFocusNode,
@@ -255,6 +295,65 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                 ),
               ),
             ),
+            scaledServings != ""
+                ? Positioned(
+                    top: MediaQuery.of(context).size.width / 1.5 - 35,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      padding: const EdgeInsets.fromLTRB(0, 8.0, 5.0, 20.0),
+                      decoration: BoxDecoration(
+                        color: lightPinkColor,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.3),
+                            spreadRadius: 0.5,
+                            blurRadius: 20,
+                            offset: const Offset(0, 3),
+                          )
+                        ],
+                      ),
+                      child: Stack(
+                        children: [
+                          const Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              "Scaled Recipe",
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontFamily: 'Inter',
+                                fontStyle: FontStyle.normal,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    scaledServings = "";
+                                    _fetchRecipeDetails();
+                                  });
+                                },
+                                child: const Icon(
+                                  Icons.close,
+                                  size: 20.0, // Adjust the size as needed
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : Container(),
             RecipeDetailContainer(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -294,14 +393,36 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                           RecipeDetailTotalTime(
                             totalTime: totalTime,
                             isLoading: isLoading,
+                            servings: servings,
+                            isScaled: scaledServings != "",
                           ),
                           RecipeDetailServings(
-                            servings: servings,
+                            servings: scaledServings != ""
+                                ? int.parse(scaledServings)
+                                : servings,
                             isLoading: isLoading,
                           ),
                         ],
                       ),
-                      RecipeDetailScaleButton(servings: servings)
+                      RecipeDetailScaleButton(
+                        servings: servings,
+                        focusNode: scaleFocusNode,
+                        onScale: (p0) {
+                          if (scaledServings != "" && int.parse(scaledServings) == servings) {
+                            setState(() {
+                              scaledServings = "";
+                            });
+                          } else {
+                            setState(() {
+                              scaledServings = p0;
+                            });
+                          }
+                          _fetchRecipeDetails();
+                        },
+                        onDismissed: () {
+                          scaleFocusNode.unfocus();
+                        },
+                      )
                     ],
                   ),
                 ],
