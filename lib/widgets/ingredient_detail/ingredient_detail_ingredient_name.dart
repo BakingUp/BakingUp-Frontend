@@ -5,11 +5,15 @@ import 'package:shimmer/shimmer.dart';
 
 class IngredientDetailIngredientName extends StatelessWidget {
   final String ingredientName;
+  final String ingredientId;
+  final VoidCallback fetchIngredientList;
   final bool isLoading;
 
   const IngredientDetailIngredientName({
     super.key,
     required this.ingredientName,
+    required this.ingredientId,
+    required this.fetchIngredientList,
     required this.isLoading,
   });
 
@@ -40,7 +44,10 @@ class IngredientDetailIngredientName extends StatelessWidget {
               const Padding(
                 padding: EdgeInsets.only(right: 10.0),
               ),
-              const IngredientStockDetailEditStockButton(),
+              IngredientStockDetailEditStockButton(
+                ingredientId: ingredientId,
+                fetchIngredientList: fetchIngredientList,
+              ),
             ],
           );
   }

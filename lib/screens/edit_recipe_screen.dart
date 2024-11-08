@@ -1,9 +1,6 @@
 // Importing libraries
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'package:bakingup_frontend/models/get_edit_recipe_detail.dart';
-import 'package:bakingup_frontend/screens/add_recipe_screen.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -15,6 +12,8 @@ import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_page_t
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
 import 'package:bakingup_frontend/models/add_edit_recipe_controller.dart';
+import 'package:bakingup_frontend/models/get_edit_recipe_detail.dart';
+import 'package:bakingup_frontend/screens/add_recipe_screen.dart';
 
 class EditRecipeScreen extends StatefulWidget {
   final String? recipeId;
@@ -35,13 +34,6 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
   bool isError = false;
 
   List<RecipeIngredient> recipeIngredients = [];
-
-  List<String> convertFilesToBase64(List<File> files) {
-    return files.map((file) {
-      final bytes = file.readAsBytesSync();
-      return base64Encode(bytes);
-    }).toList();
-  }
 
   Future<void> _fetchRecipe() async {
     setState(() {

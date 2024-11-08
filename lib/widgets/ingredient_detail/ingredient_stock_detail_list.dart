@@ -11,12 +11,16 @@ import 'package:flutter/material.dart';
 
 class IngredientStockDetailList extends StatefulWidget {
   final List<IngredientStock> ingredientStocks;
+  final String ingredientId;
   final bool isLoading;
+  final VoidCallback fetchIngredientList;
 
   const IngredientStockDetailList({
     super.key,
     required this.ingredientStocks,
+    required this.ingredientId,
     required this.isLoading,
+    required this.fetchIngredientList,
   });
 
   @override
@@ -144,8 +148,10 @@ class _IngredientStockDetailListState extends State<IngredientStockDetailList> {
                       },
                       child: IngredientStockDetail(
                         ingredientStocks: widget.ingredientStocks,
+                        ingredientId: widget.ingredientId,
                         index: index,
                         isLoading: widget.isLoading,
+                        fetchIngredientList: widget.fetchIngredientList,
                       ),
                     );
                   },
