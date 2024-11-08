@@ -293,7 +293,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
             children: [
               const Flexible(
                 child: Text(
-                  'Notify me when an ingredient falls below',
+                  'Notify me when stock is less than',
                   style: TextStyle(
                     fontSize: 16,
                     fontFamily: 'Inter',
