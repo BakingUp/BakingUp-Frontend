@@ -15,7 +15,7 @@ import 'package:bakingup_frontend/widgets/ingredient_detail/ingredient_detail_ba
 import 'package:bakingup_frontend/models/ingredient_detail.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/widgets/baking_up_detail_image.dart';
-import 'package:bakingup_frontend/screens/add_edit_ingredient_stock_screen.dart';
+import 'package:bakingup_frontend/screens/add_ingredient_stock_screen.dart';
 import 'package:intl/intl.dart';
 
 class IngredientDetailScreen extends StatefulWidget {
@@ -202,7 +202,9 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
                   ],
                   IngredientStockDetailList(
                     ingredientStocks: ingredientStocks,
+                    ingredientId: widget.ingredientId ?? '',
                     isLoading: isLoading,
+                    fetchIngredientList: _fetchIngredientDetails,
                   ),
                 ],
               ),
@@ -220,6 +222,8 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
                       children: [
                         IngredientDetailIngredientName(
                           ingredientName: ingredientName,
+                          ingredientId: widget.ingredientId ?? '',
+                          fetchIngredientList: _fetchIngredientDetails,
                           isLoading: isLoading,
                         ),
                         const Padding(
@@ -232,7 +236,7 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AddEditIngredientStockScreen(
+                            builder: (context) => AddIngredientStockScreen(
                               ingredientId: widget.ingredientId,
                             ),
                           ),

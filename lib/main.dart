@@ -1,7 +1,7 @@
 import 'package:bakingup_frontend/constants/routes.dart';
 import 'package:bakingup_frontend/firebase_options.dart';
-import 'package:bakingup_frontend/screens/add_edit_ingredient_screen.dart';
-import 'package:bakingup_frontend/screens/add_edit_ingredient_stock_screen.dart';
+import 'package:bakingup_frontend/screens/add_ingredient_screen.dart';
+import 'package:bakingup_frontend/screens/add_ingredient_stock_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_instore_order_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_recipe_ingredient_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_recipe_screen.dart';
@@ -91,12 +91,12 @@ class _MainAppState extends State<MainApp> {
           case addIngredientReceiptRoute:
             return MaterialPageRoute(
                 builder: (context) => const AddIngredientReceiptScreen());
-          case addEditIngredientRoute:
+          case addIngredientRoute:
             return MaterialPageRoute(
-                builder: (context) => const AddEditIngredientScreen());
+                builder: (context) => const AddIngredientScreen());
           case addEditIngredientStockRoute:
             return MaterialPageRoute(
-                builder: (context) => const AddEditIngredientStockScreen());
+                builder: (context) => const AddIngredientStockScreen());
           case addEditRecipeRoute:
             return MaterialPageRoute(
                 builder: (context) => const AddEditRecipeScreen());
@@ -123,6 +123,9 @@ class _MainAppState extends State<MainApp> {
           case stockDetailInformationRoute:
             return MaterialPageRoute(
                 builder: (context) => const StockDetailInformationScreen());
+          case editIngredientRoute:
+            return MaterialPageRoute(
+                builder: (context) => const AddIngredientScreen());
           default:
             return null;
         }
