@@ -7,8 +7,26 @@ import 'package:intl/intl.dart';
 
 class AddEditStockInformationIngredient extends StatelessWidget {
   final StockRecipeIngredientData stockIngredient;
-  const AddEditStockInformationIngredient(
-      {super.key, required this.stockIngredient});
+  final int quantity;
+  final int servings;
+  const AddEditStockInformationIngredient({
+    super.key,
+    required this.stockIngredient,
+    required this.quantity,
+    required this.servings,
+  });
+
+  double calculateIngredientQuantity() {
+    if (quantity == -1) {
+      return stockIngredient.ingredientQuantity;
+    }
+
+    return stockIngredient.ingredientQuantity * quantity / servings;
+  }
+
+  bool isQuantityMoreThanStock() {
+    return calculateIngredientQuantity() > stockIngredient.stockQuantity;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +64,9 @@ class AddEditStockInformationIngredient extends StatelessWidget {
                       Text(
                         stockIngredient.ingredientName,
                         style: TextStyle(
-                          color: blackColor,
+                          color: isQuantityMoreThanStock()
+                              ? errorRedColor
+                              : blackColor,
                           fontFamily: 'Inter',
                           fontStyle: FontStyle.normal,
                           fontWeight: FontWeight.w500,
@@ -59,7 +79,9 @@ class AddEditStockInformationIngredient extends StatelessWidget {
                   Text(
                     'Quantity: ${NumberFormat('#,##0.00').format(stockIngredient.stockQuantity).replaceAll(removeTrailingZeros, '')} ${stockIngredient.unit.toLowerCase()}',
                     style: TextStyle(
-                      color: blackColor,
+                      color: isQuantityMoreThanStock()
+                          ? errorRedColor
+                          : blackColor,
                       fontFamily: 'Inter',
                       fontStyle: FontStyle.normal,
                       fontWeight: FontWeight.w300,
@@ -73,9 +95,9 @@ class AddEditStockInformationIngredient extends StatelessWidget {
           Row(
             children: [
               Text(
-                "${NumberFormat('#,##0.00').format(stockIngredient.ingredientQuantity).replaceAll(removeTrailingZeros, '')} ${stockIngredient.unit.toLowerCase()}",
+                "${NumberFormat('#,##0.00').format(calculateIngredientQuantity()).replaceAll(removeTrailingZeros, '')} ${stockIngredient.unit.toLowerCase()}",
                 style: TextStyle(
-                  color: blackColor,
+                  color: isQuantityMoreThanStock() ? errorRedColor : blackColor,
                   fontFamily: 'Inter',
                   fontStyle: FontStyle.normal,
                   fontWeight: FontWeight.w400,
