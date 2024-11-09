@@ -244,6 +244,8 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                         StockDetailStockName(
                           stockName: stockName,
                           isLoading: isLoading,
+                          recipeId: widget.recipeId ?? '',
+                          fetchStockDetails: _fetchStockDetails,
                         ),
                         const Padding(
                           padding: EdgeInsets.only(bottom: 8.0),

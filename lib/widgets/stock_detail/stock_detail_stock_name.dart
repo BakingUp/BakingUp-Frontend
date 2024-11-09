@@ -6,11 +6,15 @@ import 'package:shimmer/shimmer.dart';
 class StockDetailStockName extends StatelessWidget {
   final String stockName;
   final bool isLoading;
+  final String recipeId;
+  final VoidCallback fetchStockDetails;
 
   const StockDetailStockName({
     super.key,
     required this.stockName,
     required this.isLoading,
+    required this.recipeId,
+    required this.fetchStockDetails,
   });
 
   @override
@@ -40,7 +44,10 @@ class StockDetailStockName extends StatelessWidget {
               const Padding(
                 padding: EdgeInsets.only(right: 10.0),
               ),
-              const StockDetailEditStockButton(),
+              StockDetailEditStockButton(
+                recipeId: recipeId,
+                fetchStockDetails: fetchStockDetails,
+              ),
             ],
           );
   }
