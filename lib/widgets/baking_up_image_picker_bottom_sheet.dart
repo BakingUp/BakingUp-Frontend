@@ -25,6 +25,7 @@ class BakingUpImagePickerBottomSheet {
               ),
               onTap: () async {
                 await onTakePhoto();
+                // ignore: use_build_context_synchronously
                 Navigator.of(context).pop(true);
               },
             ),
