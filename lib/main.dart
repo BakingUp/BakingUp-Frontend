@@ -14,6 +14,7 @@ import 'package:bakingup_frontend/screens/change_password_screen.dart';
 import 'package:bakingup_frontend/screens/edit_ingredient_screen.dart';
 import 'package:bakingup_frontend/screens/edit_ingredient_stock_screen.dart';
 import 'package:bakingup_frontend/screens/edit_recipe_screen.dart';
+import 'package:bakingup_frontend/screens/edit_stock_screen.dart';
 import 'package:bakingup_frontend/screens/home_screen.dart';
 import 'package:bakingup_frontend/screens/ingredient_detail_screen.dart';
 import 'package:bakingup_frontend/screens/ingredient_stock_detail_screen.dart';
@@ -169,6 +170,9 @@ class _MainAppState extends State<MainApp> {
           case editIngredientStockRoute:
             return MaterialPageRoute(
                 builder: (context) => const EditIngredientStockScreen());
+          case editStockRoute:
+            return MaterialPageRoute(
+                builder: (context) => const EditStockScreen());
           default:
             return null;
         }
