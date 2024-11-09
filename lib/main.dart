@@ -6,7 +6,7 @@ import 'package:bakingup_frontend/screens/add_edit_instore_order_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_recipe_ingredient_screen.dart';
 import 'package:bakingup_frontend/screens/add_recipe_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_stock_information_screen.dart';
-import 'package:bakingup_frontend/screens/add_edit_stock_screen.dart';
+import 'package:bakingup_frontend/screens/add_stock_screen.dart';
 import 'package:bakingup_frontend/screens/add_ingredient_receipt_screen.dart';
 import 'package:bakingup_frontend/screens/auth/login_screen.dart';
 import 'package:bakingup_frontend/screens/auth/register_screen.dart';
@@ -148,9 +148,9 @@ class _MainAppState extends State<MainApp> {
                 builder: (context) => const AddEditStockInformationScreen());
           case stockRoute:
             return MaterialPageRoute(builder: (context) => const StockScreen());
-          case addEditStockRoute:
+          case addStockRoute:
             return MaterialPageRoute(
-                builder: (context) => const AddEditStockScreen());
+                builder: (context) => const AddStockScreen());
           case settingsRoute:
             return MaterialPageRoute(
                 builder: (context) => const SettingScreen());

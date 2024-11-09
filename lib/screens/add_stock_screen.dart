@@ -17,16 +17,15 @@ import 'package:bakingup_frontend/models/warehouse.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/models/add_edit_stock_controller.dart';
 
-class AddEditStockScreen extends StatefulWidget {
-  const AddEditStockScreen({super.key});
+class AddStockScreen extends StatefulWidget {
+  const AddStockScreen({super.key});
 
   @override
-  State<AddEditStockScreen> createState() => _AddEditStockScreenState();
+  State<AddStockScreen> createState() => _AddStockScreenState();
 }
 
-class _AddEditStockScreenState extends State<AddEditStockScreen> {
+class _AddStockScreenState extends State<AddStockScreen> {
   final int _currentDrawerIndex = 4;
-  final bool _isEdit = false;
   final AddEditStockController _controller = AddEditStockController();
   List<String> recipeList = [];
   List<RecipeItemData> recipeObject = [];
@@ -278,7 +277,7 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
                 controller: _controller.expirationDateController,
               ),
               const Text(
-                'days before expiration',
+                'days before sell-by date',
                 style: TextStyle(
                   fontSize: 16,
                   fontFamily: 'Inter',
@@ -320,66 +319,60 @@ class _AddEditStockScreenState extends State<AddEditStockScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _isEdit
-                  ? BakingUpLongActionButton(
-                      title: 'Confirm',
-                      color: lightGreenColor,
-                      isDisabled: false,
-                    )
-                  : BakingUpLongActionButton(
-                      title: 'Confirm',
-                      color: lightGreenColor,
-                      isDisabled: false,
-                      dialogParams: BakingUpDialogParams(
-                        title: 'Confirm Adding Stock?',
-                        imgUrl: 'assets/icons/warning.png',
-                        content:
-                            'You\'re about to add new bakery stock to the stock page.',
-                        grayButtonTitle: 'Cancel',
-                        secondButtonTitle: 'Confirm',
-                        secondButtonColor: lightGreenColor,
-                        secondButtonOnClick: () async {
-                          try {
-                            final data = {
-                              "stock_id": selectedBakeryRecipeObject!.recipeID
-                                  .toString(),
-                              "selling_price":
-                                  _controller.sellingPriceController.text,
-                              "lst": _controller.lstController.text,
-                              "expiration_date":
-                                  _controller.expirationDateController.text,
-                              "stock_less_than":
-                                  _controller.stockLessThanController.text,
-                            };
-                            await NetworkService.instance
-                                .post(
-                              "/api/stock/addStock",
-                              data: data,
-                            )
-                                .then(
-                              (value) {
-                                Navigator.of(context).pop();
-                                Navigator.of(context).pop();
-                              },
-                            );
-                          } catch (e) {
-                            // ignore: use_build_context_synchronously
-                            Navigator.of(context).pop();
-                            // ignore: use_build_context_synchronously
-                            Navigator.of(context).overlay!.insert(
-                              OverlayEntry(
-                                builder: (BuildContext context) {
-                                  return const BakingUpErrorTopNotification(
-                                    message:
-                                        "Sorry, we couldn’t add the stock due to a system error. Please try again later.",
-                                  );
-                                },
-                              ),
-                            );
-                          }
+              BakingUpLongActionButton(
+                title: 'Confirm',
+                color: lightGreenColor,
+                isDisabled: false,
+                dialogParams: BakingUpDialogParams(
+                  title: 'Confirm Adding Stock?',
+                  imgUrl: 'assets/icons/warning.png',
+                  content:
+                      'You\'re about to add new bakery stock to the stock page.',
+                  grayButtonTitle: 'Cancel',
+                  secondButtonTitle: 'Confirm',
+                  secondButtonColor: lightGreenColor,
+                  secondButtonOnClick: () async {
+                    try {
+                      final data = {
+                        "stock_id":
+                            selectedBakeryRecipeObject!.recipeID.toString(),
+                        "selling_price":
+                            _controller.sellingPriceController.text,
+                        "lst": _controller.lstController.text,
+                        "expiration_date":
+                            _controller.expirationDateController.text,
+                        "stock_less_than":
+                            _controller.stockLessThanController.text,
+                      };
+                      await NetworkService.instance
+                          .post(
+                        "/api/stock/addStock",
+                        data: data,
+                      )
+                          .then(
+                        (value) {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
                         },
-                      ),
-                    )
+                      );
+                    } catch (e) {
+                      // ignore: use_build_context_synchronously
+                      Navigator.of(context).pop();
+                      // ignore: use_build_context_synchronously
+                      Navigator.of(context).overlay!.insert(
+                        OverlayEntry(
+                          builder: (BuildContext context) {
+                            return const BakingUpErrorTopNotification(
+                              message:
+                                  "Sorry, we couldn’t add the stock due to a system error. Please try again later.",
+                            );
+                          },
+                        ),
+                      );
+                    }
+                  },
+                ),
+              )
             ],
           )
         ],
