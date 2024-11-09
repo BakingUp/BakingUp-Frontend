@@ -30,12 +30,28 @@ class AddIngredientReceiptDetailScreen extends StatefulWidget {
   final String ingredientQuantity;
   final String ingredientPrice;
   final List<Ingredient>? ingredients;
+    final Function(
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+  )? onAddIngredient;
   const AddIngredientReceiptDetailScreen({
     super.key,
     required this.ingredientName,
     required this.ingredientQuantity,
     required this.ingredientPrice,
     this.ingredients,
+    this.onAddIngredient,
   });
 
   @override

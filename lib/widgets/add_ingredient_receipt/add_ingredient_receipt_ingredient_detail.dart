@@ -6,9 +6,28 @@ import 'package:flutter/material.dart';
 class AddIngredientReceiptIngredientDetail extends StatelessWidget {
   final IngredientDetail ingredientDetail;
   final int index;
+  final Function(
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+  ) onAddIngredient;
 
-  const AddIngredientReceiptIngredientDetail(
-      {super.key, required this.ingredientDetail, required this.index});
+  const AddIngredientReceiptIngredientDetail({
+    super.key,
+    required this.ingredientDetail,
+    required this.index,
+    required this.onAddIngredient,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +116,7 @@ class AddIngredientReceiptIngredientDetail extends StatelessWidget {
                 ingredientName: ingredientDetail.ingredientName,
                 ingredientQuantity: ingredientDetail.ingredientQuantity,
                 ingredientPrice: ingredientDetail.ingredientPrice,
+                onAddIngredient: onAddIngredient,
               ),
             ],
           ),

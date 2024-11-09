@@ -38,9 +38,11 @@ class _AddIngredientReceiptScreenState
   final int _currentDrawerIndex = 4;
   bool isError = false;
   bool isLoading = true;
-  final List<IngredientDetail> ingredientDetail = [];
+  List<IngredientDetail> ingredientDetail = [];
   File _receiptImage = File('');
   List<ids.Ingredient> ingredientIdsAndNames = [];
+  List<AddIngredient> addIngredient = [];
+  List<AddIngredientDetail> addIngredientDetail = [];
 
   Future<void> _fetchIngredients(File file) async {
     try {
@@ -126,6 +128,48 @@ class _AddIngredientReceiptScreenState
     });
   }
 
+  void onAddIngredient(
+      index,
+      ingredientEngName,
+      ingredientThaiName,
+      unit,
+      stockLessThan,
+      dayBeforeExpire,
+      supplier,
+      quantity,
+      price,
+      note,
+      ingredientBrand,
+      expirationDate,
+      image) {
+    final newIngredient = AddIngredient(
+      ingredientEngName: ingredientEngName,
+      ingredientThaiName: ingredientThaiName,
+      unit: unit,
+      stockLessThan: stockLessThan,
+      dayBeforeExpire: dayBeforeExpire,
+      supplier: supplier,
+      quantity: quantity,
+      price: price,
+      note: note,
+      ingredientBrand: ingredientBrand,
+      expirationDate: expirationDate,
+      image: image,
+    );
+
+    final newIngredientDetail = IngredientDetail(
+      ingredientName: ingredientEngName,
+      ingredientQuantity: quantity,
+      ingredientPrice: price,
+      isEdited: true,
+    );
+
+    ingredientDetail[index] = newIngredientDetail;
+    setState(() {
+      addIngredient.add(newIngredient);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -151,9 +195,9 @@ class _AddIngredientReceiptScreenState
         leading: Builder(
           builder: (context) {
             return IconButton(
-              icon: const Icon(Icons.menu),
+              icon: const Icon(Icons.arrow_back_ios),
               onPressed: () {
-                Scaffold.of(context).openDrawer();
+                Navigator.pop(context);
               },
             );
           },
@@ -203,6 +247,7 @@ class _AddIngredientReceiptScreenState
                             return AddIngredientReceiptIngredientDetail(
                               ingredientDetail: ingredientDetail[index],
                               index: index + 1,
+                              onAddIngredient: onAddIngredient,
                             );
                           },
                         ),
@@ -215,11 +260,6 @@ class _AddIngredientReceiptScreenState
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                BakingUpLongActionButton(
-                  title: 'Cancel',
-                  color: greyColor,
-                  isDisabled: false,
-                ),
                 const SizedBox(width: 8),
                 BakingUpLongActionButton(
                   title: 'Confirm',

@@ -5,11 +5,27 @@ class AddIngredientReceiptEditButton extends StatelessWidget {
   final String? ingredientName;
   final String? ingredientQuantity;
   final String? ingredientPrice;
+  final Function(
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+  )? onAddIngredient;
   const AddIngredientReceiptEditButton({
     super.key,
     this.ingredientName,
     this.ingredientQuantity,
     this.ingredientPrice,
+    this.onAddIngredient,
   });
 
   @override
@@ -24,6 +40,7 @@ class AddIngredientReceiptEditButton extends StatelessWidget {
               ingredientName: ingredientName ?? '',
               ingredientQuantity: ingredientQuantity ?? '',
               ingredientPrice: ingredientPrice ?? '',
+              onAddIngredient: onAddIngredient,
             ),
           ),
         );
