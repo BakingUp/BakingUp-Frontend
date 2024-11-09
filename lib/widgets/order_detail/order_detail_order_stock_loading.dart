@@ -3,7 +3,8 @@ import 'package:shimmer/shimmer.dart';
 import 'package:bakingup_frontend/constants/colors.dart';
 
 class OrderDetailOrderStockLoading extends StatelessWidget {
-  const OrderDetailOrderStockLoading({super.key});
+  final bool isPreOrder;
+  const OrderDetailOrderStockLoading({super.key, required this.isPreOrder});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +12,7 @@ class OrderDetailOrderStockLoading extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
       padding: const EdgeInsets.fromLTRB(12, 20, 12, 20),
       decoration: BoxDecoration(
-        color: beigeColor,
+        color: isPreOrder ? pinkColor : beigeColor,
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),

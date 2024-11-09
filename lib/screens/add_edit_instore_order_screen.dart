@@ -573,7 +573,9 @@ class _AddEditInstoreOrderScreenState extends State<AddEditInstoreOrderScreen> {
                                     )
                                         .then(
                                       (value) {
+                                        // ignore: use_build_context_synchronously
                                         Navigator.of(context).pop();
+                                        // ignore: use_build_context_synchronously
                                         Navigator.of(context).pop();
                                       },
                                     );

@@ -12,6 +12,7 @@ import 'package:bakingup_frontend/widgets/baking_up_no_result.dart';
 import 'package:bakingup_frontend/widgets/baking_up_search_bar.dart';
 import 'package:bakingup_frontend/widgets/baking_up_tab_button.dart';
 import 'package:bakingup_frontend/widgets/order/order_info_list.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class OrderScreen extends StatefulWidget {
@@ -48,13 +49,22 @@ class _OrderScreenState extends State<OrderScreen> {
   FocusNode preOrderOrderSearchFocusNode = FocusNode();
 
   bool noResult = false;
+
   String userID = "1";
+  // FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
   void initState() {
     super.initState();
     _fetchAllList();
+    // getUserId();
   }
+
+  // void getUserId(){
+  //   setState(() {
+  //     userID = auth.currentUser!.uid;
+  //   });
+  // }
 
   Future<void> _fetchAllList() async {
     setState(() {
@@ -88,6 +98,10 @@ class _OrderScreenState extends State<OrderScreen> {
             inStoreOrders.add(order);
           }
         }
+        orders.sort((a, b) => b.orderIndex.compareTo(a.orderIndex));
+        preOrderOrders.sort((a, b) => b.orderIndex.compareTo(a.orderIndex));
+        inStoreOrders.sort((a, b) => b.orderIndex.compareTo(a.orderIndex));
+
         filteredOrders = orders;
         filteredPreOrderOrders = preOrderOrders;
         filteredInStoreOrders = inStoreOrders;
@@ -130,11 +144,6 @@ class _OrderScreenState extends State<OrderScreen> {
             .toList();
       }
     });
-    if (selectedOrderSorting == "Ascending Order") {
-      filteredOrders.sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
-    } else if (selectedOrderSorting == "Descending Order") {
-      filteredOrders.sort((a, b) => b.orderIndex.compareTo(a.orderIndex));
-    }
   }
 
   void _filterOrder(
@@ -193,13 +202,17 @@ class _OrderScreenState extends State<OrderScreen> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                const AddEditInstoreOrderScreen()));
+                                const AddEditInstoreOrderScreen())).then((_) {
+                      _fetchAllList();
+                    });
                   } else if (tabIndex == 3) {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                const AddEditPreorderOrderScreen()));
+                                const AddEditPreorderOrderScreen())).then((_) {
+                      _fetchAllList();
+                    });
                   }
                 },
               ),
@@ -320,12 +333,14 @@ class _OrderScreenState extends State<OrderScreen> {
                 ),
               ),
               //All order
-              if (tabIndex == 1 && !noResult && filteredOrders.isNotEmpty)
-                // have result + have filter result
-                OrderInfoList(
-                    orderList: filteredOrders,
-                    isLoading: isLoading,
-                    isPreOrder: true)
+              if (tabIndex == 1 && noResult)
+                Container(
+                  margin: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * 0.1),
+                  child: const BakingUpNoResult(
+                    message: "You currently have no order",
+                  ),
+                )
               else if (tabIndex == 1 &&
                   !noResult &&
                   filteredOrders.isEmpty &&
@@ -337,49 +352,26 @@ class _OrderScreenState extends State<OrderScreen> {
                     message: "No results found",
                   ),
                 )
-              else if (tabIndex == 1 && noResult)
-                Container(
-                  margin: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.1),
-                  child: const BakingUpNoResult(
-                    message: "You currently have no order",
-                  ),
-                ),
-
-              if (tabIndex == 2 &&
-                  !noResult &&
-                  filteredInStoreOrders.isNotEmpty)
-                // In-store
+              else if (tabIndex == 1 && !noResult && filteredOrders.isNotEmpty)
+                // have result + have filter result
                 OrderInfoList(
-                    orderList: filteredInStoreOrders,
-                    isLoading: isLoading,
-                    isPreOrder: false)
-              else if (tabIndex == 2 && !noResult && !isLoading)
-                Container(
-                  margin: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height * 0.1),
-                  child: const BakingUpNoResult(
-                    message: "No results found",
-                  ),
-                )
-              else if (tabIndex == 2 && noResult)
+                  orderList: filteredOrders,
+                  isLoading: isLoading,
+                  isPreOrder: true,
+                  fetchOrderList: _fetchAllList,
+                ),
+              if (tabIndex == 2 && noResult)
                 Container(
                   margin: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height * 0.1),
                   child: const BakingUpNoResult(
                     message: "You currently have no In-store order",
                   ),
-                ),
-
-              if (tabIndex == 3 &&
+                )
+              else if (tabIndex == 2 &&
                   !noResult &&
-                  filteredPreOrderOrders.isNotEmpty)
-                // Pre-order
-                OrderInfoList(
-                    orderList: filteredPreOrderOrders,
-                    isLoading: isLoading,
-                    isPreOrder: true)
-              else if (tabIndex == 3 && !noResult && !isLoading)
+                  !isLoading &&
+                  filteredOrders.isEmpty)
                 Container(
                   margin: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height * 0.1),
@@ -387,14 +379,45 @@ class _OrderScreenState extends State<OrderScreen> {
                     message: "No results found",
                   ),
                 )
-              else if (tabIndex == 3 && noResult)
+              else if (tabIndex == 2 &&
+                  !noResult &&
+                  filteredInStoreOrders.isNotEmpty)
+                OrderInfoList(
+                  orderList: filteredInStoreOrders,
+                  isLoading: isLoading,
+                  isPreOrder: false,
+                  fetchOrderList: _fetchAllList,
+                ),
+
+              if (tabIndex == 3 && noResult)
                 Container(
                   margin: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height * 0.1),
                   child: const BakingUpNoResult(
                     message: "You currently have no pre-order order",
                   ),
-                ),
+                )
+              else if (tabIndex == 3 &&
+                  !noResult &&
+                  !isLoading &&
+                  filteredOrders.isEmpty)
+                Container(
+                  margin: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height * 0.1),
+                  child: const BakingUpNoResult(
+                    message: "No results found",
+                  ),
+                )
+              else if (tabIndex == 3 &&
+                  !noResult &&
+                  filteredPreOrderOrders.isNotEmpty)
+                // Pre-order
+                OrderInfoList(
+                  orderList: filteredPreOrderOrders,
+                  isLoading: isLoading,
+                  isPreOrder: true,
+                  fetchOrderList: _fetchAllList,
+                )
             ],
           ),
         ),

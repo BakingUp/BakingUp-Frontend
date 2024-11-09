@@ -1,5 +1,7 @@
 // Define name routes
 
+import 'package:bakingup_frontend/models/instore_order_detail.dart';
+
 const loginRoute = '/login/';
 const registerRoute = '/register/';
 const verifyEmailRoute = '/verifyEmail/';
@@ -11,7 +13,8 @@ const recipeDetailRoute = '/recipeDetail/';
 const ingredientDetailRoute = '/ingredientDetail';
 const ingredientStockDetailRoute = '/ingredientStockDetail/';
 const orderRoute = '/order/';
-const orderDetailRoute = '/orderDetail/';
+const instoreOrderDetailRoute = '/instoreOrderDetail/';
+const preorderOrderDetailRoute = '/preorderOrderDetail/';
 const notificationRoute = '/notification/';
 const profileRoute = '/profile/';
 const editRecipeRoute = '/editRecipe/';

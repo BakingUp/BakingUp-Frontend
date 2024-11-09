@@ -13,7 +13,6 @@ import 'package:bakingup_frontend/widgets/order_detail/order_detail_order_taken_
 import 'package:bakingup_frontend/widgets/order_detail/order_detail_profit.dart';
 import 'package:bakingup_frontend/widgets/order_detail/order_detail_total.dart';
 import 'package:bakingup_frontend/widgets/order_detail/order_detail_type_of_order.dart';
-import 'package:bakingup_frontend/widgets/order_detail/order_edit_button.dart';
 import 'package:bakingup_frontend/widgets/order_detail/status_dropdown.dart';
 import 'package:flutter/material.dart';
 
@@ -93,30 +92,29 @@ class _InStoreOrderDetailScreenState extends State<InStoreOrderDetailScreen> {
       appBar: AppBar(
         backgroundColor: backgroundColor,
         scrolledUnderElevation: 0,
-        title: Center(
-          child: Column(
-            children: [
-              Text(
-                'Order #$orderIndex',
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w500,
-                ),
+        centerTitle: true,
+        title: Column(
+          children: [
+            Text(
+              'Order #$orderIndex',
+              style: const TextStyle(
+                fontSize: 24,
+                fontFamily: 'Inter',
+                fontStyle: FontStyle.normal,
+                fontWeight: FontWeight.w500,
               ),
-              Text(
-                'Date: $orderDate $orderTime',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w300,
-                  color: blackColor,
-                ),
-              )
-            ],
-          ),
+            ),
+            Text(
+              'Date: $orderDate $orderTime',
+              style: TextStyle(
+                fontSize: 12,
+                fontFamily: 'Inter',
+                fontStyle: FontStyle.normal,
+                fontWeight: FontWeight.w300,
+                color: blackColor,
+              ),
+            )
+          ],
         ),
         leading: Builder(
           builder: (context) {
@@ -128,9 +126,6 @@ class _InStoreOrderDetailScreenState extends State<InStoreOrderDetailScreen> {
             );
           },
         ),
-        actions: const [
-          Padding(padding: EdgeInsets.only(right: 14), child: OrderEditButton())
-        ],
       ),
       body: SingleChildScrollView(
         physics: const ScrollPhysics(),
@@ -154,7 +149,7 @@ class _InStoreOrderDetailScreenState extends State<InStoreOrderDetailScreen> {
                     width: 20,
                   ),
                   StatusDropdown(
-                      options: const ['Done', 'In Process', 'Cancel'],
+                      options: const ['Done', 'Cancel'],
                       orderStatus: orderStatus,
                       topic: 'Order status',
                       selectedOption: selectedStatus,
@@ -185,7 +180,7 @@ class _InStoreOrderDetailScreenState extends State<InStoreOrderDetailScreen> {
                         OrderDetailTypeOfOrder(
                             isLoading: isLoading, orderType: orderType),
                         const SizedBox(
-                          height: 10,
+                          height: 15,
                         ),
                         OrderDetailOrderTakenBy(
                             isLoading: isLoading, name: orderTakenBy),
@@ -217,7 +212,7 @@ class _InStoreOrderDetailScreenState extends State<InStoreOrderDetailScreen> {
                 height: 30,
               ),
               OrderDetailOrderList(
-                  orderStockList: orderStockList, isLoading: isLoading),
+                  orderStockList: orderStockList, isLoading: isLoading, isPreOrder: false,),
               
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
