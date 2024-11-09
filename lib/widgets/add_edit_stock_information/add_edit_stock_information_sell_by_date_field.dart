@@ -3,7 +3,15 @@ import 'package:bakingup_frontend/widgets/baking_up_date_picker.dart';
 import 'package:flutter/material.dart';
 
 class AddEditStockInformationSellByDateField extends StatefulWidget {
-  const AddEditStockInformationSellByDateField({super.key});
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final VoidCallback onChanged;
+  const AddEditStockInformationSellByDateField({
+    super.key,
+    required this.controller,
+    required this.focusNode,
+    required this.onChanged,
+  });
 
   @override
   AddEditStockInformationSellByDateFieldState createState() =>
@@ -12,7 +20,6 @@ class AddEditStockInformationSellByDateField extends StatefulWidget {
 
 class AddEditStockInformationSellByDateFieldState
     extends State<AddEditStockInformationSellByDateField> {
-  final TextEditingController _controller = TextEditingController();
   List<DateTime> dates = [
     DateTime.now(),
   ];
@@ -34,8 +41,16 @@ class AddEditStockInformationSellByDateFieldState
             setState(() {
               dates = newDates;
             });
-            _controller.text =
-                "${newDates[0].day}/${newDates[0].month}/${newDates[0].year}";
+
+            int day = newDates[0].day;
+            int month = newDates[0].month;
+            int year = newDates[0].year;
+
+            String formattedDay = day < 10 ? '0$day' : '$day';
+            String formattedMonth = month < 10 ? '0$month' : '$month';
+
+            widget.controller.text = "$formattedDay/$formattedMonth/$year";
+            widget.onChanged();
           },
         );
       },
@@ -48,7 +63,8 @@ class AddEditStockInformationSellByDateFieldState
       width: MediaQuery.of(context).size.width / 2,
       height: 45,
       child: TextField(
-        controller: _controller,
+        focusNode: widget.focusNode,
+        controller: widget.controller,
         readOnly: true,
         onTap: () => showDatePickerBottomSheet(context, backgroundColor),
         style: const TextStyle(

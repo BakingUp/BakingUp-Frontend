@@ -1,16 +1,17 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:flutter/material.dart';
 
-class AddEditStockLstTextField extends StatelessWidget {
-  const AddEditStockLstTextField({super.key});
+class AddEditOrderNoteTextField extends StatelessWidget {
+  final TextEditingController controller;
+  const AddEditOrderNoteTextField({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 120,
-      height: 45,
+      width: MediaQuery.of(context).size.width - 60,
       child: TextField(
-        maxLines: 1,
+        controller: controller,
+        maxLines: null,
         style: const TextStyle(
           fontSize: 12,
           fontFamily: 'Inter',
@@ -26,7 +27,6 @@ class AddEditStockLstTextField extends StatelessWidget {
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: darkGreyColor, width: 0.5),
           ),
-          labelText: "LST",
           floatingLabelBehavior: FloatingLabelBehavior.always,
           labelStyle: const TextStyle(
             fontFamily: 'Inter',

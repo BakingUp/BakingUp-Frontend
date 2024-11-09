@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/models/add_edit_recipe_controller.dart';
 import 'package:bakingup_frontend/screens/add_edit_recipe_ingredient_screen.dart';
-import 'package:bakingup_frontend/screens/add_edit_recipe_screen.dart';
+import 'package:bakingup_frontend/screens/add_recipe_screen.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_ingredient.dart';
+import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_ingredient_loading.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_name_text_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_text_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_title.dart';
@@ -10,6 +12,7 @@ import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_image_picker.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 class AddEditRecipePageOne extends StatelessWidget {
   final List<RecipeIngredient> recipeIngredients;
@@ -17,6 +20,11 @@ class AddEditRecipePageOne extends StatelessWidget {
   final VoidCallback onClick;
   final Function(File) onNewImage;
   final Function(int) onImgDelete;
+  final Function(String) onIngredientDelete;
+  final AddEditRecipeController controller;
+  final void Function(RecipeIngredient ingredient) addIngredient;
+  final bool? isEdit;
+  final bool? isLoading;
   const AddEditRecipePageOne({
     super.key,
     required this.recipeIngredients,
@@ -24,6 +32,11 @@ class AddEditRecipePageOne extends StatelessWidget {
     required this.onClick,
     required this.onNewImage,
     required this.onImgDelete,
+    required this.onIngredientDelete,
+    required this.controller,
+    required this.addIngredient,
+    this.isEdit,
+    this.isLoading,
   });
 
   @override
@@ -31,15 +44,17 @@ class AddEditRecipePageOne extends StatelessWidget {
     return Column(
       children: [
         const AddEditRecipeTitle(title: "Recipe Information"),
-        BakingUpImagePicker(
-          images: recipeImages,
-          onNewImage: onNewImage,
-          isOneImage: false,
-          onDelete: (index) {
-            onImgDelete(index);
-          },
-        ),
-        const SizedBox(height: 16),
+        isEdit == null || !isEdit!
+            ? BakingUpImagePicker(
+                images: recipeImages,
+                onNewImage: onNewImage,
+                isOneImage: false,
+                onDelete: (index) {
+                  onImgDelete(index);
+                },
+              )
+            : Container(),
+        SizedBox(height: isEdit != null && isEdit! ? 24 : 16),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,12 +82,44 @@ class AddEditRecipePageOne extends StatelessWidget {
                 ),
               ],
             ),
-            const Column(
+            Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                AddEditRecipeNameTextField(label: 'English'),
-                SizedBox(height: 16),
-                AddEditRecipeNameTextField(label: 'Thai')
+                isLoading != null && isLoading!
+                    ? Shimmer.fromColors(
+                        baseColor: greyColor,
+                        highlightColor: whiteColor,
+                        child: Container(
+                          height: 45,
+                          width: MediaQuery.of(context).size.width / 2,
+                          decoration: BoxDecoration(
+                            color: whiteColor,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                      )
+                    : AddEditRecipeNameTextField(
+                        label: 'English',
+                        controller: controller.engNameController,
+                      ),
+                const SizedBox(height: 16),
+                isLoading != null && isLoading!
+                    ? Shimmer.fromColors(
+                        baseColor: greyColor,
+                        highlightColor: whiteColor,
+                        child: Container(
+                          height: 45,
+                          width: MediaQuery.of(context).size.width / 2,
+                          decoration: BoxDecoration(
+                            color: whiteColor,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                      )
+                    : AddEditRecipeNameTextField(
+                        label: 'Thai',
+                        controller: controller.thaiNameController,
+                      )
               ],
             ),
           ],
@@ -102,7 +149,24 @@ class AddEditRecipePageOne extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 16),
-            const AddEditRecipeTextField(label: "Hr", width: 46),
+            isLoading != null && isLoading!
+                ? Shimmer.fromColors(
+                    baseColor: greyColor,
+                    highlightColor: whiteColor,
+                    child: Container(
+                      height: 45,
+                      width: 46,
+                      decoration: BoxDecoration(
+                        color: whiteColor,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                  )
+                : AddEditRecipeTextField(
+                    label: "Hr",
+                    width: 46,
+                    controller: controller.totalHoursController,
+                  ),
             const SizedBox(width: 16),
             const Text(
               'hrs.',
@@ -114,7 +178,24 @@ class AddEditRecipePageOne extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 16),
-            const AddEditRecipeTextField(label: "Min", width: 46),
+            isLoading != null && isLoading!
+                ? Shimmer.fromColors(
+                    baseColor: greyColor,
+                    highlightColor: whiteColor,
+                    child: Container(
+                      height: 45,
+                      width: 46,
+                      decoration: BoxDecoration(
+                        color: whiteColor,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                  )
+                : AddEditRecipeTextField(
+                    label: "Min",
+                    width: 46,
+                    controller: controller.totalMinsController,
+                  ),
             const SizedBox(width: 16),
             const Text(
               'mins.',
@@ -152,7 +233,24 @@ class AddEditRecipePageOne extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 16),
-            const AddEditRecipeTextField(label: "Servings", width: 150)
+            isLoading != null && isLoading!
+                ? Shimmer.fromColors(
+                    baseColor: greyColor,
+                    highlightColor: whiteColor,
+                    child: Container(
+                      height: 45,
+                      width: 150,
+                      decoration: BoxDecoration(
+                        color: whiteColor,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                  )
+                : AddEditRecipeTextField(
+                    label: "Servings",
+                    width: 150,
+                    controller: controller.servingsController,
+                  )
           ],
         ),
         const SizedBox(height: 50),
@@ -165,38 +263,91 @@ class AddEditRecipePageOne extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
               ),
             ),
-            Align(
-              alignment: Alignment.centerRight,
-              heightFactor: 0.5,
-              child: BakingUpCircularAddButton(onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AddEditRecipeIngredientScreen(),
-                  ),
-                );
-              }),
-            ),
+            isLoading == null || !isLoading!
+                ? Align(
+                    alignment: Alignment.centerRight,
+                    heightFactor: 0.5,
+                    child: BakingUpCircularAddButton(onPressed: () async {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AddEditRecipeIngredientScreen(
+                            recipeIngredients: recipeIngredients,
+                            addIngredient: addIngredient,
+                          ),
+                        ),
+                      );
+                    }),
+                  )
+                : Container(),
           ],
         ),
         const SizedBox(height: 24),
-        ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            padding: const EdgeInsets.all(0),
-            itemCount: recipeIngredients.length,
-            itemBuilder: (context, index) {
-              return AddEditRecipeIngredient(
-                recipeIngredients: recipeIngredients,
-                index: index,
-              );
-            }),
+        isLoading != null && isLoading!
+            ? ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(0),
+                itemCount: 3,
+                itemBuilder: (context, index) {
+                  return const AddEditRecipeIngredientLoading();
+                })
+            : ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(0),
+                itemCount: recipeIngredients.length,
+                itemBuilder: (context, index) {
+                  return Dismissible(
+                    key: Key(recipeIngredients[index].id),
+                    direction: DismissDirection.startToEnd,
+                    background: Container(
+                      margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+                      padding: const EdgeInsets.only(left: 20),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(13),
+                        color: redColor,
+                      ),
+                      alignment: Alignment.centerLeft,
+                      child: const Row(
+                        children: [
+                          Icon(
+                            Icons.delete,
+                            color: Colors.white,
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            'Delete',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 16,
+                              fontStyle: FontStyle.normal,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    confirmDismiss: (direction) async {
+                      return onIngredientDelete(recipeIngredients[index].id);
+                    },
+                    child: AddEditRecipeIngredient(
+                      recipeIngredients: recipeIngredients,
+                      index: index,
+                    ),
+                  );
+                }),
         const SizedBox(height: 80),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             BakingUpLongActionButton(
-                title: 'Next', color: greyColor, onClick: onClick),
+              title: 'Next',
+              color: greyColor,
+              onClick: onClick,
+              isDisabled: false,
+            ),
           ],
         )
       ],

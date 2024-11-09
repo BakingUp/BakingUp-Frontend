@@ -39,9 +39,10 @@ RecipeDetailData _$RecipeDetailDataFromJson(Map<String, dynamic> json) =>
       instructionUrl: (json['instruction_url'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
-      instructionSteps: (json['instruction_steps'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
+      instructionSteps: json['instruction_steps'] as String,
+      hiddenCost: (json['hidden_cost'] as num).toDouble(),
+      laborCost: (json['labor_cost'] as num).toDouble(),
+      profitMargin: (json['profit_margin'] as num).toDouble(),
     );
 
 Map<String, dynamic> _$RecipeDetailDataToJson(RecipeDetailData instance) =>
@@ -56,6 +57,9 @@ Map<String, dynamic> _$RecipeDetailDataToJson(RecipeDetailData instance) =>
       'recipe_ingredients': instance.recipeIngredients,
       'instruction_url': instance.instructionUrl,
       'instruction_steps': instance.instructionSteps,
+      'hidden_cost': instance.hiddenCost,
+      'labor_cost': instance.laborCost,
+      'profit_margin': instance.profitMargin,
     };
 
 RecipeIngredient _$RecipeIngredientFromJson(Map<String, dynamic> json) =>

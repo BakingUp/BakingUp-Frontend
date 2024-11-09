@@ -7,12 +7,14 @@ class BakingUpDropdown extends StatelessWidget {
   final String topic;
   final String selectedOption;
   final Function(String) onApply;
+  final Function(int)? onApplyIndex;
   const BakingUpDropdown({
     super.key,
     required this.options,
     required this.topic,
     required this.selectedOption,
     required this.onApply,
+    this.onApplyIndex,
   });
 
   @override
@@ -34,6 +36,7 @@ class BakingUpDropdown extends StatelessWidget {
               topic: topic,
               selectedOption: selectedOption,
               onApply: onApply,
+              onApplyIndex: onApplyIndex,
             );
           },
         );

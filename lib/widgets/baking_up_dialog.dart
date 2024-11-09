@@ -26,6 +26,7 @@ class BakingUpDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: backgroundColor,
       content: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
         child: Column(
@@ -67,6 +68,7 @@ class BakingUpDialog extends StatelessWidget {
                   color: greyColor,
                   width: 120,
                   onClick: grayButtonOnClick,
+                  isDisabled: false,
                 ),
                 secondButtonTitle != null &&
                         secondButtonTitle?.isNotEmpty == true
@@ -78,6 +80,7 @@ class BakingUpDialog extends StatelessWidget {
                             color: secondButtonColor ?? lightGreenColor,
                             width: 120,
                             onClick: secondButtonOnClick,
+                            isDisabled: false,
                           ),
                         ],
                       )

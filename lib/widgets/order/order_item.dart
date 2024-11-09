@@ -3,18 +3,21 @@ import 'package:bakingup_frontend/enum/order_platform.dart';
 import 'package:bakingup_frontend/enum/order_status.dart';
 import 'package:bakingup_frontend/models/order.dart';
 import 'package:bakingup_frontend/screens/instore_order_detail_screen.dart';
+import 'package:bakingup_frontend/screens/preorder_order_detail_screen.dart';
 import 'package:flutter/material.dart';
 
 class OrderItem extends StatelessWidget {
   final List<OrderInfo> orderList;
   final int index;
   final bool isLoading;
+  final Future<void> Function() fetchOrderList;
 
   const OrderItem(
       {super.key,
       required this.orderList,
       required this.index,
-      required this.isLoading});
+      required this.isLoading,
+      required this.fetchOrderList});
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +25,17 @@ class OrderItem extends StatelessWidget {
         ?
         // Preorder
         GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PreorderOrderDetailScreen(
+                      orderId: orderList[index].orderId),
+                ),
+              ).then((value) {
+                fetchOrderList();
+              });
+            },
             child: Container(
               margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
               padding: const EdgeInsets.fromLTRB(12, 20, 12, 20),
@@ -118,7 +132,14 @@ class OrderItem extends StatelessWidget {
         // in-store
         GestureDetector(
             onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context)=> InStoreOrderDetailScreen(orderId: orderList[index].orderId,)));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => InStoreOrderDetailScreen(
+                            orderId: orderList[index].orderId,
+                          ))).then((value) {
+                fetchOrderList();
+              });
             },
             child: Container(
               margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),

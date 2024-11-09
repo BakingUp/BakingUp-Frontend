@@ -19,17 +19,15 @@ import 'package:bakingup_frontend/models/add_edit_ingredient_controller.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:flutter/material.dart';
 
-class AddEditIngredientScreen extends StatefulWidget {
-  const AddEditIngredientScreen({super.key});
+class AddIngredientScreen extends StatefulWidget {
+  const AddIngredientScreen({super.key});
 
   @override
-  State<AddEditIngredientScreen> createState() =>
-      _AddEditIngredientScreenState();
+  State<AddIngredientScreen> createState() => _AddIngredientScreenState();
 }
 
-class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
+class _AddIngredientScreenState extends State<AddIngredientScreen> {
   final int _currentDrawerIndex = 4;
-  final bool _isEdit = false;
   final List<File> _images = [];
   String selectedUnit = '';
   final AddEditIngredientController _controller = AddEditIngredientController();
@@ -47,6 +45,44 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
       default:
         return '';
     }
+  }
+
+  int getUnitLengthLimit(String unit) {
+    switch (unit) {
+      case 'Grams':
+        return 5;
+      case 'Kilograms':
+        return 2;
+      case 'Litres':
+        return 2;
+      case 'Millilitres':
+        return 5;
+      default:
+        return 5;
+    }
+  }
+
+  int getUnitMax(String unit) {
+    switch (unit) {
+      case 'Grams':
+        return 99000;
+      case 'Kilograms':
+        return 99;
+      case 'Litres':
+        return 99;
+      case 'Millilitres':
+        return 99000;
+      default:
+        return 99000;
+    }
+  }
+
+  bool getIsDisabled() {
+    return (_controller.engNameController.text.isEmpty &&
+            _controller.thaiNameController.text.isEmpty) ||
+        selectedUnit.isEmpty ||
+        _controller.ingredientLessThanController.text.isEmpty ||
+        _controller.daysBeforeExpireController.text.isEmpty;
   }
 
   List<String> convertFilesToBase64(List<File> files) {
@@ -135,12 +171,20 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   AddEditIngredientNameTextField(
-                      label: 'English',
-                      controller: _controller.engNameController),
+                    label: 'English',
+                    controller: _controller.engNameController,
+                    onTextChanged: () {
+                      setState(() {});
+                    },
+                  ),
                   const SizedBox(height: 16),
                   AddEditIngredientNameTextField(
-                      label: 'Thai',
-                      controller: _controller.thaiNameController),
+                    label: 'Thai',
+                    controller: _controller.thaiNameController,
+                    onTextChanged: () {
+                      setState(() {});
+                    },
+                  ),
                 ],
               ),
             ],
@@ -184,6 +228,7 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
                 onApply: (String value) {
                   setState(() {
                     selectedUnit = value;
+                    _controller.ingredientLessThanController.text = '';
                   });
                 },
               )
@@ -207,6 +252,12 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
               ),
               AddEditIngredientTextField(
                 controller: _controller.ingredientLessThanController,
+                lengthLimit: getUnitLengthLimit(selectedUnit),
+                min: 1,
+                max: getUnitMax(selectedUnit),
+                onTextChanged: () {
+                  setState(() {});
+                },
               ),
               const Text(
                 'unit',
@@ -233,6 +284,12 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
               ),
               AddEditIngredientTextField(
                 controller: _controller.daysBeforeExpireController,
+                lengthLimit: 3,
+                min: 1,
+                max: 365,
+                onTextChanged: () {
+                  setState(() {});
+                },
               ),
               const Text(
                 'days before expiration',
@@ -249,69 +306,67 @@ class _AddEditIngredientScreenState extends State<AddEditIngredientScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _isEdit
-                  ? BakingUpLongActionButton(
-                      title: 'Save', color: lightGreenColor)
-                  : BakingUpLongActionButton(
-                      title: 'Save',
-                      color: lightGreenColor,
-                      dialogParams: BakingUpDialogParams(
-                        title: 'Confirm Adding Ingredient?',
-                        imgUrl: 'assets/icons/warning.png',
-                        content:
-                            'Are you sure to add a new ingredient to the warehouse?',
-                        grayButtonTitle: 'Cancel',
-                        secondButtonTitle: 'Confirm',
-                        secondButtonColor: lightGreenColor,
-                        grayButtonOnClick: () {
+              BakingUpLongActionButton(
+                title: 'Save',
+                color: getIsDisabled() ? greyColor : lightGreenColor,
+                isDisabled: getIsDisabled(),
+                dialogParams: BakingUpDialogParams(
+                  title: 'Confirm Adding Ingredient?',
+                  imgUrl: 'assets/icons/warning.png',
+                  content:
+                      'Are you sure to add a new ingredient to the warehouse?',
+                  grayButtonTitle: 'Cancel',
+                  secondButtonTitle: 'Confirm',
+                  secondButtonColor: lightGreenColor,
+                  grayButtonOnClick: () {
+                    Navigator.of(context).pop();
+                  },
+                  secondButtonOnClick: () async {
+                    try {
+                      final data = {
+                        "day_before_expire":
+                            _controller.daysBeforeExpireController.text,
+                        "ingredient_eng_name":
+                            _controller.engNameController.text,
+                        "ingredient_thai_name":
+                            _controller.thaiNameController.text,
+                        "stock_less_than":
+                            _controller.ingredientLessThanController.text,
+                        "unit": convertUnit(selectedUnit),
+                        "user_id": "1",
+                        "img": convertFilesToBase64(_images),
+                      };
+                      log(data.toString());
+                      await NetworkService.instance
+                          .post(
+                        "/api/ingredient/addIngredient",
+                        data: data,
+                      )
+                          .then(
+                        (value) {
+                          Navigator.of(context).pop();
                           Navigator.of(context).pop();
                         },
-                        secondButtonOnClick: () async {
-                          try {
-                            final data = {
-                              "day_before_expire":
-                                  _controller.daysBeforeExpireController.text,
-                              "ingredient_eng_name":
-                                  _controller.engNameController.text,
-                              "ingredient_thai_name":
-                                  _controller.thaiNameController.text,
-                              "stock_less_than":
-                                  _controller.ingredientLessThanController.text,
-                              "unit": convertUnit(selectedUnit),
-                              "user_id": "1",
-                              "img": convertFilesToBase64(_images),
-                            };
-                            log(data.toString());
-                            await NetworkService.instance
-                                .post(
-                              "/api/ingredient/addIngredient",
-                              data: data,
-                            )
-                                .then(
-                              (value) {
-                                Navigator.of(context).pop();
-                                Navigator.of(context).pop();
-                              },
+                      );
+                    } catch (e) {
+                      log(e.toString());
+                      // ignore: use_build_context_synchronously
+                      Navigator.of(context).pop();
+                      // ignore: use_build_context_synchronously
+                      Navigator.of(context).overlay!.insert(
+                        OverlayEntry(
+                          builder: (BuildContext context) {
+                            return const BakingUpErrorTopNotification(
+                              message:
+                                  "Sorry, we couldn’t add the ingredient due to a system error. Please try again later.",
                             );
-                          } catch (e) {
-                            log(e.toString());
-                            // ignore: use_build_context_synchronously
-                            Navigator.of(context).pop();
-                            // ignore: use_build_context_synchronously
-                            Navigator.of(context).overlay!.insert(
-                              OverlayEntry(
-                                builder: (BuildContext context) {
-                                  return const BakingUpErrorTopNotification(
-                                    message:
-                                        "Sorry, we couldn’t add the ingredient due to a system error. Please try again later.",
-                                  );
-                                },
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                    )
+                          },
+                        ),
+                      );
+                    }
+                  },
+                ),
+              )
             ],
           )
         ],

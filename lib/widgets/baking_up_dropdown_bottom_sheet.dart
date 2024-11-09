@@ -6,12 +6,14 @@ class BakingUpDropdownBottomSheet extends StatefulWidget {
   final String topic;
   final String selectedOption;
   final Function(String) onApply;
+  final Function(int)? onApplyIndex;
   const BakingUpDropdownBottomSheet({
     super.key,
     required this.options,
     required this.topic,
     required this.selectedOption,
     required this.onApply,
+    this.onApplyIndex,
   });
 
   @override
@@ -22,6 +24,7 @@ class BakingUpDropdownBottomSheet extends StatefulWidget {
 class _BakingUpDropdownBottomSheetState
     extends State<BakingUpDropdownBottomSheet> {
   String? selectedOption = "";
+  int selectedIndex = 0;
 
   @override
   void initState() {
@@ -113,6 +116,7 @@ class _BakingUpDropdownBottomSheetState
                             onChanged: (String? value) {
                               setState(() {
                                 selectedOption = value;
+                                selectedIndex = widget.options.indexOf(value!);
                               });
                             },
                             activeColor: greenColor,
@@ -130,6 +134,9 @@ class _BakingUpDropdownBottomSheetState
                 ),
                 onPressed: () {
                   widget.onApply(selectedOption!);
+                  if (widget.onApplyIndex != null) {
+                    widget.onApplyIndex!(selectedIndex);
+                  }
                   Navigator.of(context).pop();
                 },
                 child: Center(

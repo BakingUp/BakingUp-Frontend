@@ -37,7 +37,13 @@ class RecipeDetailData {
   @JsonKey(name: 'instruction_url')
   final List<String>? instructionUrl;
   @JsonKey(name: 'instruction_steps')
-  final List<String>? instructionSteps;
+  final String instructionSteps;
+  @JsonKey(name: 'hidden_cost')
+  final double hiddenCost;
+  @JsonKey(name: 'labor_cost')
+  final double laborCost;
+  @JsonKey(name: 'profit_margin')
+  final double profitMargin;
 
   RecipeDetailData({
     required this.status,
@@ -49,7 +55,10 @@ class RecipeDetailData {
     required this.numOfOrder,
     this.recipeIngredients,
     this.instructionUrl,
-    this.instructionSteps,
+    required this.instructionSteps,
+    required this.hiddenCost,
+    required this.laborCost,
+    required this.profitMargin,
   });
 
   factory RecipeDetailData.fromJson(Map<String, dynamic> json) =>
