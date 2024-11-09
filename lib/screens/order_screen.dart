@@ -1,4 +1,5 @@
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/enum/order_status.dart';
 import 'package:bakingup_frontend/models/order.dart';
 import 'package:bakingup_frontend/screens/add_edit_instore_order_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_preorder_order_screen.dart';
@@ -39,9 +40,9 @@ class _OrderScreenState extends State<OrderScreen> {
       TextEditingController();
   final TextEditingController _searchPreOrderOrderController =
       TextEditingController();
-  final List<String> orderFilterList = ['Done', 'In-Process', 'Cancel'];
 
-  List<String> selectedOrderFiltering = ['Done', 'In-Process', 'Cancel'];
+  final List<String> orderFilterList = ['Done', 'In-Process', 'Cancel'];
+  String selectedOrderFiltering = 'In-Process';
   String selectedOrderSorting = "Descending Order";
 
   FocusNode orderSearchFocusNode = FocusNode();
@@ -85,7 +86,7 @@ class _OrderScreenState extends State<OrderScreen> {
         orders = data.orders;
         preOrderOrders = [];
         inStoreOrders = [];
-        selectedOrderFiltering = ['Done', 'In-Process', 'Cancel'];
+        selectedOrderFiltering = 'In-Process';
         selectedOrderSorting = 'Descending Order';
         if (ordersResponse.status == 200 && orders.isEmpty) {
           noResult = true;
@@ -146,19 +147,103 @@ class _OrderScreenState extends State<OrderScreen> {
     });
   }
 
-  void _filterOrder(
-      // not done yet
-      List<String> selectingOrderFiltering,
-      String selectingOrderSorting,
-      List<OrderInfo> orders) {
+  void _filterAllOrder(
+    String selectingOrderFiltering,
+    String selectingOrderSorting,
+  ) {
     setState(() {
       selectedOrderFiltering = selectingOrderFiltering;
       selectedOrderSorting = selectingOrderSorting;
     });
-    // for (var order in orders) {
-    //   if (selectingOrderFiltering.length < 3) {}
-    // }
-    // if (selectedOrderSorting == "Ascending Order") {}
+
+    List<OrderInfo> filteredList = orders.where((order) {
+      switch (selectingOrderFiltering) {
+        case "Done":
+          return order.orderStatus == OrderStatus.done;
+        case "In-Process":
+          return order.orderStatus == OrderStatus.inProcess;
+        case "Cancel":
+          return order.orderStatus == OrderStatus.cancel;
+        default:
+          return true;
+      }
+    }).toList();
+
+    if (selectingOrderSorting == "Ascending Order") {
+      filteredList.sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+    } else {
+      filteredList.sort((a, b) => b.orderIndex.compareTo(a.orderIndex));
+    }
+
+    setState(() {
+      filteredOrders = filteredList;
+    });
+  }
+
+  void _filterInstoreOrder(
+    String selectingOrderFiltering,
+    String selectingOrderSorting,
+  ) {
+    setState(() {
+      selectedOrderFiltering = selectingOrderFiltering;
+      selectedOrderSorting = selectingOrderSorting;
+    });
+
+    List<OrderInfo> filteredList = inStoreOrders.where((order) {
+      switch (selectingOrderFiltering) {
+        case "Done":
+          return order.orderStatus == OrderStatus.done;
+        case "In-Process":
+          return order.orderStatus == OrderStatus.inProcess;
+        case "Cancel":
+          return order.orderStatus == OrderStatus.cancel;
+        default:
+          return true;
+      }
+    }).toList();
+
+    if (selectingOrderSorting == "Ascending Order") {
+      filteredList.sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+    } else {
+      filteredList.sort((a, b) => b.orderIndex.compareTo(a.orderIndex));
+    }
+
+    setState(() {
+      filteredInStoreOrders = filteredList;
+    });
+  }
+
+  void _filterPreorderOrder(
+    String selectingOrderFiltering,
+    String selectingOrderSorting,
+  ) {
+    setState(() {
+      selectedOrderFiltering = selectingOrderFiltering;
+      selectedOrderSorting = selectingOrderSorting;
+    });
+
+    List<OrderInfo> filteredList = preOrderOrders.where((order) {
+      switch (selectingOrderFiltering) {
+        case "Done":
+          return order.orderStatus == OrderStatus.done;
+        case "In-Process":
+          return order.orderStatus == OrderStatus.inProcess;
+        case "Cancel":
+          return order.orderStatus == OrderStatus.cancel;
+        default:
+          return true;
+      }
+    }).toList();
+
+    if (selectingOrderSorting == "Ascending Order") {
+      filteredList.sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+    } else {
+      filteredList.sort((a, b) => b.orderIndex.compareTo(a.orderIndex));
+    }
+
+    setState(() {
+      filteredPreOrderOrders = filteredList;
+    });
   }
 
   @override
@@ -309,23 +394,44 @@ class _OrderScreenState extends State<OrderScreen> {
                         inStoreOrderSearchFocusNode.unfocus();
                         preOrderOrderSearchFocusNode.unfocus();
                         showModalBottomSheet<void>(
-                          context: context,
-                          backgroundColor: backgroundColor,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(40),
-                              topRight: Radius.circular(40),
+                            context: context,
+                            backgroundColor: backgroundColor,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(40),
+                                topRight: Radius.circular(40),
+                              ),
                             ),
-                          ),
-                          builder: (BuildContext context) {
-                            return BakingUpFilterModalBottom(
-                                optionsOne: orderFilterList,
-                                optionOneName: 'Filter by',
-                                defaultFilteringValue: "selectedOrderFiltering",
-                                defaultSortingValue: selectedOrderSorting,
-                                filterFunction: _filterOrder);
-                          },
-                        );
+                            builder: (BuildContext context) {
+                              return tabIndex == 1
+                                  ? BakingUpFilterModalBottom(
+                                      optionsOne: orderFilterList,
+                                      optionOneName: "Filter by",
+                                      defaultFilteringValue:
+                                          selectedOrderFiltering,
+                                      defaultSortingValue: selectedOrderSorting,
+                                      filterFunction: _filterAllOrder,
+                                    )
+                                  : tabIndex == 2
+                                      ? BakingUpFilterModalBottom(
+                                          optionsOne: orderFilterList,
+                                          optionOneName: "Filter by",
+                                          defaultFilteringValue:
+                                              selectedOrderFiltering,
+                                          defaultSortingValue:
+                                              selectedOrderSorting,
+                                          filterFunction: _filterInstoreOrder,
+                                        )
+                                      : BakingUpFilterModalBottom(
+                                          optionsOne: orderFilterList,
+                                          optionOneName: "Filter by",
+                                          defaultFilteringValue:
+                                              selectedOrderFiltering,
+                                          defaultSortingValue:
+                                              selectedOrderSorting,
+                                          filterFunction: _filterPreorderOrder,
+                                        );
+                            });
                       },
                       child: const BakingUpFilterTwoButton(),
                     )
@@ -371,7 +477,7 @@ class _OrderScreenState extends State<OrderScreen> {
               else if (tabIndex == 2 &&
                   !noResult &&
                   !isLoading &&
-                  filteredOrders.isEmpty)
+                  filteredInStoreOrders.isEmpty)
                 Container(
                   margin: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height * 0.1),
@@ -400,7 +506,7 @@ class _OrderScreenState extends State<OrderScreen> {
               else if (tabIndex == 3 &&
                   !noResult &&
                   !isLoading &&
-                  filteredOrders.isEmpty)
+                  filteredPreOrderOrders.isEmpty)
                 Container(
                   margin: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height * 0.1),

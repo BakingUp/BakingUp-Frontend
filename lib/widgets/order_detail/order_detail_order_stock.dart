@@ -1,6 +1,7 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/models/instore_order_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class OrderDetailOrderStock extends StatelessWidget {
   final List<OrderStock> orderStockList;
@@ -35,11 +36,19 @@ class OrderDetailOrderStock extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(13),
                 child: Image.network(
-                  orderStockList[index].imgUrl,
-                  width: 90,
-                  height: 60,
-                  fit: BoxFit.cover,
-                ),
+                      '${dotenv.env['API_BASE_URL']}/${orderStockList[index].imgUrl}',
+                      width: 90,
+                      height: 60,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          'assets/icons/no-image.jpg',
+                          width: 90,
+                          height: 60,
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
               ),
               const Padding(padding: EdgeInsets.only(right: 16.0)),
             ],

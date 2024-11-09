@@ -1,15 +1,20 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/models/stock_order_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AddEditOrderStockDetails extends StatefulWidget {
   final List<StockOrderItemData> stocks;
   final int index;
   final bool isPreOrder;
   final List<StockOrderItemData> selectedStockList;
-  
+
   const AddEditOrderStockDetails(
-      {super.key, required this.stocks, required this.index, required this.isPreOrder, required this.selectedStockList});
+      {super.key,
+      required this.stocks,
+      required this.index,
+      required this.isPreOrder,
+      required this.selectedStockList});
 
   @override
   State<AddEditOrderStockDetails> createState() =>
@@ -20,10 +25,12 @@ class _AddEditOrderStockDetailsState extends State<AddEditOrderStockDetails> {
   int _currentQuantity = 0;
   int divisions = 1;
 
-  void _updateSelectedStockQuantity(int newQuantity){
+  void _updateSelectedStockQuantity(int newQuantity) {
     setState(() {
       _currentQuantity = newQuantity;
-      widget.selectedStockList[widget.index] = widget.selectedStockList[widget.index].copyWith(quantity: _currentQuantity);
+      widget.selectedStockList[widget.index] = widget
+          .selectedStockList[widget.index]
+          .copyWith(quantity: _currentQuantity);
     });
   }
 
@@ -34,7 +41,7 @@ class _AddEditOrderStockDetailsState extends State<AddEditOrderStockDetails> {
         margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
         padding: const EdgeInsets.fromLTRB(12, 20, 12, 20),
         decoration: BoxDecoration(
-          color: widget.isPreOrder? pinkColor: beigeColor,
+          color: widget.isPreOrder ? pinkColor : beigeColor,
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.5),
@@ -55,10 +62,18 @@ class _AddEditOrderStockDetailsState extends State<AddEditOrderStockDetails> {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(13),
                     child: Image.network(
-                      widget.stocks[widget.index].recipeUrl,
+                      '${dotenv.env['API_BASE_URL']}/${widget.stocks[widget.index].recipeUrl}',
                       width: 90,
                       height: 60,
                       fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          'assets/icons/no-image.jpg',
+                          width: 90,
+                          height: 60,
+                          fit: BoxFit.cover,
+                        );
+                      },
                     ),
                   ),
                   const SizedBox(
@@ -113,7 +128,8 @@ class _AddEditOrderStockDetailsState extends State<AddEditOrderStockDetails> {
                   child: IconButton(
                     onPressed: () {
                       if (_currentQuantity > 0) {
-                        _updateSelectedStockQuantity(_currentQuantity - divisions);
+                        _updateSelectedStockQuantity(
+                            _currentQuantity - divisions);
                       }
                     },
                     icon: Icon(
@@ -137,8 +153,11 @@ class _AddEditOrderStockDetailsState extends State<AddEditOrderStockDetails> {
                   radius: 10,
                   child: IconButton(
                     onPressed: () {
-                      if (widget.isPreOrder || _currentQuantity + 1 <= widget.stocks[widget.index].quantity) {
-                        _updateSelectedStockQuantity(_currentQuantity + divisions);
+                      if (widget.isPreOrder ||
+                          _currentQuantity + 1 <=
+                              widget.stocks[widget.index].quantity) {
+                        _updateSelectedStockQuantity(
+                            _currentQuantity + divisions);
                       }
                     },
                     icon: Icon(
