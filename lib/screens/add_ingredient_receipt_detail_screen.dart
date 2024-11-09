@@ -5,37 +5,52 @@ import 'dart:io';
 
 // Importing files
 import 'package:bakingup_frontend/constants/colors.dart';
-import 'package:bakingup_frontend/screens/add_ingredient_receipt_screen.dart';
+import 'package:bakingup_frontend/models/add_ingredient_receipt_detail_controller.dart';
+import 'package:bakingup_frontend/models/get_all_ingredient_ids_and_names.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_container.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_name_text_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_title.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_text_field.dart';
+import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_expiration_date_field.dart';
+import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_note_text_field.dart';
+import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_text_field.dart';
+import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_title.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dropdown.dart';
 import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
-import 'package:bakingup_frontend/widgets/baking_up_image_picker_bottom_sheet.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_image_picker.dart';
-import 'package:bakingup_frontend/models/add_edit_ingredient_controller.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AddIngredientScreen extends StatefulWidget {
-  const AddIngredientScreen({super.key});
+class AddIngredientReceiptDetailScreen extends StatefulWidget {
+  final String ingredientName;
+  final String ingredientQuantity;
+  final String ingredientPrice;
+  final List<Ingredient>? ingredients;
+  const AddIngredientReceiptDetailScreen({
+    super.key,
+    required this.ingredientName,
+    required this.ingredientQuantity,
+    required this.ingredientPrice,
+    this.ingredients,
+  });
 
   @override
-  State<AddIngredientScreen> createState() => _AddIngredientScreenState();
+  State<AddIngredientReceiptDetailScreen> createState() =>
+      _AddIngredientReceiptDetailScreenState();
 }
 
-class _AddIngredientScreenState extends State<AddIngredientScreen> {
+class _AddIngredientReceiptDetailScreenState
+    extends State<AddIngredientReceiptDetailScreen> {
   final picker = ImagePicker();
   final int _currentDrawerIndex = 4;
   final List<File> _images = [];
   String selectedUnit = '';
-  final AddEditIngredientController _controller = AddEditIngredientController();
-  File _receiptImage = File('');
+  final AddIngredientReceiptDetailController _controller =
+      AddIngredientReceiptDetailController();
 
   String convertUnit(String unit) {
     switch (unit) {
@@ -97,57 +112,11 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
     }).toList();
   }
 
-  Future takePhoto() async {
-    final pickedFile = await picker.pickImage(
-      source: ImageSource.camera,
-      imageQuality: 80,
-    );
-
-    setState(() {
-      _receiptImage = File(pickedFile!.path);
-    });
-  }
-
-  Future getImageGallery() async {
-    final pickedFile = await picker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 80,
-    );
-
-    setState(() {
-      _receiptImage = File(pickedFile!.path);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: IconButton(
-              icon: Image.asset('assets/icons/scan_receipt.png'),
-              onPressed: () async {
-                final result = await BakingUpImagePickerBottomSheet.show(
-                  context,
-                  takePhoto,
-                  getImageGallery,
-                );
-                if (result == true) {
-                  Navigator.push(
-                    // ignore: use_build_context_synchronously
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AddIngredientReceiptScreen(file: _receiptImage),
-                    ),
-                  );
-                }
-              },
-            ),
-          ),
-        ],
         backgroundColor: backgroundColor,
         scrolledUnderElevation: 0,
         title: const Text(
@@ -175,7 +144,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
       ),
       body: AddEditIngredientContainer(
         children: [
-          const AddEditIngredientTitle(title: "Adding Ingredient"),
+          const AddEditIngredientTitle(title: "Ingredient Information"),
           BakingUpImagePicker(
             images: _images,
             onNewImage: (File image) {
@@ -183,7 +152,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
                 _images.add(image);
               });
             },
-            isOneImage: false,
+            isOneImage: true,
             onDelete: (index) {
               setState(() {
                 _images.removeAt(index);
@@ -242,11 +211,36 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
           ),
           const SizedBox(height: 24),
           Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                'Brand',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontFamily: 'Inter',
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              const SizedBox(width: 16),
+              AddEditIngredientStockTextField(
+                label: "Brand",
+                width: 150,
+                controller: _controller.brandController,
+              )
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Text(
-                    'Unit',
+                    'Quantity',
                     style: TextStyle(
                       fontSize: 16,
                       fontFamily: 'Inter',
@@ -264,25 +258,149 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
                       fontWeight: FontWeight.w400,
                     ),
                   ),
+                  const SizedBox(width: 16),
+                  AddEditIngredientStockTextField(
+                    label: 'Quantity',
+                    width: MediaQuery.of(context).size.width - 300,
+                    controller: _controller.quantityController,
+                  ),
+                  const SizedBox(width: 16),
                 ],
               ),
-              const SizedBox(width: 8),
-              BakingUpDropdown(
-                options: const [
-                  'Grams',
-                  'Kilograms',
-                  'Litres',
-                  'Millilitres',
+              Row(
+                children: [
+                  Row(
+                    children: [
+                      const Text(
+                        'Unit',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontFamily: 'Inter',
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      Text(
+                        '*',
+                        style: TextStyle(
+                          color: redColor,
+                          fontSize: 20,
+                          fontFamily: 'Inter',
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(width: 8),
+                  BakingUpDropdown(
+                    options: const [
+                      'Grams',
+                      'Kilograms',
+                      'Litres',
+                      'Millilitres',
+                    ],
+                    topic: 'Unit',
+                    selectedOption: selectedUnit,
+                    onApply: (String value) {
+                      setState(() {
+                        selectedUnit = value;
+                        _controller.ingredientLessThanController.text = '';
+                      });
+                    },
+                  )
                 ],
-                topic: 'Unit',
-                selectedOption: selectedUnit,
-                onApply: (String value) {
-                  setState(() {
-                    selectedUnit = value;
-                    _controller.ingredientLessThanController.text = '';
-                  });
-                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                'Price',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontFamily: 'Inter',
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              Text(
+                '*',
+                style: TextStyle(
+                  color: redColor,
+                  fontSize: 20,
+                  fontFamily: 'Inter',
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              const SizedBox(width: 16),
+              AddEditIngredientStockTextField(
+                label: "Price",
+                width: 150,
+                controller: _controller.priceController,
               )
+            ],
+          ),
+          const SizedBox(height: 50),
+          const AddEditIngredientStockTitle(title: "Additional Information"),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                'Supplier',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontFamily: 'Inter',
+                  fontStyle: FontStyle.normal,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              const SizedBox(width: 16),
+              AddEditIngredientStockTextField(
+                label: "Supplier",
+                width: 150,
+                controller: _controller.supplierController,
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  const Text(
+                    'Expiration Date',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: 'Inter',
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  Text(
+                    '*',
+                    style: TextStyle(
+                      color: redColor,
+                      fontSize: 20,
+                      fontFamily: 'Inter',
+                      fontStyle: FontStyle.normal,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                ],
+              ),
+              AddEditIngredientStockExpirationDateField(
+                controller: _controller.expirationDateController,
+              ),
             ],
           ),
           const SizedBox(height: 50),
@@ -352,6 +470,12 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
                 ),
               ),
             ],
+          ),
+          const SizedBox(height: 50),
+          const AddEditIngredientStockTitle(title: "Note:"),
+          const SizedBox(height: 16),
+          AddEditIngredientStockNoteTextField(
+            controller: _controller.noteController,
           ),
           const SizedBox(height: 80),
           Row(

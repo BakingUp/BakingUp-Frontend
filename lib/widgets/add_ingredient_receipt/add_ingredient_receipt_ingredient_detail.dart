@@ -93,7 +93,11 @@ class AddIngredientReceiptIngredientDetail extends StatelessWidget {
                   ),
                 ],
               ),
-              const AddIngredientReceiptEditButton(),
+              AddIngredientReceiptEditButton(
+                ingredientName: ingredientDetail.ingredientName,
+                ingredientQuantity: ingredientDetail.ingredientQuantity,
+                ingredientPrice: ingredientDetail.ingredientPrice,
+              ),
             ],
           ),
         ],
