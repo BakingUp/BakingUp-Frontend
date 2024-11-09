@@ -37,7 +37,6 @@ class _AddEditInstoreOrderScreenState extends State<AddEditInstoreOrderScreen> {
   String selectedOrderStatus = '';
   String selectedPickUpMethod = '';
   DateTime selectedDate = DateTime.now();
-  TimeOfDay _timeOfDay = TimeOfDay.now();
 
   final AddEditOrderController _controller = AddEditOrderController();
 
