@@ -1,7 +1,4 @@
 // Define name routes
-
-import 'package:bakingup_frontend/models/instore_order_detail.dart';
-
 const loginRoute = '/login/';
 const registerRoute = '/register/';
 const verifyEmailRoute = '/verifyEmail/';
