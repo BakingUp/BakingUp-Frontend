@@ -44,9 +44,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
     try {
       final response = await NetworkService.instance.get(
-          '/api/home/getDashboardChartData?user_id=1&start_date_time=2024-09-01T15:30:00Z&end_date_time=2024-11-02T15:30:00Z');
+          '/api/home/getDashboardChartData?user_id=1&start_date_time=2024-09-01T00:00:00Z&end_date_time=2024-11-02T15:30:00Z');
       final chartDataResponse = DashboardChartResponse.fromJson(response);
       final data = chartDataResponse.data;
+      print(response);
       setState(() {
         chartData = data;
       });
@@ -368,10 +369,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             legend: const Legend(isVisible: true),
                             tooltipBehavior: TooltipBehavior(enable: true),
                             series: <CartesianSeries<CostRevenueData, String>>[
-                              ColumnSeries<CostRevenueData, String>(
+                              StackedColumnSeries<CostRevenueData, String>(
                                 dataSource: chartData.costRevenue,
                                 xValueMapper: (CostRevenueData item, _) =>
-                                    item.month.substring(0, 3),
+                                    item.month,
                                 yValueMapper: (CostRevenueData item, _) =>
                                     item.revenue,
                                 name: "Revenue",
@@ -379,10 +380,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 dataLabelSettings:
                                     const DataLabelSettings(isVisible: false),
                               ),
-                              ColumnSeries<CostRevenueData, String>(
+                              StackedColumnSeries<CostRevenueData, String>(
                                 dataSource: chartData.costRevenue,
                                 xValueMapper: (CostRevenueData item, _) =>
-                                    item.month.substring(0, 3),
+                                    item.month,
                                 yValueMapper: (CostRevenueData item, _) =>
                                     item.cost,
                                 name: "Costs",
@@ -390,10 +391,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 dataLabelSettings:
                                     const DataLabelSettings(isVisible: false),
                               ),
-                              ColumnSeries<CostRevenueData, String>(
+                              StackedColumnSeries<CostRevenueData, String>(
                                 dataSource: chartData.costRevenue,
                                 xValueMapper: (CostRevenueData item, _) =>
-                                    item.month.substring(0, 3),
+                                    item.month,
                                 yValueMapper: (CostRevenueData item, _) =>
                                     item.netProfit,
                                 name: "Net Profit",
