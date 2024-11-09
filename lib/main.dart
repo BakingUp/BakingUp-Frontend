@@ -20,6 +20,7 @@ import 'package:bakingup_frontend/screens/ingredient_stock_detail_screen.dart';
 import 'package:bakingup_frontend/screens/instore_order_detail_screen.dart';
 import 'package:bakingup_frontend/screens/notification_screen.dart';
 import 'package:bakingup_frontend/screens/order_screen.dart';
+import 'package:bakingup_frontend/screens/preorder_order_detail_screen.dart';
 import 'package:bakingup_frontend/screens/profile_screen.dart';
 import 'package:bakingup_frontend/screens/recipe_detail_screen.dart';
 import 'package:bakingup_frontend/screens/setting_screen.dart';
@@ -112,9 +113,12 @@ class _MainAppState extends State<MainApp> {
                 builder: (context) => const IngredientStockDetailScreen());
           case orderRoute:
             return MaterialPageRoute(builder: (context) => const OrderScreen());
-          case orderDetailRoute:
+          case instoreOrderDetailRoute:
             return MaterialPageRoute(
                 builder: (context) => const InStoreOrderDetailScreen());
+          case preorderOrderDetailRoute:
+            return MaterialPageRoute(
+                builder: (context) => const PreorderOrderDetailScreen());
           case notificationRoute:
             return MaterialPageRoute(
                 builder: (context) => const NotificationScreen());

@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 class OrderDetailOrderStock extends StatelessWidget {
   final List<OrderStock> orderStockList;
   final int index;
+  final bool isPreOrder;
+
   const OrderDetailOrderStock(
-      {super.key, required this.orderStockList, required this.index});
+      {super.key, required this.orderStockList, required this.index, required this.isPreOrder});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +16,7 @@ class OrderDetailOrderStock extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
       padding: const EdgeInsets.fromLTRB(12, 20, 12, 20),
       decoration: BoxDecoration(
-        color: beigeColor,
+        color: isPreOrder ? pinkColor : beigeColor,
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
