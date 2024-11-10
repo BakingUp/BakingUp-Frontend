@@ -15,6 +15,7 @@ class RegisterTextFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       controller: controller,
+      cursorColor: darkBrownColor,
       validator: validate,
       decoration: InputDecoration(
         border: const OutlineInputBorder(

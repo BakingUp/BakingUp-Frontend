@@ -1,7 +1,6 @@
 // Importing libraries
-import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
+import 'package:bakingup_frontend/models/edit_ingredient_stock_detail.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_unit.dart';
 import 'package:flutter/material.dart';
 
@@ -9,32 +8,30 @@ import 'package:flutter/material.dart';
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_container.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_title.dart';
-import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_delete_button.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_expiration_date_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_text_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_note_text_field.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
-import 'package:bakingup_frontend/widgets/baking_up_image_picker.dart';
 import 'package:bakingup_frontend/models/add_edit_ingredient_stock_controller.dart';
 import 'package:bakingup_frontend/models/add_edit_ingredient_stock_detail.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_name_text_field.dart';
 import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
+import 'package:shimmer/shimmer.dart';
 
-class AddEditIngredientStockScreen extends StatefulWidget {
+class EditIngredientStockScreen extends StatefulWidget {
   final String? ingredientId;
-  const AddEditIngredientStockScreen({super.key, this.ingredientId});
+  final String? ingredientStockId;
+  const EditIngredientStockScreen(
+      {super.key, this.ingredientId, this.ingredientStockId});
 
   @override
-  State<AddEditIngredientStockScreen> createState() =>
-      _AddEditIngredientStockScreenState();
+  State<EditIngredientStockScreen> createState() =>
+      _EditIngredientStockScreenState();
 }
 
-class _AddEditIngredientStockScreenState
-    extends State<AddEditIngredientStockScreen> {
-  final bool _isEdit = false;
-  final List<File> _images = [];
+class _EditIngredientStockScreenState extends State<EditIngredientStockScreen> {
   String selectedUnit = '';
   bool isLoading = true;
   bool isError = false;
@@ -45,31 +42,36 @@ class _AddEditIngredientStockScreenState
   final AddEditIngredientStockController _controller =
       AddEditIngredientStockController();
 
-  List<String> convertFilesToBase64(List<File> files) {
-    return files.map((file) {
-      final bytes = file.readAsBytesSync();
-      return base64Encode(bytes);
-    }).toList();
-  }
-
   Future<void> _fetchAddEditIngredientStockDetail() async {
     setState(() {
       isLoading = true;
     });
 
     try {
-      final response = await NetworkService.instance.get(
+      final responseOne = await NetworkService.instance.get(
         '/api/ingredient/getAddEditIngredientStockDetail?ingredient_id=${widget.ingredientId}',
       );
 
       final addEditIngredientDetailResponse =
-          AddEditIngredientStockDetailResponse.fromJson(response);
+          AddEditIngredientStockDetailResponse.fromJson(responseOne);
       final data = addEditIngredientDetailResponse.data;
+
+      final responseTwo = await NetworkService.instance.get(
+        '/api/ingredient/getEditIngredientStockDetail?ingredient_stock_id=${widget.ingredientStockId}',
+      );
+      final editIngredientStockDetailResponse =
+          EditIngredientStockDetailResponse.fromJson(responseTwo);
+      final editData = editIngredientStockDetailResponse.data;
 
       setState(() {
         ingredientEngName = data.ingredientEngName;
         ingredientThaiName = data.ingredientThaiName;
         unit = data.unit;
+        _controller.brandController.text = editData.brand;
+        _controller.quantityController.text = editData.quantity;
+        _controller.priceController.text = editData.price;
+        _controller.supplierController.text = editData.supplier;
+        _controller.expirationController.text = editData.expirationDate;
       });
     } catch (e) {
       setState(() {
@@ -117,38 +119,13 @@ class _AddEditIngredientStockScreenState
       ),
       body: AddEditIngredientStockContainer(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const AddEditIngredientStockTitle(
-                  title: "Ingredient Information"),
-              AddEditIngredientStockDeleteButton(
-                dialogParams: BakingUpDialogParams(
-                  title: "Confirm Delete?",
-                  imgUrl: "assets/icons/delete_warning.png",
-                  content: "Are you sure you want to delete this ingredient?",
-                  grayButtonTitle: "Cancel",
-                  secondButtonTitle: "Delete",
-                  secondButtonColor: lightRedColor,
-                ),
-              ),
+              AddEditIngredientStockTitle(title: "Ingredient Information"),
             ],
           ),
-          BakingUpImagePicker(
-            images: _images,
-            onNewImage: (File image) {
-              setState(() {
-                _images.add(image);
-              });
-            },
-            isOneImage: true,
-            onDelete: (index) {
-              setState(() {
-                _images.removeAt(index);
-              });
-            },
-          ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -208,11 +185,24 @@ class _AddEditIngredientStockScreenState
                 ),
               ),
               const SizedBox(width: 16),
-              AddEditIngredientStockTextField(
-                label: "Brand",
-                width: 150,
-                controller: _controller.brandController,
-              )
+              isLoading
+                  ? Shimmer.fromColors(
+                      baseColor: greyColor,
+                      highlightColor: whiteColor,
+                      child: Container(
+                        height: 45,
+                        width: 150,
+                        decoration: BoxDecoration(
+                          color: whiteColor,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                    )
+                  : AddEditIngredientStockTextField(
+                      label: "Brand",
+                      width: 150,
+                      controller: _controller.brandController,
+                    )
             ],
           ),
           const SizedBox(height: 16),
@@ -243,11 +233,24 @@ class _AddEditIngredientStockScreenState
                     ),
                   ),
                   const SizedBox(width: 16),
-                  AddEditIngredientStockTextField(
-                    label: 'Quantity',
-                    width: MediaQuery.of(context).size.width - 300,
-                    controller: _controller.quantityController,
-                  ),
+                  isLoading
+                      ? Shimmer.fromColors(
+                          baseColor: greyColor,
+                          highlightColor: whiteColor,
+                          child: Container(
+                            height: 45,
+                            width: MediaQuery.of(context).size.width - 300,
+                            decoration: BoxDecoration(
+                              color: whiteColor,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                        )
+                      : AddEditIngredientStockTextField(
+                          label: 'Quantity',
+                          width: MediaQuery.of(context).size.width - 300,
+                          controller: _controller.quantityController,
+                        ),
                   const SizedBox(width: 16),
                 ],
               ),
@@ -308,11 +311,24 @@ class _AddEditIngredientStockScreenState
                 ),
               ),
               const SizedBox(width: 16),
-              AddEditIngredientStockTextField(
-                label: "Price",
-                width: 150,
-                controller: _controller.priceController,
-              )
+              isLoading
+                  ? Shimmer.fromColors(
+                      baseColor: greyColor,
+                      highlightColor: whiteColor,
+                      child: Container(
+                        height: 45,
+                        width: 150,
+                        decoration: BoxDecoration(
+                          color: whiteColor,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                    )
+                  : AddEditIngredientStockTextField(
+                      label: "Price",
+                      width: 150,
+                      controller: _controller.priceController,
+                    )
             ],
           ),
           const SizedBox(height: 16),
@@ -332,11 +348,24 @@ class _AddEditIngredientStockScreenState
                 ),
               ),
               const SizedBox(width: 16),
-              AddEditIngredientStockTextField(
-                label: "Supplier",
-                width: 150,
-                controller: _controller.supplierController,
-              ),
+              isLoading
+                  ? Shimmer.fromColors(
+                      baseColor: greyColor,
+                      highlightColor: whiteColor,
+                      child: Container(
+                        height: 45,
+                        width: 150,
+                        decoration: BoxDecoration(
+                          color: whiteColor,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                    )
+                  : AddEditIngredientStockTextField(
+                      label: "Supplier",
+                      width: 150,
+                      controller: _controller.supplierController,
+                    ),
             ],
           ),
           const SizedBox(height: 16),
@@ -368,9 +397,22 @@ class _AddEditIngredientStockScreenState
                   const SizedBox(width: 16),
                 ],
               ),
-              AddEditIngredientStockExpirationDateField(
-                controller: _controller.expirationController,
-              ),
+              isLoading
+                  ? Shimmer.fromColors(
+                      baseColor: greyColor,
+                      highlightColor: whiteColor,
+                      child: Container(
+                        height: 45,
+                        width: MediaQuery.of(context).size.width / 2,
+                        decoration: BoxDecoration(
+                          color: whiteColor,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                    )
+                  : AddEditIngredientStockExpirationDateField(
+                      controller: _controller.expirationController,
+                    ),
             ],
           ),
           const SizedBox(height: 50),
@@ -386,14 +428,12 @@ class _AddEditIngredientStockScreenState
               BakingUpLongActionButton(
                 title: 'Save',
                 color: lightGreenColor,
+                isDisabled: false,
                 dialogParams: BakingUpDialogParams(
-                  title: _isEdit
-                      ? 'Confirm Ingredient Changes?'
-                      : 'Confirm Adding Ingredient?',
+                  title: 'Confirm Ingredient Changes?',
                   imgUrl: 'assets/icons/warning.png',
-                  content: _isEdit
-                      ? 'You\'re about to save edited ingredient to the warehouse.'
-                      : 'Are you sure to add a new ingredient to the warehouse?',
+                  content:
+                      'You\'re about to save edited ingredient to the warehouse.',
                   grayButtonTitle: 'Cancel',
                   secondButtonTitle: 'Confirm',
                   secondButtonColor: lightGreenColor,
@@ -403,22 +443,18 @@ class _AddEditIngredientStockScreenState
                   secondButtonOnClick: () async {
                     try {
                       final data = {
-                        "user_id": "1",
-                        "ingredient_id": widget.ingredientId,
+                        "ingredient_stock_id": widget.ingredientStockId,
                         "price": _controller.priceController.text,
                         "quantity": _controller.quantityController.text,
                         "expiration_date":
                             _controller.expirationController.text,
                         "supplier": _controller.supplierController.text,
                         "ingredient_brand": _controller.brandController.text,
-                        "img": _images.isNotEmpty
-                            ? convertFilesToBase64(_images)[0]
-                            : "",
                         "note": _controller.noteController.text,
                       };
                       await NetworkService.instance
-                          .post(
-                        "/api/ingredient/addIngredientStock",
+                          .put(
+                        "/api/ingredient/editIngredientStock",
                         data: data,
                       )
                           .then(
@@ -437,7 +473,7 @@ class _AddEditIngredientStockScreenState
                           builder: (BuildContext context) {
                             return const BakingUpErrorTopNotification(
                               message:
-                                  "Sorry, we couldn’t add the ingredient stock due to a system error. Please try again later.",
+                                  "Sorry, we couldn’t edit the ingredient stock due to a system error. Please try again later.",
                             );
                           },
                         ),

@@ -1,7 +1,8 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/enum/lst_status.dart';
 import 'package:bakingup_frontend/models/stock.dart';
-import 'package:bakingup_frontend/screens/add_edit_stock_screen.dart';
+import 'package:bakingup_frontend/models/warehouse.dart';
+import 'package:bakingup_frontend/screens/add_stock_screen.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/bottom_navbar.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
@@ -28,6 +29,7 @@ class _StockScreenState extends State<StockScreen> {
   List<StockItemData> stocks = [];
   List<StockItemData> filteredStocks = [];
   final TextEditingController _searchStockController = TextEditingController();
+  int recipeLength = -1;
   final List<String> stockFilterList = [
     'Stock Name',
     'Quantity',
@@ -58,12 +60,19 @@ class _StockScreenState extends State<StockScreen> {
       final response = await NetworkService.instance
           .get('/api/stock/getAllStocks?user_id=1');
 
+      final recipeResponse = await NetworkService.instance
+          .get('/api/recipe/getAllRecipes?user_id=1');
+
       final stockResponse = StockListResponse.fromJson(response);
+      final allRecipeResponse = RecipeListResponse.fromJson(recipeResponse);
 
       final data = stockResponse.data;
+      final allRecipeLength = allRecipeResponse.data.recipeList.length;
+
       setState(() {
         stocks = data.stocks;
         filteredStocks = stocks;
+        recipeLength = allRecipeLength;
         if (stockResponse.status == 200 && stocks.isEmpty) {
           noResult = true;
         }
@@ -174,21 +183,23 @@ class _StockScreenState extends State<StockScreen> {
               },
             ),
             actions: [
-              Padding(
-                padding: const EdgeInsets.only(right: 14.0),
-                child: BakingUpCircularAddButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AddEditStockScreen(),
+              recipeLength != stocks.length
+                  ? Padding(
+                      padding: const EdgeInsets.only(right: 14.0),
+                      child: BakingUpCircularAddButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AddStockScreen(),
+                            ),
+                          ).then((value) {
+                            _fetchStockList();
+                          });
+                        },
                       ),
-                    ).then((value) {
-                      _fetchStockList();
-                    });
-                  },
-                ),
-              )
+                    )
+                  : Container()
             ],
           ),
           bottomNavigationBar: const BottomNavbar(),

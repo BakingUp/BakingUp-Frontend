@@ -1,5 +1,5 @@
 import 'package:bakingup_frontend/constants/colors.dart';
-import 'package:bakingup_frontend/screens/add_edit_recipe_screen.dart';
+import 'package:bakingup_frontend/screens/add_recipe_screen.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe_ingredient/add_edit_recipe_ingredient_text_field.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:flutter/material.dart';
@@ -134,6 +134,7 @@ class _AddEditRecipeIngredientDialogState
                   title: "Cancel",
                   color: greyColor,
                   width: 120,
+                  isDisabled: false,
                   onClick: () {
                     Navigator.pop(context);
                   },
@@ -143,6 +144,7 @@ class _AddEditRecipeIngredientDialogState
                   title: "Confirm",
                   color: lightGreenColor,
                   width: 120,
+                  isDisabled: false,
                   onClick: () {
                     Navigator.pop(context);
                     Navigator.pop(context);

@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 
 class AddEditOrderDateField extends StatefulWidget {
   final TextEditingController controller;
+  final String? label;
 
   const AddEditOrderDateField({
     super.key,
-    required this.controller,
+    required this.controller, this.label,
   });
 
   @override
@@ -75,7 +76,7 @@ class _AddEditOrderDateFieldState extends State<AddEditOrderDateField> {
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: darkGreyColor, width: 0.5),
           ),
-          labelText: 'Order Date',
+          labelText: widget.label,
           floatingLabelBehavior: FloatingLabelBehavior.always,
           labelStyle: const TextStyle(
             fontFamily: 'Inter',

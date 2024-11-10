@@ -1,8 +1,8 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/enum/expiration_status.dart';
 import 'package:bakingup_frontend/models/warehouse.dart';
-import 'package:bakingup_frontend/screens/add_edit_ingredient_screen.dart';
-import 'package:bakingup_frontend/screens/add_edit_recipe_screen.dart';
+import 'package:bakingup_frontend/screens/add_ingredient_screen.dart';
+import 'package:bakingup_frontend/screens/add_recipe_screen.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/bottom_navbar.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
@@ -292,7 +292,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const AddEditRecipeScreen(),
+                          builder: (context) => const AddRecipeScreen(),
                         ),
                       ).then((_) {
                         _fetchRecipeList();
@@ -301,7 +301,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const AddEditIngredientScreen(),
+                          builder: (context) => const AddIngredientScreen(),
                         ),
                       ).then((_) {
                         _fetchIngredientList();

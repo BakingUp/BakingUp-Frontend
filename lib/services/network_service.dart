@@ -38,10 +38,11 @@ class NetworkService {
 
   Future<dynamic> post(
     String url, {
-    Map<String, dynamic>? data,
+    dynamic data,
+    Options? options,
   }) async {
     try {
-      final response = await _dio.post(url, data: data);
+      final response = await _dio.post(url, data: data, options: options);
       return response.data;
     } on DioException catch (e) {
       log(e.toString());

@@ -10,9 +10,13 @@ import 'package:intl/intl.dart';
 
 class NotificationsMessageBox extends StatelessWidget {
   final NotificationItem noti;
-  final Function(String) readFunction;
+  final Future<void> Function(String) readFunction;
+  final Future<void> Function() fetchAllNotis;
   const NotificationsMessageBox(
-      {super.key, required this.noti, required this.readFunction});
+      {super.key,
+      required this.noti,
+      required this.readFunction,
+      required this.fetchAllNotis});
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +27,7 @@ class NotificationsMessageBox extends StatelessWidget {
 
     List<TextSpan> highlightText(String text) {
       final matches = RegExp(RegExp.escape(noti.itemName), caseSensitive: false)
-          .allMatches(
-              text); // Finds all occurrences of "Carrot Cake" regardless of case
+          .allMatches(text);
       int currentIndex = 0;
       List<TextSpan> spans = [];
 
@@ -116,20 +119,27 @@ class NotificationsMessageBox extends StatelessWidget {
                     MaterialPageRoute(
                         builder: (context) => IngredientDetailScreen(
                               ingredientId: noti.itemID,
-                            )));
+                            ))).then((value) {
+                  fetchAllNotis();
+                });
               } else if (noti.notiItemType == NotiItemType.stock) {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => StockDetailScreen(
                               recipeId: noti.itemID,
-                            )));
+                            ))).then((value) {
+                  fetchAllNotis();
+                });
               } else {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            const PreorderOrderDetailScreen()));
+                        builder: (context) => PreorderOrderDetailScreen(
+                              orderId: noti.itemID,
+                            ))).then((value) {
+                  fetchAllNotis();
+                });
               }
             },
             child: Container(

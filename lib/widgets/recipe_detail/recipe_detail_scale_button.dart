@@ -4,7 +4,16 @@ import 'package:flutter/material.dart';
 
 class RecipeDetailScaleButton extends StatelessWidget {
   final int servings;
-  const RecipeDetailScaleButton({super.key, required this.servings});
+  final FocusNode focusNode;
+  final Function(String) onScale;
+  final VoidCallback onDismissed;
+  const RecipeDetailScaleButton({
+    super.key,
+    required this.servings,
+    required this.focusNode,
+    required this.onScale,
+    required this.onDismissed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +27,14 @@ class RecipeDetailScaleButton extends StatelessWidget {
               context: context,
               barrierColor: const Color(0xC7D9D9D9),
               builder: (BuildContext context) {
-                return RecipeDetailScaleDialog(servings: servings);
+                return RecipeDetailScaleDialog(
+                  servings: servings,
+                  focusNode: focusNode,
+                  onScale: (String scale) {
+                    onScale(scale);
+                  },
+                  onDismissed: onDismissed,
+                );
               },
             );
           },

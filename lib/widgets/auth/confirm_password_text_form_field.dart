@@ -55,13 +55,14 @@ class _ConfirmPasswordFormFieldState extends State<ConfirmPasswordFormField> {
           }
 
           return TextFormField(
+            cursorColor: darkBrownColor,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 widget.error();
                 setState(() {
                   hasError = true;
                 });
-                return 'Please enter password';
+                return 'Please enter a password';
               } else if (value != password) {
                 widget.error();
                 setState(() {
@@ -87,10 +88,6 @@ class _ConfirmPasswordFormFieldState extends State<ConfirmPasswordFormField> {
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
-                // borderSide: BorderSide(
-                //   color: borderColor,
-                //   width: 1.5,
-                // ),
               ),
               hintText: widget.hintText,
               contentPadding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),

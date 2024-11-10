@@ -1,4 +1,5 @@
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/models/get_all_ingredient_ids_and_names.dart';
 import 'package:bakingup_frontend/screens/add_ingredient_receipt_screen.dart';
 import 'package:bakingup_frontend/widgets/add_ingredient_receipt/add_ingredient_receipt_edit_button.dart';
 import 'package:flutter/material.dart';
@@ -6,9 +7,21 @@ import 'package:flutter/material.dart';
 class AddIngredientReceiptIngredientDetail extends StatelessWidget {
   final IngredientDetail ingredientDetail;
   final int index;
+  final List<Ingredient> ingredientIdsAndNames;
+  final Function(
+    dynamic,
+    dynamic,
+    dynamic,
+    dynamic,
+  ) onAddIngredient;
 
-  const AddIngredientReceiptIngredientDetail(
-      {super.key, required this.ingredientDetail, required this.index});
+  const AddIngredientReceiptIngredientDetail({
+    super.key,
+    required this.ingredientDetail,
+    required this.index,
+    required this.ingredientIdsAndNames,
+    required this.onAddIngredient,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +106,20 @@ class AddIngredientReceiptIngredientDetail extends StatelessWidget {
                   ),
                 ],
               ),
-              const AddIngredientReceiptEditButton(),
+              !ingredientDetail.isEdited
+                  ? AddIngredientReceiptEditButton(
+                      ingredientName: ingredientDetail.ingredientName,
+                      ingredientQuantity: ingredientDetail.ingredientQuantity,
+                      ingredientPrice: ingredientDetail.ingredientPrice,
+                      ingredientIdsAndNames: ingredientIdsAndNames,
+                      index: index,
+                      onAddIngredient: onAddIngredient,
+                    )
+                  : Icon(
+                      Icons.check,
+                      color: blackColor,
+                      size: 30,
+                    ),
             ],
           ),
         ],

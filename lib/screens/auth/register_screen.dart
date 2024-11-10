@@ -53,7 +53,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   Form(
                     key: _formkey,
                     child: Container(
-                      padding: const EdgeInsets.fromLTRB(20, 30, 20, 35),
+                      padding: const EdgeInsets.fromLTRB(20, 35, 20, 35),
                       margin: const EdgeInsets.only(top: 30),
                       decoration: const BoxDecoration(
                         color: Colors.white,
@@ -93,7 +93,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     value.isEmpty ||
                                     !RegExp(r'^\w+$').hasMatch(value)) {
                                   setState(() => errorMessage = "");
-                                  return "Please enter first name";
+                                  return "Please enter your first name";
                                 }
                                 return null;
                               },
@@ -109,7 +109,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     value.isEmpty ||
                                     !RegExp(r'^\w+$').hasMatch(value)) {
                                   setState(() => errorMessage = "");
-                                  return "Please enter last name";
+                                  return "Please enter your last name";
                                 }
                                 return null;
                               },
@@ -124,14 +124,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               validate: (value) {
                                 if (value == null || value.isEmpty) {
                                   setState(() => errorMessage = "");
-                                  return 'Please enter password';
+                                  return 'Please enter a password';
                                 } else if (value.length < 8) {
                                   setState(() => errorMessage = "");
                                   return "Password must be at least 8 characters long";
-                                } else if (!RegExp(r'[@#%^&*_-]')
+                                } else if (!RegExp(r'[!@#%^&*_-]')
                                     .hasMatch(value)) {
                                   setState(() => errorMessage = "");
-                                  return "Password must contain at least one special character @#%^&*_-";
+                                  return "Password must contain at least one special character !@#%^&*_-";
                                 }
                                 return null;
                               },
@@ -158,7 +158,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   !RegExp(r'^\+?[0-9\s\-\(\)]+$')
                                       .hasMatch(value)) {
                                 setState(() => errorMessage = "");
-                                return "Please enter valid phone number";
+                                return "Please enter a valid phone number";
                               }
                               return null;
                             },
@@ -172,7 +172,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             validate: (value) {
                               if (value == null || value.isEmpty) {
                                 setState(() => errorMessage = "");
-                                return "Please enter store name";
+                                return "Please enter a store name";
                               } else if (!RegExp(r'^[a-zA-Z0-9\s]+$')
                                   .hasMatch(value)) {
                                 setState(() => errorMessage = "");
@@ -287,18 +287,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                   password: _registerController
                                                       .password
                                                       .trim());
-
-                                      debugPrint('Sending data: ${{
-                                        "user_id": userCredential.user?.uid,
-                                        "first_name":
-                                            _registerController.firstname,
-                                        "last_name":
-                                            _registerController.lastname,
-                                        "tel": _registerController.phoneNumber,
-                                        "store_name":
-                                            _registerController.storeName,
-                                      }}');
-
+                                                      
                                       final response =
                                           await NetworkService.instance.post(
                                               "/api/auth/register",

@@ -13,9 +13,14 @@ class OrderInfoList extends StatefulWidget {
   final List<OrderInfo> orderList;
   final bool isLoading;
   final bool isPreOrder;
+  final Future<void> Function() fetchOrderList;
 
   const OrderInfoList(
-      {super.key, required this.orderList, required this.isLoading, required this.isPreOrder});
+      {super.key,
+      required this.orderList,
+      required this.isLoading,
+      required this.isPreOrder,
+      required this.fetchOrderList});
 
   @override
   State<OrderInfoList> createState() => _OrderInfoListState();
@@ -31,8 +36,33 @@ class _OrderInfoListState extends State<OrderInfoList> {
       },
     );
 
-    await NetworkService.instance
-        .delete('/api/order/deleteOrder?order_id=$orderId');
+    try {
+      await NetworkService.instance.delete(
+          '/api/order/deleteOrder?order_id=$orderId');
+
+      if (mounted) {
+        Navigator.of(context).pop();
+        widget.fetchOrderList();
+      }
+    } catch (e) {
+      if (mounted) {
+        Navigator.of(context).pop();
+        OverlayEntry errorNotification = OverlayEntry(
+          builder: (BuildContext context) {
+            return const BakingUpErrorTopNotification(
+              message:
+                  "Sorry, we couldn’t delete this order due to a system error. Please try again later.",
+            );
+          },
+        );
+        Navigator.of(context).overlay?.insert(errorNotification);
+        Future.delayed(const Duration(seconds: 3), () {
+          if (errorNotification.mounted) {
+            errorNotification.remove();
+          }
+        });
+      }
+    }
   }
 
   @override
@@ -44,10 +74,10 @@ class _OrderInfoListState extends State<OrderInfoList> {
                 child: ListView.builder(
                   padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
                   itemCount: 5,
-                  itemBuilder: (context, index) { 
+                  itemBuilder: (context, index) {
                     if (widget.isPreOrder) {
                       return const PreOrderItemLoading();
-                    } else{
+                    } else {
                       return const InStoreOrderItemLoading();
                     }
                   },
@@ -55,89 +85,79 @@ class _OrderInfoListState extends State<OrderInfoList> {
         : Expanded(
             child: Container(
                 margin: const EdgeInsets.only(bottom: 20),
-                child: ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
-                  itemCount: widget.orderList.length,
-                  itemBuilder: (context, index) {
-                    return Dismissible(
-                      key: Key(widget.orderList[index].orderId),
-                      direction: DismissDirection.startToEnd,
-                      background: Container(
-                        margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                        padding: const EdgeInsets.only(left: 20),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(13),
-                          color: redColor,
-                        ),
-                        alignment: Alignment.centerLeft,
-                        child: const Row(
-                          children: [
-                            Icon(
-                              Icons.delete,
-                              color: Colors.white,
+                child: Scrollbar(
+                    thumbVisibility: true,
+                    child: ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
+                      itemCount: widget.orderList.length,
+                      itemBuilder: (context, index) {
+                        return Dismissible(
+                          key: Key(widget.orderList[index].orderId),
+                          direction: DismissDirection.startToEnd,
+                          background: Container(
+                            margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+                            padding: const EdgeInsets.only(left: 20),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(13),
+                              color: redColor,
                             ),
-                            SizedBox(width: 8),
-                            Text(
-                              'Delete',
-                              style: TextStyle(
-                                fontFamily: 'Inter',
-                                fontSize: 16,
-                                fontStyle: FontStyle.normal,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            alignment: Alignment.centerLeft,
+                            child: const Row(
+                              children: [
+                                Icon(
+                                  Icons.delete,
+                                  color: Colors.white,
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  'Delete',
+                                  style: TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 16,
+                                    fontStyle: FontStyle.normal,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-                      confirmDismiss: (direction) async {
-                        return await showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return BakingUpDialog(
-                                title: "Confirm Delete?",
-                                imgUrl: "assets/icons/delete_warning.png",
-                                content:
-                                    "Are you sure you want to delete this order?",
-                                grayButtonTitle: "Cancel",
-                                secondButtonTitle: "Delete",
-                                secondButtonColor: lightRedColor,
-                                grayButtonOnClick: () {
-                                  Navigator.pop(context);
-                                },
-                                secondButtonOnClick: () {
-                                  Navigator.of(context).pop();
-                                  _deleteOrder(widget.orderList[index].orderId)
-                                      .then((_) {
-                                    Navigator.of(context).pop();
-                                  }).catchError((error) {
-                                    Navigator.of(context).pop();
-                                    Navigator.of(context)
-                                        .overlay!
-                                        .insert(OverlayEntry(
-                                      builder: (BuildContext context) {
-                                        return const BakingUpErrorTopNotification(
-                                          message:
-                                              "Sorry, we couldn’t delete the recipe due to a system error. Please try again later.",
-                                        );
-                                      },
-                                    ));
-                                  });
-                                },
-                              );
+                          ),
+                          confirmDismiss: (direction) async {
+                            return await showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return BakingUpDialog(
+                                    title: "Confirm Delete?",
+                                    imgUrl: "assets/icons/delete_warning.png",
+                                    content:
+                                        "Are you sure you want to delete this order?",
+                                    grayButtonTitle: "Cancel",
+                                    secondButtonTitle: "Delete",
+                                    secondButtonColor: lightRedColor,
+                                    grayButtonOnClick: () {
+                                      Navigator.pop(context);
+                                    },
+                                    secondButtonOnClick: () async {
+                                      Navigator.of(context).pop();
+                                      await _deleteOrder(
+                                          widget.orderList[index].orderId);
+                                    },
+                                  );
+                                });
+                          },
+                          onDismissed: (direction) {
+                            setState(() {
+                              widget.orderList.removeAt(index);
                             });
+                          },
+                          child: OrderItem(
+                            orderList: widget.orderList,
+                            index: index,
+                            isLoading: widget.isLoading,
+                            fetchOrderList: widget.fetchOrderList,
+                          ),
+                        );
                       },
-                      onDismissed: (direction) {
-                        setState(() {
-                          widget.orderList.removeAt(index);
-                        });
-                      },
-                      child: OrderItem(
-                          orderList: widget.orderList,
-                          index: index,
-                          isLoading: widget.isLoading),
-                    );
-                  },
-                )));
+                    ))));
   }
 }
