@@ -22,6 +22,10 @@ class AddEditRecipePageOne extends StatelessWidget {
   final Function(int) onImgDelete;
   final Function(String) onIngredientDelete;
   final AddEditRecipeController controller;
+  final FocusNode recipeNameFocusNode;
+  final FocusNode totalHoursFocusNode;
+  final FocusNode totalMinsFocusNode;
+  final FocusNode servingsFocusNode;
   final void Function(RecipeIngredient ingredient) addIngredient;
   final bool? isEdit;
   final bool? isLoading;
@@ -34,6 +38,10 @@ class AddEditRecipePageOne extends StatelessWidget {
     required this.onImgDelete,
     required this.onIngredientDelete,
     required this.controller,
+    required this.recipeNameFocusNode,
+    required this.totalHoursFocusNode,
+    required this.totalMinsFocusNode,
+    required this.servingsFocusNode,
     required this.addIngredient,
     this.isEdit,
     this.isLoading,
@@ -57,29 +65,34 @@ class AddEditRecipePageOne extends StatelessWidget {
         SizedBox(height: isEdit != null && isEdit! ? 24 : 16),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Row(
+            Column(
               children: [
-                const Text(
-                  'Recipe Name',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontFamily: 'Inter',
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w400,
-                  ),
+                Row(
+                  children: [
+                    const Text(
+                      'Recipe Name',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontFamily: 'Inter',
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    Text(
+                      '*',
+                      style: TextStyle(
+                        color: redColor,
+                        fontSize: 20,
+                        fontFamily: 'Inter',
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
                 ),
-                Text(
-                  '*',
-                  style: TextStyle(
-                    color: redColor,
-                    fontSize: 20,
-                    fontFamily: 'Inter',
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
+                const SizedBox(height: 8),
               ],
             ),
             Column(
@@ -99,32 +112,15 @@ class AddEditRecipePageOne extends StatelessWidget {
                         ),
                       )
                     : AddEditRecipeNameTextField(
-                        label: 'English',
+                        label: 'Recipe Name',
                         controller: controller.engNameController,
+                        focusNode: recipeNameFocusNode,
                       ),
-                const SizedBox(height: 16),
-                isLoading != null && isLoading!
-                    ? Shimmer.fromColors(
-                        baseColor: greyColor,
-                        highlightColor: whiteColor,
-                        child: Container(
-                          height: 45,
-                          width: MediaQuery.of(context).size.width / 2,
-                          decoration: BoxDecoration(
-                            color: whiteColor,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                        ),
-                      )
-                    : AddEditRecipeNameTextField(
-                        label: 'Thai',
-                        controller: controller.thaiNameController,
-                      )
               ],
             ),
           ],
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 16),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -166,6 +162,7 @@ class AddEditRecipePageOne extends StatelessWidget {
                     label: "Hr",
                     width: 46,
                     controller: controller.totalHoursController,
+                    focusNode: totalHoursFocusNode,
                   ),
             const SizedBox(width: 16),
             const Text(
@@ -195,6 +192,7 @@ class AddEditRecipePageOne extends StatelessWidget {
                     label: "Min",
                     width: 46,
                     controller: controller.totalMinsController,
+                    focusNode: totalMinsFocusNode,
                   ),
             const SizedBox(width: 16),
             const Text(
@@ -250,6 +248,7 @@ class AddEditRecipePageOne extends StatelessWidget {
                     label: "Servings",
                     width: 150,
                     controller: controller.servingsController,
+                    focusNode: servingsFocusNode,
                   )
           ],
         ),

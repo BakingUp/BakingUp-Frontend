@@ -4,16 +4,22 @@ import 'package:flutter/material.dart';
 class AddEditRecipeInstructionField extends StatelessWidget {
   final String label;
   final TextEditingController controller;
-  const AddEditRecipeInstructionField(
-      {super.key, required this.label, required this.controller});
+  final FocusNode focusNode;
+  const AddEditRecipeInstructionField({
+    super.key,
+    required this.label,
+    required this.controller,
+    required this.focusNode,
+  });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: MediaQuery.of(context).size.width - 60,
       child: TextField(
+        focusNode: focusNode,
         controller: controller,
-        minLines: 3,
+        minLines: 8,
         maxLines: null,
         style: const TextStyle(
           fontSize: 12,

@@ -4,8 +4,12 @@ import 'package:flutter/material.dart';
 
 class AddEditIngredientStockExpirationDateField extends StatefulWidget {
   final TextEditingController controller;
-  const AddEditIngredientStockExpirationDateField(
-      {super.key, required this.controller});
+  final VoidCallback onTextChanged;
+  const AddEditIngredientStockExpirationDateField({
+    super.key,
+    required this.controller,
+    required this.onTextChanged,
+  });
 
   @override
   AddEditIngredientStockExpirationDateFieldState createState() =>
@@ -44,6 +48,7 @@ class AddEditIngredientStockExpirationDateFieldState
             String formattedMonth = month < 10 ? '0$month' : '$month';
 
             widget.controller.text = "$formattedDay/$formattedMonth/$year";
+            widget.onTextChanged();
           },
         );
       },

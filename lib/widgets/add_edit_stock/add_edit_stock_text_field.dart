@@ -3,7 +3,14 @@ import 'package:flutter/material.dart';
 
 class AddEditStockTextField extends StatelessWidget {
   final TextEditingController controller;
-  const AddEditStockTextField({super.key, required this.controller});
+  final FocusNode focusNode;
+  final VoidCallback onTextChanged;
+  const AddEditStockTextField({
+    super.key,
+    required this.controller,
+    required this.focusNode,
+    required this.onTextChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -12,6 +19,8 @@ class AddEditStockTextField extends StatelessWidget {
       height: 45,
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: TextField(
+        onChanged: (value) => onTextChanged(),
+        focusNode: focusNode,
         controller: controller,
         maxLines: 1,
         style: const TextStyle(

@@ -40,6 +40,11 @@ class _AddIngredientStockScreenState extends State<AddIngredientStockScreen> {
   String ingredientEngName = '';
   String ingredientThaiName = '';
   String unit = '';
+  FocusNode brandFocusNode = FocusNode();
+  FocusNode quantityFocusNode = FocusNode();
+  FocusNode priceFocusNode = FocusNode();
+  FocusNode supplierFocusNode = FocusNode();
+  FocusNode noteFocusNode = FocusNode();
 
   final AddEditIngredientStockController _controller =
       AddEditIngredientStockController();
@@ -89,366 +94,403 @@ class _AddIngredientStockScreenState extends State<AddIngredientStockScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: backgroundColor,
-      appBar: AppBar(
+    return GestureDetector(
+      onTap: () {
+        brandFocusNode.unfocus();
+        quantityFocusNode.unfocus();
+        priceFocusNode.unfocus();
+        supplierFocusNode.unfocus();
+        noteFocusNode.unfocus();
+      },
+      child: Scaffold(
         backgroundColor: backgroundColor,
-        scrolledUnderElevation: 0,
-        title: const Text(
-          "Ingredient",
-          style: TextStyle(
-            fontSize: 24,
-            fontFamily: 'Inter',
-            fontStyle: FontStyle.normal,
-            fontWeight: FontWeight.w500,
+        appBar: AppBar(
+          backgroundColor: backgroundColor,
+          scrolledUnderElevation: 0,
+          title: const Text(
+            "Ingredient",
+            style: TextStyle(
+              fontSize: 24,
+              fontFamily: 'Inter',
+              fontStyle: FontStyle.normal,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          leading: Builder(
+            builder: (context) {
+              return IconButton(
+                icon: const Icon(Icons.arrow_back_ios),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              );
+            },
           ),
         ),
-        leading: Builder(
-          builder: (context) {
-            return IconButton(
-              icon: const Icon(Icons.arrow_back_ios),
-              onPressed: () {
-                Navigator.pop(context);
+        body: AddEditIngredientStockContainer(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const AddEditIngredientStockTitle(
+                    title: "Ingredient Information"),
+                AddEditIngredientStockDeleteButton(
+                  dialogParams: BakingUpDialogParams(
+                    title: "Confirm Delete?",
+                    imgUrl: "assets/icons/delete_warning.png",
+                    content: "Are you sure you want to delete this ingredient?",
+                    grayButtonTitle: "Cancel",
+                    secondButtonTitle: "Delete",
+                    secondButtonColor: lightRedColor,
+                  ),
+                ),
+              ],
+            ),
+            BakingUpImagePicker(
+              images: _images,
+              onNewImage: (File image) {
+                setState(() {
+                  _images.add(image);
+                });
               },
-            );
-          },
-        ),
-      ),
-      body: AddEditIngredientStockContainer(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const AddEditIngredientStockTitle(
-                  title: "Ingredient Information"),
-              AddEditIngredientStockDeleteButton(
-                dialogParams: BakingUpDialogParams(
-                  title: "Confirm Delete?",
-                  imgUrl: "assets/icons/delete_warning.png",
-                  content: "Are you sure you want to delete this ingredient?",
-                  grayButtonTitle: "Cancel",
-                  secondButtonTitle: "Delete",
-                  secondButtonColor: lightRedColor,
-                ),
-              ),
-            ],
-          ),
-          BakingUpImagePicker(
-            images: _images,
-            onNewImage: (File image) {
-              setState(() {
-                _images.add(image);
-              });
-            },
-            isOneImage: true,
-            onDelete: (index) {
-              setState(() {
-                _images.removeAt(index);
-              });
-            },
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  const Text(
-                    'Ingredient Name',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  Text(
-                    '*',
-                    style: TextStyle(
-                      color: redColor,
-                      fontSize: 20,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AddEditIngredientStockNameTextField(
-                    text: ingredientEngName,
-                    isLoading: isLoading,
-                  ),
-                  const SizedBox(height: 16),
-                  AddEditIngredientStockNameTextField(
-                    text: ingredientThaiName,
-                    isLoading: isLoading,
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Text(
-                'Brand',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              const SizedBox(width: 16),
-              AddEditIngredientStockTextField(
-                label: "Brand",
-                width: 150,
-                controller: _controller.brandController,
-              )
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Quantity',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  Text(
-                    '*',
-                    style: TextStyle(
-                      color: redColor,
-                      fontSize: 20,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  AddEditIngredientStockTextField(
-                    label: 'Quantity',
-                    width: MediaQuery.of(context).size.width - 300,
-                    controller: _controller.quantityController,
-                  ),
-                  const SizedBox(width: 16),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Unit',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  Text(
-                    '*',
-                    style: TextStyle(
-                      color: redColor,
-                      fontSize: 20,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  AddEditIngredientStockUnit(
-                    text: unit,
-                    isLoading: isLoading,
-                  ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Text(
-                'Price',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              Text(
-                '*',
-                style: TextStyle(
-                  color: redColor,
-                  fontSize: 20,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              const SizedBox(width: 16),
-              AddEditIngredientStockTextField(
-                label: "Price",
-                width: 150,
-                controller: _controller.priceController,
-              )
-            ],
-          ),
-          const SizedBox(height: 16),
-          const AddEditIngredientStockTitle(title: "Additional Information"),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Text(
-                'Supplier',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              const SizedBox(width: 16),
-              AddEditIngredientStockTextField(
-                label: "Supplier",
-                width: 150,
-                controller: _controller.supplierController,
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                children: [
-                  const Text(
-                    'Expiration Date',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  Text(
-                    '*',
-                    style: TextStyle(
-                      color: redColor,
-                      fontSize: 20,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                ],
-              ),
-              AddEditIngredientStockExpirationDateField(
-                controller: _controller.expirationController,
-              ),
-            ],
-          ),
-          const SizedBox(height: 50),
-          const AddEditIngredientStockTitle(title: "Note:"),
-          const SizedBox(height: 16),
-          AddEditIngredientStockNoteTextField(
-            controller: _controller.noteController,
-          ),
-          const SizedBox(height: 80),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              BakingUpLongActionButton(
-                title: 'Save',
-                color: lightGreenColor,
-                isDisabled: false,
-                dialogParams: BakingUpDialogParams(
-                  title: _isEdit
-                      ? 'Confirm Ingredient Changes?'
-                      : 'Confirm Adding Ingredient?',
-                  imgUrl: 'assets/icons/warning.png',
-                  content: _isEdit
-                      ? 'You\'re about to save edited ingredient to the warehouse.'
-                      : 'Are you sure to add a new ingredient to the warehouse?',
-                  grayButtonTitle: 'Cancel',
-                  secondButtonTitle: 'Confirm',
-                  secondButtonColor: lightGreenColor,
-                  grayButtonOnClick: () {
-                    Navigator.of(context).pop();
-                  },
-                  secondButtonOnClick: () async {
-                    try {
-                      final data = {
-                        "user_id": "1",
-                        "ingredient_id": widget.ingredientId,
-                        "price": _controller.priceController.text,
-                        "quantity": _controller.quantityController.text,
-                        "expiration_date":
-                            _controller.expirationController.text,
-                        "supplier": _controller.supplierController.text,
-                        "ingredient_brand": _controller.brandController.text,
-                        "img": _images.isNotEmpty
-                            ? convertFilesToBase64(_images)[0]
-                            : "",
-                        "note": _controller.noteController.text,
-                      };
-                      await NetworkService.instance
-                          .post(
-                        "/api/ingredient/addIngredientStock",
-                        data: data,
-                      )
-                          .then(
-                        (value) {
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
-                        },
-                      );
-                    } catch (e) {
-                      log(e.toString());
-                      // ignore: use_build_context_synchronously
-                      Navigator.of(context).pop();
-                      // ignore: use_build_context_synchronously
-                      Navigator.of(context).overlay!.insert(
-                        OverlayEntry(
-                          builder: (BuildContext context) {
-                            return const BakingUpErrorTopNotification(
-                              message:
-                                  "Sorry, we couldn’t add the ingredient stock due to a system error. Please try again later.",
-                            );
-                          },
+              isOneImage: true,
+              onDelete: (index) {
+                setState(() {
+                  _images.removeAt(index);
+                });
+              },
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    Row(
+                      children: [
+                        const Text(
+                          'Ingredient Name',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontFamily: 'Inter',
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
-                      );
-                    }
+                        Text(
+                          '*',
+                          style: TextStyle(
+                            color: redColor,
+                            fontSize: 20,
+                            fontFamily: 'Inter',
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 16,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+                  ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AddEditIngredientStockNameTextField(
+                      text: ingredientEngName,
+                      isLoading: isLoading,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  'Brand',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'Inter',
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                AddEditIngredientStockTextField(
+                  label: "Brand",
+                  width: 150,
+                  controller: _controller.brandController,
+                  focusNode: brandFocusNode,
+                  onTextChanged: () {
+                    setState(() {});
+                  },
+                )
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Quantity',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontFamily: 'Inter',
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    Text(
+                      '*',
+                      style: TextStyle(
+                        color: redColor,
+                        fontSize: 20,
+                        fontFamily: 'Inter',
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    AddEditIngredientStockTextField(
+                      label: 'Quantity',
+                      width: MediaQuery.of(context).size.width - 300,
+                      controller: _controller.quantityController,
+                      focusNode: quantityFocusNode,
+                      onTextChanged: () {
+                        setState(() {});
+                      },
+                    ),
+                    const SizedBox(width: 16),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Unit',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontFamily: 'Inter',
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    Text(
+                      '*',
+                      style: TextStyle(
+                        color: redColor,
+                        fontSize: 20,
+                        fontFamily: 'Inter',
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    AddEditIngredientStockUnit(
+                      text: unit,
+                      isLoading: isLoading,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  'Price',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'Inter',
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                Text(
+                  '*',
+                  style: TextStyle(
+                    color: redColor,
+                    fontSize: 20,
+                    fontFamily: 'Inter',
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                AddEditIngredientStockTextField(
+                  label: "Price",
+                  width: 150,
+                  controller: _controller.priceController,
+                  focusNode: priceFocusNode,
+                  onTextChanged: () {
+                    setState(() {});
+                  },
+                )
+              ],
+            ),
+            const SizedBox(height: 16),
+            const AddEditIngredientStockTitle(title: "Additional Information"),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  'Supplier',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'Inter',
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                AddEditIngredientStockTextField(
+                  label: "Supplier",
+                  width: 150,
+                  controller: _controller.supplierController,
+                  focusNode: supplierFocusNode,
+                  onTextChanged: () {
+                    setState(() {});
                   },
                 ),
-              )
-            ],
-          )
-        ],
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  children: [
+                    const Text(
+                      'Expiration Date',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontFamily: 'Inter',
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    Text(
+                      '*',
+                      style: TextStyle(
+                        color: redColor,
+                        fontSize: 20,
+                        fontFamily: 'Inter',
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                  ],
+                ),
+                AddEditIngredientStockExpirationDateField(
+                  controller: _controller.expirationController,
+                  onTextChanged: () {
+                    setState(() {});
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 50),
+            const AddEditIngredientStockTitle(title: "Note:"),
+            const SizedBox(height: 16),
+            AddEditIngredientStockNoteTextField(
+              controller: _controller.noteController,
+              focusNode: noteFocusNode,
+            ),
+            const SizedBox(height: 80),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                BakingUpLongActionButton(
+                  title: 'Save',
+                  color: _controller.quantityController.text == '' ||
+                          _controller.priceController.text == '' ||
+                          _controller.expirationController.text == ''
+                      ? greyColor
+                      : lightGreenColor,
+                  isDisabled: _controller.quantityController.text == '' ||
+                      _controller.priceController.text == '' ||
+                      _controller.expirationController.text == '',
+                  dialogParams: BakingUpDialogParams(
+                    title: _isEdit
+                        ? 'Confirm Ingredient Changes?'
+                        : 'Confirm Adding Ingredient?',
+                    imgUrl: 'assets/icons/warning.png',
+                    content: _isEdit
+                        ? 'You\'re about to save edited ingredient to the warehouse.'
+                        : 'Are you sure to add a new ingredient to the warehouse?',
+                    grayButtonTitle: 'Cancel',
+                    secondButtonTitle: 'Confirm',
+                    secondButtonColor: lightGreenColor,
+                    grayButtonOnClick: () {
+                      Navigator.of(context).pop();
+                    },
+                    secondButtonOnClick: () async {
+                      try {
+                        final data = {
+                          "user_id": "1",
+                          "ingredient_id": widget.ingredientId,
+                          "price": _controller.priceController.text,
+                          "quantity": _controller.quantityController.text,
+                          "expiration_date":
+                              _controller.expirationController.text,
+                          "supplier": _controller.supplierController.text,
+                          "ingredient_brand": _controller.brandController.text,
+                          "img": _images.isNotEmpty
+                              ? convertFilesToBase64(_images)[0]
+                              : "",
+                          "note": _controller.noteController.text,
+                        };
+                        await NetworkService.instance
+                            .post(
+                          "/api/ingredient/addIngredientStock",
+                          data: data,
+                        )
+                            .then(
+                          (value) {
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                          },
+                        );
+                      } catch (e) {
+                        log(e.toString());
+                        // ignore: use_build_context_synchronously
+                        Navigator.of(context).pop();
+                        // ignore: use_build_context_synchronously
+                        Navigator.of(context).overlay!.insert(
+                          OverlayEntry(
+                            builder: (BuildContext context) {
+                              return const BakingUpErrorTopNotification(
+                                message:
+                                    "Sorry, we couldn’t add the ingredient stock due to a system error. Please try again later.",
+                              );
+                            },
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                )
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

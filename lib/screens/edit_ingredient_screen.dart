@@ -34,6 +34,9 @@ class _EditIngredientScreenState extends State<EditIngredientScreen> {
   final AddEditIngredientController _controller = AddEditIngredientController();
   bool isLoading = false;
   bool isError = false;
+  FocusNode ingredientNameFocusNode = FocusNode();
+  FocusNode ingredientLessThanFocusNode = FocusNode();
+  FocusNode daysBeforeExpireFocusNode = FocusNode();
 
   String convertAbbreviation(String abbreviation) {
     switch (abbreviation) {
@@ -145,46 +148,114 @@ class _EditIngredientScreenState extends State<EditIngredientScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: backgroundColor,
-      appBar: AppBar(
+    return GestureDetector(
+      onTap: () {
+        ingredientNameFocusNode.unfocus();
+        ingredientLessThanFocusNode.unfocus();
+        daysBeforeExpireFocusNode.unfocus();
+      },
+      child: Scaffold(
         backgroundColor: backgroundColor,
-        scrolledUnderElevation: 0,
-        title: const Text(
-          "Ingredient",
-          style: TextStyle(
-            fontSize: 24,
-            fontFamily: 'Inter',
-            fontStyle: FontStyle.normal,
-            fontWeight: FontWeight.w500,
+        appBar: AppBar(
+          backgroundColor: backgroundColor,
+          scrolledUnderElevation: 0,
+          title: const Text(
+            "Ingredient",
+            style: TextStyle(
+              fontSize: 24,
+              fontFamily: 'Inter',
+              fontStyle: FontStyle.normal,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          leading: Builder(
+            builder: (context) {
+              return IconButton(
+                icon: const Icon(Icons.arrow_back_ios),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              );
+            },
           ),
         ),
-        leading: Builder(
-          builder: (context) {
-            return IconButton(
-              icon: const Icon(Icons.arrow_back_ios),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            );
-          },
+        drawer: BakingUpDrawer(
+          currentDrawerIndex: _currentDrawerIndex,
         ),
-      ),
-      drawer: BakingUpDrawer(
-        currentDrawerIndex: _currentDrawerIndex,
-      ),
-      body: AddEditIngredientContainer(
-        children: [
-          const AddEditIngredientTitle(title: "Editing Ingredient"),
-          const SizedBox(height: 25),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  const Text(
-                    'Ingredient Name',
+        body: AddEditIngredientContainer(
+          children: [
+            const AddEditIngredientTitle(title: "Editing Ingredient"),
+            const SizedBox(height: 25),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    Row(
+                      children: [
+                        const Text(
+                          'Ingredient Name',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontFamily: 'Inter',
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Text(
+                          '*',
+                          style: TextStyle(
+                            color: redColor,
+                            fontSize: 20,
+                            fontFamily: 'Inter',
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    isLoading
+                        ? Shimmer.fromColors(
+                            baseColor: greyColor,
+                            highlightColor: whiteColor,
+                            child: Container(
+                              height: 45,
+                              width: MediaQuery.of(context).size.width / 2,
+                              decoration: BoxDecoration(
+                                color: whiteColor,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                            ),
+                          )
+                        : AddEditIngredientNameTextField(
+                            label: 'Ingredient Name',
+                            controller: _controller.engNameController,
+                            onTextChanged: () {
+                              setState(() {});
+                            },
+                            focusNode: ingredientNameFocusNode,
+                          ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 50),
+            const AddEditIngredientTitle(title: "Notification Setting"),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                const Flexible(
+                  child: Text(
+                    'Notify me when an ingredient falls below',
                     style: TextStyle(
                       fontSize: 16,
                       fontFamily: 'Inter',
@@ -192,74 +263,33 @@ class _EditIngredientScreenState extends State<EditIngredientScreen> {
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  Text(
-                    '*',
-                    style: TextStyle(
-                      color: redColor,
-                      fontSize: 20,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  isLoading
-                      ? Shimmer.fromColors(
-                          baseColor: greyColor,
-                          highlightColor: whiteColor,
-                          child: Container(
-                            height: 45,
-                            width: MediaQuery.of(context).size.width / 2,
-                            decoration: BoxDecoration(
-                              color: whiteColor,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
+                ),
+                isLoading
+                    ? Shimmer.fromColors(
+                        baseColor: greyColor,
+                        highlightColor: whiteColor,
+                        child: Container(
+                          height: 45,
+                          width: 60,
+                          margin: const EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: whiteColor,
+                            borderRadius: BorderRadius.circular(5),
                           ),
-                        )
-                      : AddEditIngredientNameTextField(
-                          label: 'English',
-                          controller: _controller.engNameController,
-                          onTextChanged: () {
-                            setState(() {});
-                          },
                         ),
-                  const SizedBox(height: 16),
-                  isLoading
-                      ? Shimmer.fromColors(
-                          baseColor: greyColor,
-                          highlightColor: whiteColor,
-                          child: Container(
-                            height: 45,
-                            width: MediaQuery.of(context).size.width / 2,
-                            decoration: BoxDecoration(
-                              color: whiteColor,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                          ),
-                        )
-                      : AddEditIngredientNameTextField(
-                          label: 'Thai',
-                          controller: _controller.thaiNameController,
-                          onTextChanged: () {
-                            setState(() {});
-                          },
-                        ),
-                ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 50),
-          const AddEditIngredientTitle(title: "Notification Setting"),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              const Flexible(
-                child: Text(
-                  'Notify me when an ingredient falls below',
+                      )
+                    : AddEditIngredientTextField(
+                        controller: _controller.ingredientLessThanController,
+                        lengthLimit: getUnitLengthLimit(selectedUnit),
+                        min: 1,
+                        max: getUnitMax(selectedUnit),
+                        onTextChanged: () {
+                          setState(() {});
+                        },
+                        focusNode: ingredientLessThanFocusNode,
+                      ),
+                const Text(
+                  'unit',
                   style: TextStyle(
                     fontSize: 16,
                     fontFamily: 'Inter',
@@ -267,154 +297,123 @@ class _EditIngredientScreenState extends State<EditIngredientScreen> {
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-              ),
-              isLoading
-                  ? Shimmer.fromColors(
-                      baseColor: greyColor,
-                      highlightColor: whiteColor,
-                      child: Container(
-                        height: 45,
-                        width: 60,
-                        margin: const EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                          color: whiteColor,
-                          borderRadius: BorderRadius.circular(5),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                const Text(
+                  'Notify me',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'Inter',
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                isLoading
+                    ? Shimmer.fromColors(
+                        baseColor: greyColor,
+                        highlightColor: whiteColor,
+                        child: Container(
+                          height: 45,
+                          width: 60,
+                          margin: const EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: whiteColor,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
                         ),
-                      ),
-                    )
-                  : AddEditIngredientTextField(
-                      controller: _controller.ingredientLessThanController,
-                      lengthLimit: getUnitLengthLimit(selectedUnit),
-                      min: 1,
-                      max: getUnitMax(selectedUnit),
-                      onTextChanged: () {
-                        setState(() {});
-                      },
-                    ),
-              const Text(
-                'unit',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              const Text(
-                'Notify me',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              isLoading
-                  ? Shimmer.fromColors(
-                      baseColor: greyColor,
-                      highlightColor: whiteColor,
-                      child: Container(
-                        height: 45,
-                        width: 60,
-                        margin: const EdgeInsets.symmetric(horizontal: 10),
-                        decoration: BoxDecoration(
-                          color: whiteColor,
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      ),
-                    )
-                  : AddEditIngredientTextField(
-                      controller: _controller.daysBeforeExpireController,
-                      lengthLimit: 3,
-                      min: 1,
-                      max: 365,
-                      onTextChanged: () {
-                        setState(() {});
-                      },
-                    ),
-              const Text(
-                'days before expiration',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 80),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              BakingUpLongActionButton(
-                title: 'Save',
-                color: getIsDisabled() ? greyColor : lightGreenColor,
-                isDisabled: getIsDisabled(),
-                dialogParams: BakingUpDialogParams(
-                  title: 'Confirm Ingredient Changes?',
-                  imgUrl: 'assets/icons/warning.png',
-                  content:
-                      'You\'re about to save edited ingredient to the warehouse.',
-                  grayButtonTitle: 'Cancel',
-                  secondButtonTitle: 'Confirm',
-                  secondButtonColor: lightGreenColor,
-                  grayButtonOnClick: () {
-                    Navigator.of(context).pop();
-                  },
-                  secondButtonOnClick: () async {
-                    try {
-                      final data = {
-                        "day_before_expire":
-                            _controller.daysBeforeExpireController.text,
-                        "ingredient_eng_name":
-                            _controller.engNameController.text,
-                        "ingredient_thai_name":
-                            _controller.thaiNameController.text,
-                        "stock_less_than":
-                            _controller.ingredientLessThanController.text,
-                        "user_id": "1",
-                        "ingredient_id": widget.ingredientId,
-                      };
-                      log(data.toString());
-                      await NetworkService.instance
-                          .put(
-                        "/api/ingredient/editIngredient",
-                        data: data,
                       )
-                          .then(
-                        (value) {
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
+                    : AddEditIngredientTextField(
+                        controller: _controller.daysBeforeExpireController,
+                        lengthLimit: 3,
+                        min: 1,
+                        max: 365,
+                        onTextChanged: () {
+                          setState(() {});
                         },
-                      );
-                    } catch (e) {
-                      log(e.toString());
-                      // ignore: use_build_context_synchronously
-                      Navigator.of(context).pop();
-                      // ignore: use_build_context_synchronously
-                      Navigator.of(context).overlay!.insert(
-                        OverlayEntry(
-                          builder: (BuildContext context) {
-                            return const BakingUpErrorTopNotification(
-                              message:
-                                  "Sorry, we couldn’t edit the ingredient due to a system error. Please try again later.",
-                            );
-                          },
-                        ),
-                      );
-                    }
-                  },
+                        focusNode: daysBeforeExpireFocusNode,
+                      ),
+                const Text(
+                  'days before expiration',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'Inter',
+                    fontStyle: FontStyle.normal,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
-              )
-            ],
-          )
-        ],
+              ],
+            ),
+            const SizedBox(height: 80),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                BakingUpLongActionButton(
+                  title: 'Save',
+                  color: getIsDisabled() ? greyColor : lightGreenColor,
+                  isDisabled: getIsDisabled(),
+                  dialogParams: BakingUpDialogParams(
+                    title: 'Confirm Ingredient Changes?',
+                    imgUrl: 'assets/icons/warning.png',
+                    content:
+                        'You\'re about to save edited ingredient to the warehouse.',
+                    grayButtonTitle: 'Cancel',
+                    secondButtonTitle: 'Confirm',
+                    secondButtonColor: lightGreenColor,
+                    grayButtonOnClick: () {
+                      Navigator.of(context).pop();
+                    },
+                    secondButtonOnClick: () async {
+                      try {
+                        final data = {
+                          "day_before_expire":
+                              _controller.daysBeforeExpireController.text,
+                          "ingredient_eng_name":
+                              _controller.engNameController.text,
+                          "ingredient_thai_name":
+                              _controller.thaiNameController.text,
+                          "stock_less_than":
+                              _controller.ingredientLessThanController.text,
+                          "user_id": "1",
+                          "ingredient_id": widget.ingredientId,
+                        };
+                        log(data.toString());
+                        await NetworkService.instance
+                            .put(
+                          "/api/ingredient/editIngredient",
+                          data: data,
+                        )
+                            .then(
+                          (value) {
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                          },
+                        );
+                      } catch (e) {
+                        log(e.toString());
+                        // ignore: use_build_context_synchronously
+                        Navigator.of(context).pop();
+                        // ignore: use_build_context_synchronously
+                        Navigator.of(context).overlay!.insert(
+                          OverlayEntry(
+                            builder: (BuildContext context) {
+                              return const BakingUpErrorTopNotification(
+                                message:
+                                    "Sorry, we couldn’t edit the ingredient due to a system error. Please try again later.",
+                              );
+                            },
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                )
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
