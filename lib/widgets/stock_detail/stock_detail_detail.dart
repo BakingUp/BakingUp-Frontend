@@ -4,11 +4,20 @@ import 'package:bakingup_frontend/models/stock_detail.dart';
 import 'package:bakingup_frontend/screens/stock_detail_information_screen.dart';
 import 'package:bakingup_frontend/widgets/stock_detail/lst_status_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class StockDetailDetail extends StatelessWidget {
   final StockDetail stockDetails;
 
   const StockDetailDetail({super.key, required this.stockDetails});
+
+  bool isSellByDatePassed(String sellByDate) {
+    DateFormat dateFormat = DateFormat('dd/M/yyyy');
+    DateTime sellByDateTime = dateFormat.parse(sellByDate);
+    DateTime currentTime = DateTime.now();
+
+    return sellByDateTime.isBefore(currentTime);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +36,8 @@ class StockDetailDetail extends StatelessWidget {
         margin: const EdgeInsets.fromLTRB(20, 0, 20, 25),
         padding: const EdgeInsets.fromLTRB(20.0, 16.0, 20.0, 16.0),
         decoration: BoxDecoration(
-          color: stockDetails.lstStatus == LSTStatus.black
+          color: stockDetails.lstStatus == LSTStatus.black ||
+                  isSellByDatePassed(stockDetails.sellByDate)
               ? greyColor
               : beigeColor,
           boxShadow: [
@@ -64,7 +74,7 @@ class StockDetailDetail extends StatelessWidget {
                     Text(
                       'Sell-By Date: ${stockDetails.sellByDate}',
                       style: TextStyle(
-                        color: stockDetails.lstStatus == LSTStatus.black
+                        color: isSellByDatePassed(stockDetails.sellByDate)
                             ? redColor
                             : blackColor,
                         fontFamily: 'Inter',
