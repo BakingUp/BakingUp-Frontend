@@ -18,6 +18,7 @@ import 'package:bakingup_frontend/models/stock.dart';
 import 'package:bakingup_frontend/models/warehouse.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/models/add_edit_stock_controller.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AddStockScreen extends StatefulWidget {
   const AddStockScreen({super.key});
@@ -184,7 +185,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
                       child: selectedBakeryRecipeObject != null &&
                               selectedBakeryRecipeObject!.recipeImg.isNotEmpty
                           ? Image.network(
-                              selectedBakeryRecipeObject!.recipeImg,
+                              '${dotenv.env['API_BASE_URL']}/${selectedBakeryRecipeObject!.recipeImg}',
                               fit: BoxFit.cover,
                             )
                           : const SizedBox(),

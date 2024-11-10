@@ -3,6 +3,7 @@ import 'package:bakingup_frontend/enum/lst_status.dart';
 import 'package:bakingup_frontend/models/stock.dart';
 import 'package:bakingup_frontend/screens/stock_detail_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shimmer/shimmer.dart';
 
 class StockItem extends StatelessWidget {
@@ -60,7 +61,7 @@ class StockItem extends StatelessWidget {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(13),
                         child: Image.network(
-                          stockList[index].stockUrl,
+                          '${dotenv.env['API_BASE_URL']}/${stockList[index].stockUrl}',
                           width: 90,
                           height: 60,
                           fit: BoxFit.cover,
