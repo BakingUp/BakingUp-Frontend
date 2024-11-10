@@ -445,16 +445,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 300,
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: SfCartesianChart(
-                            // title: ChartTitle(
-                            //   text: "Cost & Revenue",
-                            //   textStyle: TextStyle(
-                            //     color: blackColor,
-                            //     fontFamily: 'Inter',
-                            //     fontStyle: FontStyle.normal,
-                            //     fontWeight: FontWeight.w500,
-                            //     fontSize: 20,
-                            //   ),
-                            // ),
                             primaryXAxis: CategoryAxis(
                               title: AxisTitle(
                                 text: 'Months',
@@ -479,10 +469,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             legend: const Legend(isVisible: true),
                             tooltipBehavior: TooltipBehavior(enable: true),
                             series: <CartesianSeries<CostRevenueData, String>>[
-                              ColumnSeries<CostRevenueData, String>(
+                              StackedColumnSeries<CostRevenueData, String>(
                                 dataSource: chartData.costRevenue,
                                 xValueMapper: (CostRevenueData item, _) =>
-                                    item.month.substring(0, 3),
+                                    item.month,
                                 yValueMapper: (CostRevenueData item, _) =>
                                     item.revenue,
                                 name: "Revenue",
@@ -490,10 +480,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 dataLabelSettings:
                                     const DataLabelSettings(isVisible: false),
                               ),
-                              ColumnSeries<CostRevenueData, String>(
+                              StackedColumnSeries<CostRevenueData, String>(
                                 dataSource: chartData.costRevenue,
                                 xValueMapper: (CostRevenueData item, _) =>
-                                    item.month.substring(0, 3),
+                                    item.month,
                                 yValueMapper: (CostRevenueData item, _) =>
                                     item.cost,
                                 name: "Costs",
@@ -501,10 +491,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 dataLabelSettings:
                                     const DataLabelSettings(isVisible: false),
                               ),
-                              ColumnSeries<CostRevenueData, String>(
+                              StackedColumnSeries<CostRevenueData, String>(
                                 dataSource: chartData.costRevenue,
                                 xValueMapper: (CostRevenueData item, _) =>
-                                    item.month.substring(0, 3),
+                                    item.month,
                                 yValueMapper: (CostRevenueData item, _) =>
                                     item.netProfit,
                                 name: "Net Profit",
@@ -520,16 +510,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 300,
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: SfCartesianChart(
-                            // title: ChartTitle(
-                            //   text: "Profit Threshold",
-                            //   textStyle: TextStyle(
-                            //     color: blackColor,
-                            //     fontFamily: 'Inter',
-                            //     fontStyle: FontStyle.normal,
-                            //     fontWeight: FontWeight.w500,
-                            //     fontSize: 20,
-                            //   ),
-                            // ),
                             primaryXAxis: CategoryAxis(
                               title: AxisTitle(
                                 textStyle: TextStyle(
