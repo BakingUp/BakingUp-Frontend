@@ -1,6 +1,7 @@
 // Importing libraries
 import 'dart:developer';
 import 'dart:io';
+import 'package:bakingup_frontend/widgets/baking_up_loading_dialog.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -221,6 +222,14 @@ class _EditRecipeScreenState extends State<EditRecipeScreen> {
                           controller.thaiInstructionController.text,
                     };
                     log(data.toString());
+                    Navigator.of(context).pop();
+                    showDialog(
+                      context: context,
+                      barrierColor: const Color(0xC7D9D9D9),
+                      builder: (BuildContext context) {
+                        return const BakingUpLoadingDialog();
+                      },
+                    );
                     await NetworkService.instance
                         .put(
                       "/api/recipe/editRecipe",

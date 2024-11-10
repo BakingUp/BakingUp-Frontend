@@ -2,6 +2,7 @@
 import 'dart:developer';
 import 'package:bakingup_frontend/models/edit_ingredient_stock_detail.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_unit.dart';
+import 'package:bakingup_frontend/widgets/baking_up_loading_dialog.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -441,7 +442,7 @@ class _EditIngredientStockScreenState extends State<EditIngredientStockScreen> {
                       )
                     : AddEditIngredientStockExpirationDateField(
                         controller: _controller.expirationController,
-                                          onTextChanged: () {
+                        onTextChanged: () {
                           setState(() {});
                         },
                       ),
@@ -485,6 +486,14 @@ class _EditIngredientStockScreenState extends State<EditIngredientStockScreen> {
                           "ingredient_brand": _controller.brandController.text,
                           "note": _controller.noteController.text,
                         };
+                        Navigator.of(context).pop();
+                        showDialog(
+                          context: context,
+                          barrierColor: const Color(0xC7D9D9D9),
+                          builder: (BuildContext context) {
+                            return const BakingUpLoadingDialog();
+                          },
+                        );
                         await NetworkService.instance
                             .put(
                           "/api/ingredient/editIngredientStock",

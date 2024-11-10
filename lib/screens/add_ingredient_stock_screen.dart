@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_unit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:bakingup_frontend/widgets/baking_up_loading_dialog.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -459,6 +460,14 @@ class _AddIngredientStockScreenState extends State<AddIngredientStockScreen> {
                               : "",
                           "note": _controller.noteController.text,
                         };
+                        Navigator.of(context).pop();
+                        showDialog(
+                          context: context,
+                          barrierColor: const Color(0xC7D9D9D9),
+                          builder: (BuildContext context) {
+                            return const BakingUpLoadingDialog();
+                          },
+                        );
                         await NetworkService.instance
                             .post(
                           "/api/ingredient/addIngredientStock",

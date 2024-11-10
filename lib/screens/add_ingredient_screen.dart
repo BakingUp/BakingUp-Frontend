@@ -15,6 +15,7 @@ import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dropdown.dart';
 import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
 import 'package:bakingup_frontend/widgets/baking_up_image_picker_bottom_sheet.dart';
+import 'package:bakingup_frontend/widgets/baking_up_loading_dialog.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_image_picker.dart';
 import 'package:bakingup_frontend/models/add_edit_ingredient_controller.dart';
@@ -400,6 +401,14 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
                           "img": convertFilesToBase64(_images),
                         };
                         log(data.toString());
+                        Navigator.of(context).pop();
+                        showDialog(
+                          context: context,
+                          barrierColor: const Color(0xC7D9D9D9),
+                          builder: (BuildContext context) {
+                            return const BakingUpLoadingDialog();
+                          },
+                        );
                         await NetworkService.instance
                             .post(
                           "/api/ingredient/addIngredient",

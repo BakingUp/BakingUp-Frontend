@@ -1,6 +1,7 @@
 // Importing libraries
 import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:bakingup_frontend/widgets/baking_up_loading_dialog.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -352,14 +353,14 @@ class _AddStockScreenState extends State<AddStockScreen> {
                   title: 'Confirm',
                   color: _controller.lstController.text.isEmpty ||
                           _controller.sellingPriceController.text.isEmpty ||
-                          _controller.sellingPriceController.text.isEmpty ||
                           _controller.stockLessThanController.text.isEmpty ||
+                          _controller.expirationDateController.text.isEmpty ||
                           selectedBakeryRecipe.isEmpty
                       ? greyColor
                       : lightGreenColor,
                   isDisabled: _controller.lstController.text.isEmpty ||
                       _controller.sellingPriceController.text.isEmpty ||
-                      _controller.sellingPriceController.text.isEmpty ||
+                      _controller.expirationDateController.text.isEmpty ||
                       _controller.stockLessThanController.text.isEmpty ||
                       selectedBakeryRecipe.isEmpty,
                   dialogParams: BakingUpDialogParams(
@@ -383,6 +384,14 @@ class _AddStockScreenState extends State<AddStockScreen> {
                           "stock_less_than":
                               _controller.stockLessThanController.text,
                         };
+                        Navigator.of(context).pop();
+                        showDialog(
+                          context: context,
+                          barrierColor: const Color(0xC7D9D9D9),
+                          builder: (BuildContext context) {
+                            return const BakingUpLoadingDialog();
+                          },
+                        );
                         await NetworkService.instance
                             .post(
                           "/api/stock/addStock",
