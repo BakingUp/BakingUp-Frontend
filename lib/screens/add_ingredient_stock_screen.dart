@@ -4,13 +4,13 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_unit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:bakingup_frontend/widgets/baking_up_loading_dialog.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_container.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_title.dart';
-import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_delete_button.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_expiration_date_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_text_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_note_text_field.dart';
@@ -131,21 +131,10 @@ class _AddIngredientStockScreenState extends State<AddIngredientStockScreen> {
         ),
         body: AddEditIngredientStockContainer(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                const AddEditIngredientStockTitle(
-                    title: "Ingredient Information"),
-                AddEditIngredientStockDeleteButton(
-                  dialogParams: BakingUpDialogParams(
-                    title: "Confirm Delete?",
-                    imgUrl: "assets/icons/delete_warning.png",
-                    content: "Are you sure you want to delete this ingredient?",
-                    grayButtonTitle: "Cancel",
-                    secondButtonTitle: "Delete",
-                    secondButtonColor: lightRedColor,
-                  ),
-                ),
+                AddEditIngredientStockTitle(title: "Ingredient Information"),
               ],
             ),
             BakingUpImagePicker(
@@ -459,6 +448,14 @@ class _AddIngredientStockScreenState extends State<AddIngredientStockScreen> {
                               : "",
                           "note": _controller.noteController.text,
                         };
+                        Navigator.of(context).pop();
+                        showDialog(
+                          context: context,
+                          barrierColor: const Color(0xC7D9D9D9),
+                          builder: (BuildContext context) {
+                            return const BakingUpLoadingDialog();
+                          },
+                        );
                         await NetworkService.instance
                             .post(
                           "/api/ingredient/addIngredientStock",
