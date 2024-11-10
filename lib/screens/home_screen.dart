@@ -61,7 +61,6 @@ class _HomeScreenState extends State<HomeScreen> {
         DateTime endDateTime = DateTime.now().toUtc();
         filterEndDateTime = endDateTime.toIso8601String();
       }
-      print(filterStartDateTime + " " + filterEndDateTime);
       final response = await NetworkService.instance.get(
           '/api/home/getDashboardChartData?user_id=1&start_date_time=$filterStartDateTime&end_date_time=$filterEndDateTime');
       final chartDataResponse = DashboardChartResponse.fromJson(response);
