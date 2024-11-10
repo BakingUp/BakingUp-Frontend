@@ -6,7 +6,6 @@ import 'package:bakingup_frontend/enum/order_type.dart';
 import 'package:bakingup_frontend/enum/pick_up_method.dart';
 import 'package:bakingup_frontend/models/instore_order_detail.dart';
 import 'package:bakingup_frontend/models/preorder_order_detail.dart';
-import 'package:bakingup_frontend/screens/add_edit_preorder_order_screen.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/string_extensions.dart';
 import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
@@ -20,7 +19,6 @@ import 'package:bakingup_frontend/widgets/order_detail/order_detail_profit.dart'
 import 'package:bakingup_frontend/widgets/order_detail/order_detail_text.dart';
 import 'package:bakingup_frontend/widgets/order_detail/order_detail_total.dart';
 import 'package:bakingup_frontend/widgets/order_detail/order_detail_type_of_order.dart';
-import 'package:bakingup_frontend/widgets/order_detail/order_edit_button.dart';
 import 'package:bakingup_frontend/widgets/order_detail/status_dropdown.dart';
 import 'package:flutter/material.dart';
 
