@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 class AddEditRecipeNameTextField extends StatelessWidget {
   final String label;
   final TextEditingController controller;
+  final FocusNode focusNode;
   const AddEditRecipeNameTextField(
-      {super.key, required this.label, required this.controller});
+      {super.key, required this.label, required this.controller, required this.focusNode});
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +14,7 @@ class AddEditRecipeNameTextField extends StatelessWidget {
       width: MediaQuery.of(context).size.width / 2,
       height: 45,
       child: TextField(
+        focusNode: focusNode,
         controller: controller,
         maxLines: 1,
         style: const TextStyle(

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/models/add_edit_recipe_controller.dart';
+import 'package:bakingup_frontend/screens/add_recipe_screen.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_instruction_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_recipe/add_edit_recipe_title.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
@@ -16,7 +17,9 @@ class AddEditRecipePageTwo extends StatelessWidget {
   final Function(File) onNewImage;
   final Function(int) onImgDelete;
   final VoidCallback onSave;
+  final FocusNode instructionFocusNode;
   final AddEditRecipeController controller;
+  final List<RecipeIngredient> recipeIngredients;
   final bool? isLoading;
   const AddEditRecipePageTwo({
     super.key,
@@ -26,7 +29,9 @@ class AddEditRecipePageTwo extends StatelessWidget {
     required this.onNewImage,
     required this.onImgDelete,
     required this.onSave,
+    required this.instructionFocusNode,
     required this.controller,
+    required this.recipeIngredients,
     this.isLoading,
   });
 
@@ -66,25 +71,11 @@ class AddEditRecipePageTwo extends StatelessWidget {
                 ),
               )
             : AddEditRecipeInstructionField(
-                label: 'English',
-                controller: controller.engInstructionController),
+                label: 'Instructions',
+                controller: controller.engInstructionController,
+                focusNode: instructionFocusNode,
+              ),
         const SizedBox(height: 30),
-        isLoading != null && isLoading!
-            ? Shimmer.fromColors(
-                baseColor: greyColor,
-                highlightColor: whiteColor,
-                child: Container(
-                  height: 87,
-                  width: MediaQuery.of(context).size.width - 60,
-                  decoration: BoxDecoration(
-                    color: whiteColor,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                ),
-              )
-            : AddEditRecipeInstructionField(
-                label: 'Thai',
-                controller: controller.thaiInstructionController),
         const SizedBox(height: 80),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -98,8 +89,16 @@ class AddEditRecipePageTwo extends StatelessWidget {
             const SizedBox(width: 8),
             BakingUpLongActionButton(
               title: 'Save',
-              color: lightGreenColor,
-              isDisabled: false,
+              color: controller.totalHoursController.text.isEmpty ||
+                      controller.totalMinsController.text.isEmpty ||
+                      controller.servingsController.text.isEmpty ||
+                      recipeIngredients.isEmpty
+                  ? greyColor
+                  : lightGreenColor,
+              isDisabled: controller.totalHoursController.text.isEmpty ||
+                  controller.totalMinsController.text.isEmpty ||
+                  controller.servingsController.text.isEmpty ||
+                  recipeIngredients.isEmpty,
               dialogParams: BakingUpDialogParams(
                 title: isEdit
                     ? 'Confirm Recipe Changes?'

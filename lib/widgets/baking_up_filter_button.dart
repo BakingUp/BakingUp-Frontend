@@ -42,7 +42,10 @@ class BakingUpFilterButton extends StatelessWidget {
           },
         );
       },
-      child: Image.asset('assets/icons/filter.png'),
+      child: Image.asset(
+        'assets/icons/filter.png',
+        scale: 0.8,
+      ),
     );
   }
 }

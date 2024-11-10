@@ -5,11 +5,15 @@ class AddEditIngredientStockTextField extends StatelessWidget {
   final String label;
   final double width;
   final TextEditingController controller;
+  final FocusNode focusNode;
+  final VoidCallback onTextChanged;
   const AddEditIngredientStockTextField({
     super.key,
     required this.label,
     required this.width,
     required this.controller,
+    required this.focusNode,
+    required this.onTextChanged,
   });
 
   @override
@@ -18,6 +22,8 @@ class AddEditIngredientStockTextField extends StatelessWidget {
       width: width,
       height: 45,
       child: TextField(
+        onChanged: (_) => onTextChanged(),
+        focusNode: focusNode,
         controller: controller,
         maxLines: 1,
         style: const TextStyle(

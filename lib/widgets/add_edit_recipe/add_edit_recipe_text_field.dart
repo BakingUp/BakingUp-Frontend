@@ -5,11 +5,13 @@ class AddEditRecipeTextField extends StatelessWidget {
   final String label;
   final double width;
   final TextEditingController controller;
+  final FocusNode focusNode;
   const AddEditRecipeTextField({
     super.key,
     required this.label,
     required this.width,
     required this.controller,
+    required this.focusNode,
   });
 
   @override
@@ -18,6 +20,7 @@ class AddEditRecipeTextField extends StatelessWidget {
       width: width,
       height: 45,
       child: TextField(
+        focusNode: focusNode,
         controller: controller,
         maxLines: 1,
         style: const TextStyle(

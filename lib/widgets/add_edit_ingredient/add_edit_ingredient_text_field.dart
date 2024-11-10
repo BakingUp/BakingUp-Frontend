@@ -8,6 +8,7 @@ class AddEditIngredientTextField extends StatefulWidget {
   final int min;
   final int max;
   final VoidCallback onTextChanged;
+  final FocusNode focusNode;
   const AddEditIngredientTextField({
     super.key,
     required this.controller,
@@ -15,6 +16,7 @@ class AddEditIngredientTextField extends StatefulWidget {
     required this.min,
     required this.max,
     required this.onTextChanged,
+    required this.focusNode,
   });
 
   @override
@@ -47,6 +49,7 @@ class _AddEditIngredientTextFieldState
       height: 45,
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: TextField(
+        focusNode: widget.focusNode,
         controller: widget.controller,
         maxLines: 1,
         keyboardType: TextInputType.number,

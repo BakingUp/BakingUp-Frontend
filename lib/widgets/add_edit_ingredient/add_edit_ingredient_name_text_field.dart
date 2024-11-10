@@ -6,10 +6,12 @@ class AddEditIngredientNameTextField extends StatefulWidget {
   final String label;
   final TextEditingController controller;
   final VoidCallback onTextChanged;
+  final FocusNode focusNode;
   const AddEditIngredientNameTextField({
     super.key,
     required this.label,
     required this.controller,
+    required this.focusNode,
     required this.onTextChanged,
   });
 
@@ -42,6 +44,7 @@ class _AddEditIngredientNameTextFieldState
       width: MediaQuery.of(context).size.width / 2,
       height: 45,
       child: TextField(
+        focusNode: widget.focusNode,
         controller: widget.controller,
         maxLines: 1,
         inputFormatters: [
