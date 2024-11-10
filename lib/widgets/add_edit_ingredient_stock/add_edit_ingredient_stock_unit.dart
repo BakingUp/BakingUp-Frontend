@@ -4,16 +4,16 @@ import 'package:shimmer/shimmer.dart';
 
 class AddEditIngredientStockUnit extends StatelessWidget {
   final String text;
-  final bool isLoading;
+  final bool? isLoading;
   const AddEditIngredientStockUnit({
     super.key,
     required this.text,
-    required this.isLoading,
+    this.isLoading,
   });
 
   @override
   Widget build(BuildContext context) {
-    return isLoading
+    return isLoading!
         ? Shimmer.fromColors(
             baseColor: greyColor,
             highlightColor: whiteColor,
