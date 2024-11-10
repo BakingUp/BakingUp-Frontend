@@ -458,7 +458,7 @@ class _OrderScreenState extends State<OrderScreen> {
                     message: "No results found",
                   ),
                 )
-              else if (tabIndex == 1 && !noResult && filteredOrders.isNotEmpty)
+              else if (tabIndex == 1 && !noResult )
                 // have result + have filter result
                 OrderInfoList(
                   orderList: filteredOrders,

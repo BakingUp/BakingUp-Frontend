@@ -58,7 +58,7 @@ class _InStoreOrderDetailScreenState extends State<InStoreOrderDetailScreen> {
     });
     try {
       final response = await NetworkService.instance.get(
-          'http://10.0.2.2:8000/api/order/getOrderDetail/?order_id=${widget.orderId}');
+          '/api/order/getOrderDetail/?order_id=${widget.orderId}');
       final instoreOrderDetailResponse =
           InstoreOrderDetailResponse.fromJson(response);
       final data = instoreOrderDetailResponse.data;
@@ -175,12 +175,11 @@ class _InStoreOrderDetailScreenState extends State<InStoreOrderDetailScreen> {
                             "order_id": widget.orderId,
                             "order_status": convertOrderStatus(value),
                           };
-                          debugPrint(data.toString());
-                          final response = await NetworkService.instance
+                          await NetworkService.instance
                               .put(
-                                  "http://10.0.2.2:8000/api/order/editOrderStatus",
+                                  "/api/order/editOrderStatus",
                                   data: data)
-                              .then((value) {
+                              .then((res) {
                             setState(() {
                               selectedStatus = value;
                             });
