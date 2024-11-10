@@ -20,8 +20,9 @@ class _SettingFixCostModalState extends State<SettingFixCostModal> {
   bool errorMessage = false;
   Future<void> _getFixCost() async {
     try {
+      int month = DateTime.now().month;
       final response = await NetworkService.instance.get(
-          '/api/settings/getFixCost?user_id=1&created_at=2024-10-01T00:00:00Z');
+          '/api/settings/getFixCost?user_id=1&created_at=2024-$month-01T00:00:00Z');
       final fixcostResponse = UserFixCostResponse.fromJson(response);
       final data = fixcostResponse.data;
 
