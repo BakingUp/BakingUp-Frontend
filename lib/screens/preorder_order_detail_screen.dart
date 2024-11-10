@@ -240,6 +240,7 @@ class _PreorderOrderDetailScreenState extends State<PreorderOrderDetailScreen> {
                           });
                         } catch (e) {
                           log(e.toString());
+                          // ignore: use_build_context_synchronously
                           Navigator.of(context).overlay!.insert(
                             OverlayEntry(
                               builder: (BuildContext context) {
