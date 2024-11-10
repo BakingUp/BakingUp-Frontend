@@ -12,6 +12,7 @@ import 'package:bakingup_frontend/utilities/regex.dart';
 import 'package:bakingup_frontend/widgets/add_ingredient_receipt/add_ingredient_receipt_ingredient_detail_loading.dart';
 import 'package:bakingup_frontend/widgets/baking_up_image_picker_bottom_sheet.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -44,6 +45,7 @@ class _AddIngredientReceiptScreenState
   List<IngredientDetail> ingredientDetail = [];
   File _receiptImage = File('');
   List<ids.Ingredient> ingredientIdsAndNames = [];
+  final userId = FirebaseAuth.instance.currentUser!.uid;
 
   Future<void> _fetchIngredients(File file) async {
     try {
@@ -74,7 +76,7 @@ class _AddIngredientReceiptScreenState
       final data = getIngredientListsFromReceiptResponse.data;
 
       final ingredientData = await NetworkService.instance
-          .get('/api/ingredient/getAllIngredientIDsAndNames?user_id=1');
+          .get('/api/ingredient/getAllIngredientIDsAndNames?user_id=$userId');
 
       final getAllIngredientIdsAndNamesResponse =
           ids.GetAllIngredientIdsAndNamesResponse.fromJson(ingredientData);

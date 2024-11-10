@@ -19,6 +19,7 @@ import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_image_picker.dart';
 import 'package:bakingup_frontend/models/add_edit_ingredient_controller.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -36,6 +37,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
   String selectedUnit = '';
   final AddEditIngredientController _controller = AddEditIngredientController();
   File _receiptImage = File('');
+  final userId = FirebaseAuth.instance.currentUser!.uid;
   FocusNode ingredientNameFocusNode = FocusNode();
   FocusNode ingredientLessThanFocusNode = FocusNode();
   FocusNode daysBeforeExpireFocusNode = FocusNode();
@@ -394,7 +396,7 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
                           "stock_less_than":
                               _controller.ingredientLessThanController.text,
                           "unit": convertUnit(selectedUnit),
-                          "user_id": "1",
+                          "user_id": userId,
                           "img": convertFilesToBase64(_images),
                         };
                         log(data.toString());

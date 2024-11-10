@@ -16,6 +16,7 @@ import 'package:bakingup_frontend/widgets/baking_up_dropdown.dart';
 import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_tab_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -36,6 +37,7 @@ class _AddEditInstoreOrderScreenState extends State<AddEditInstoreOrderScreen> {
   String selectedOrderStatus = '';
   String selectedPickUpMethod = '';
   DateTime selectedDate = DateTime.now();
+  final userId = FirebaseAuth.instance.currentUser!.uid;
 
   final AddEditOrderController _controller = AddEditOrderController();
 
@@ -43,7 +45,7 @@ class _AddEditInstoreOrderScreenState extends State<AddEditInstoreOrderScreen> {
   double total = 0;
   double profit = 0;
 
-  String userID = "1";
+  String userID = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   void initState() {
@@ -542,7 +544,7 @@ class _AddEditInstoreOrderScreenState extends State<AddEditInstoreOrderScreen> {
                                       _controller.orderDateController.text);
                                   try {
                                     final data = {
-                                      "user_id": "1",
+                                      "user_id": userId,
                                       "order_status": convertOrderStatus(
                                           selectedOrderStatus),
                                       "order_platform": convertOrderPlatform(

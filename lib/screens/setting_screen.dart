@@ -27,6 +27,7 @@ class _SettingScreenState extends State<SettingScreen> {
   User? user = FirebaseAuth.instance.currentUser;
   final List<String> languageOption = ["English", "Thai"];
   String selectedLanguage = "";
+  final userId = FirebaseAuth.instance.currentUser!.uid;
   Future<void> _deleteAccount() async {
     showDialog(
       context: context,
@@ -71,7 +72,7 @@ class _SettingScreenState extends State<SettingScreen> {
 
   Future<void> _getUserLanguage() async {
     final response = await NetworkService.instance
-        .get('/api/settings/getLanguage?user_id=1');
+        .get('/api/settings/getLanguage?user_id=$userId');
 
     final userLanguageResponse = UserLanguageResponse.fromJson(response);
     final data = userLanguageResponse.data;
@@ -81,7 +82,7 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   Future<void> _changeUserLanguage() async {
-    final data = {"user_id": "1", "language": selectedLanguage};
+    final data = {"user_id": userId, "language": selectedLanguage};
     try {
       await NetworkService.instance
           .put('/api/settings/changeLanguage', data: data);

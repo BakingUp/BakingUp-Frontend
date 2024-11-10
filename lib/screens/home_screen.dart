@@ -10,6 +10,7 @@ import 'package:bakingup_frontend/widgets/baking_up_filter_two_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_no_result.dart';
 import 'package:bakingup_frontend/widgets/home/home_top_filter_bottom.dart';
 import 'package:bakingup_frontend/widgets/home/home_top_filter_list.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -37,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
     DateTime.now(),
   ];
   final TextEditingController dateController = TextEditingController();
+  final userId = FirebaseAuth.instance.currentUser!.uid;
 
   List<TopProductItem> topProductList = [];
   String filterName = "Best Selling";
@@ -62,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
         filterEndDateTime = endDateTime.toIso8601String();
       }
       final response = await NetworkService.instance.get(
-          '/api/home/getDashboardChartData?user_id=1&start_date_time=$filterStartDateTime&end_date_time=$filterEndDateTime');
+          '/api/home/getDashboardChartData?user_id={$userId}&start_date_time=$filterStartDateTime&end_date_time=$filterEndDateTime');
       final chartDataResponse = DashboardChartResponse.fromJson(response);
       final data = chartDataResponse.data;
       setState(() {
@@ -87,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     try {
       final response = await NetworkService.instance
-          .get('/api/home/getUnreadNotification?user_id=1');
+          .get('/api/home/getUnreadNotification?user_id=$userId');
       final unreadNotiResponse = UnreadNotificationResponse.fromJson(response);
       final data = unreadNotiResponse.data;
       setState(() {
@@ -111,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     List<String> orderPlatform = ["STORE"];
     List<String> orderType = ["BULK_ORDER"];
-    String userID = "1";
+    String userID = FirebaseAuth.instance.currentUser!.uid;
     try {
       final data = {
         "filter_type": filterName,
@@ -157,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     List<String> orderPlatform = [];
     List<String> orderType = [];
-    String userID = "1";
+    String userID = FirebaseAuth.instance.currentUser!.uid;
 
     if (filterType != "Wasted Ingredients" &&
         filterType != "Wasted Bakery Stock") {

@@ -14,6 +14,7 @@ import 'package:bakingup_frontend/widgets/baking_up_search_bar.dart';
 import 'package:bakingup_frontend/widgets/baking_up_tab_button.dart';
 import 'package:bakingup_frontend/widgets/warehouse/warehouse_ingredient/warehouse_ingredient_list.dart';
 import 'package:bakingup_frontend/widgets/warehouse/warehouse_recipe/warehouse_recipes_list.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class WarehouseScreen extends StatefulWidget {
@@ -54,6 +55,8 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
   FocusNode recipeSearchFocusNode = FocusNode();
   FocusNode ingredientSearchFocusNode = FocusNode();
   bool noResult = false;
+  final userId = FirebaseAuth.instance.currentUser!.uid;
+
   @override
   void initState() {
     super.initState();
@@ -70,7 +73,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
 
     try {
       final response = await NetworkService.instance
-          .get('/api/recipe/getAllRecipes?user_id=1');
+          .get('/api/recipe/getAllRecipes?user_id=$userId');
 
       final recipeListResponse = RecipeListResponse.fromJson(response);
       final data = recipeListResponse.data;
@@ -104,7 +107,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
 
     try {
       final response = await NetworkService.instance
-          .get('/api/ingredient/getAllIngredients?user_id=1');
+          .get('/api/ingredient/getAllIngredients?user_id=$userId');
 
       final ingredientListResponse = IngredientListResponse.fromJson(response);
       final data = ingredientListResponse.data;

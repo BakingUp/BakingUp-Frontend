@@ -10,6 +10,7 @@ import 'package:bakingup_frontend/widgets/baking_up_loading_dialog.dart';
 import 'package:bakingup_frontend/widgets/baking_up_no_result.dart';
 import 'package:bakingup_frontend/widgets/notifications/notifications_message_box.dart';
 import 'package:bakingup_frontend/widgets/notifications/notifications_message_section_loading.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class NotificationScreen extends StatefulWidget {
@@ -25,6 +26,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   bool isError = false;
   String date = "";
   bool noResult = false;
+  final userId = FirebaseAuth.instance.currentUser!.uid;
 
   Future<void> _getAllNotifications() async {
     setState(() {
@@ -37,7 +39,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
     try {
       final response = await NetworkService.instance
-          .get('/api/noti/getAllNotifications?user_id=1');
+          .get('/api/noti/getAllNotifications?user_id=$userId');
 
       final notiResponse = NotificationsResponse.fromJson(response);
       final data = notiResponse.data;
@@ -107,7 +109,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
     try {
       await NetworkService.instance
-          .put('/api/noti/readAllNotifications?user_id=1');
+          .put('/api/noti/readAllNotifications?user_id=$userId');
 
       _getAllNotifications();
     } catch (e) {

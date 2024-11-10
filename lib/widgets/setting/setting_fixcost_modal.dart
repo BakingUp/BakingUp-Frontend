@@ -4,6 +4,7 @@ import 'package:bakingup_frontend/models/setting/setting_fixcost_controller.dart
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:bakingup_frontend/widgets/setting/setting_fixcost_item.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SettingFixCostModal extends StatefulWidget {
@@ -16,12 +17,13 @@ class SettingFixCostModal extends StatefulWidget {
 class _SettingFixCostModalState extends State<SettingFixCostModal> {
   SettingFixCostController fixcostController = SettingFixCostController();
   String id = "";
+  final userId = FirebaseAuth.instance.currentUser!.uid;
   final _formKey = GlobalKey<FormState>();
   bool errorMessage = false;
   Future<void> _getFixCost() async {
     try {
       final response = await NetworkService.instance.get(
-          '/api/settings/getFixCost?user_id=1&created_at=2024-10-01T00:00:00Z');
+          '/api/settings/getFixCost?user_id=$userId&created_at=2024-10-01T00:00:00Z');
       final fixcostResponse = UserFixCostResponse.fromJson(response);
       final data = fixcostResponse.data;
 

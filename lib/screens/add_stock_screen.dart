@@ -1,5 +1,6 @@
 // Importing libraries
 import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -37,6 +38,7 @@ class _AddStockScreenState extends State<AddStockScreen> {
   FocusNode sellingPriceFocusNode = FocusNode();
   FocusNode expirationDateFocusNode = FocusNode();
   FocusNode stockLessThanFocusNode = FocusNode();
+  final userId = FirebaseAuth.instance.currentUser!.uid;
 
   Future<void> _fetchRecipeList() async {
     setState(() {
@@ -46,12 +48,12 @@ class _AddStockScreenState extends State<AddStockScreen> {
 
     try {
       final recipeResponse = await NetworkService.instance
-          .get('/api/recipe/getAllRecipes?user_id=1');
+          .get('/api/recipe/getAllRecipes?user_id=$userId');
       final recipeListResponse = RecipeListResponse.fromJson(recipeResponse);
       final recipeData = recipeListResponse.data;
 
       final stockResponse = await NetworkService.instance
-          .get('/api/stock/getAllStocks?user_id=1');
+          .get('/api/stock/getAllStocks?user_id=$userId');
       final stockListResponse = StockListResponse.fromJson(stockResponse);
       final stockData = stockListResponse.data;
 

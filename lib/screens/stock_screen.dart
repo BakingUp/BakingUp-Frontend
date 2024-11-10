@@ -13,6 +13,7 @@ import 'package:bakingup_frontend/widgets/baking_up_filter_two_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_no_result.dart';
 import 'package:bakingup_frontend/widgets/baking_up_search_bar.dart';
 import 'package:bakingup_frontend/widgets/stock/stock_list.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class StockScreen extends StatefulWidget {
@@ -41,6 +42,7 @@ class _StockScreenState extends State<StockScreen> {
   String selectedStockSorting = "Ascending Order";
   FocusNode stockSearchFocusNode = FocusNode();
   bool noResult = false;
+  final userId = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   void initState() {
@@ -58,10 +60,10 @@ class _StockScreenState extends State<StockScreen> {
 
     try {
       final response = await NetworkService.instance
-          .get('/api/stock/getAllStocks?user_id=1');
+          .get('/api/stock/getAllStocks?user_id=$userId');
 
       final recipeResponse = await NetworkService.instance
-          .get('/api/recipe/getAllRecipes?user_id=1');
+          .get('/api/recipe/getAllRecipes?user_id=$userId');
 
       final stockResponse = StockListResponse.fromJson(response);
       final allRecipeResponse = RecipeListResponse.fromJson(recipeResponse);
