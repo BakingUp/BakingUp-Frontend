@@ -14,6 +14,7 @@ import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart'
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:bakingup_frontend/models/add_edit_ingredient_controller.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -37,6 +38,7 @@ class _EditIngredientScreenState extends State<EditIngredientScreen> {
   FocusNode ingredientNameFocusNode = FocusNode();
   FocusNode ingredientLessThanFocusNode = FocusNode();
   FocusNode daysBeforeExpireFocusNode = FocusNode();
+  final userId = FirebaseAuth.instance.currentUser!.uid;
 
   String convertAbbreviation(String abbreviation) {
     switch (abbreviation) {
@@ -376,7 +378,7 @@ class _EditIngredientScreenState extends State<EditIngredientScreen> {
                               _controller.thaiNameController.text,
                           "stock_less_than":
                               _controller.ingredientLessThanController.text,
-                          "user_id": "1",
+                          "user_id": userId,
                           "ingredient_id": widget.ingredientId,
                         };
                         log(data.toString());

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_unit.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -45,6 +46,7 @@ class _AddIngredientStockScreenState extends State<AddIngredientStockScreen> {
   FocusNode priceFocusNode = FocusNode();
   FocusNode supplierFocusNode = FocusNode();
   FocusNode noteFocusNode = FocusNode();
+  final userId = FirebaseAuth.instance.currentUser!.uid;
 
   final AddEditIngredientStockController _controller =
       AddEditIngredientStockController();
@@ -444,7 +446,7 @@ class _AddIngredientStockScreenState extends State<AddIngredientStockScreen> {
                     secondButtonOnClick: () async {
                       try {
                         final data = {
-                          "user_id": "1",
+                          "user_id": userId,
                           "ingredient_id": widget.ingredientId,
                           "price": _controller.priceController.text,
                           "quantity": _controller.quantityController.text,

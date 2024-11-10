@@ -7,6 +7,7 @@ import 'package:bakingup_frontend/widgets/baking_up_filter_two_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_no_result.dart';
 import 'package:bakingup_frontend/widgets/baking_up_search_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class AddEditOrderStockScreen extends StatefulWidget {
@@ -43,7 +44,7 @@ class _AddEditOrderStockScreenState extends State<AddEditOrderStockScreen> {
   final TextEditingController _searchController = TextEditingController();
   FocusNode searchFocusNode = FocusNode();
 
-  String userID = "1";
+  String userID = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   void initState() {

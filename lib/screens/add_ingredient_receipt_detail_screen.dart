@@ -22,6 +22,7 @@ import 'package:bakingup_frontend/widgets/baking_up_dropdown.dart';
 import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_image_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -63,6 +64,7 @@ class _AddIngredientReceiptDetailScreenState
   bool isIngredientNameInIngredientNames = false;
   final AddIngredientReceiptDetailController _controller =
       AddIngredientReceiptDetailController();
+  final userId = FirebaseAuth.instance.currentUser!.uid;
   String ingredientId = '';
   FocusNode ingredientNameFocusNode = FocusNode();
   FocusNode ingredientLessThanFocusNode = FocusNode();
@@ -631,7 +633,7 @@ class _AddIngredientReceiptDetailScreenState
                       if (isIngredientNameInIngredientNames) {
                         try {
                           final data = {
-                            "user_id": "1",
+                            "user_id": userId,
                             "ingredient_id": ingredientId,
                             "price": _controller.priceController.text,
                             "quantity": _controller.quantityController.text,
@@ -700,7 +702,7 @@ class _AddIngredientReceiptDetailScreenState
                                 _controller.ingredientLessThanController.text,
                             "supplier": _controller.supplierController.text,
                             "unit": convertUnit(selectedUnit),
-                            "user_id": "1",
+                            "user_id": userId,
                           };
                           log(data.toString());
                           await NetworkService.instance

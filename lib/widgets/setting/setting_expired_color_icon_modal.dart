@@ -4,6 +4,7 @@ import 'package:bakingup_frontend/models/setting/setting_expired_color_icon._con
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:bakingup_frontend/widgets/setting/setting_expired_color_icon_item.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SettingExpiredColorIconModal extends StatefulWidget {
@@ -19,11 +20,12 @@ class _SettingExpiredColorIconModalState
   final SettingExpiredColorIconController _expiredColorIconController =
       SettingExpiredColorIconController();
   final _formKey = GlobalKey<FormState>();
+  final userId = FirebaseAuth.instance.currentUser!.uid;
 
   Future<void> _getExpirationDateColors() async {
     try {
       final response = await NetworkService.instance
-          .get('/api/settings/getColorExpired?user_id=1');
+          .get('/api/settings/getColorExpired?user_id=$userId');
       final expirationColorsResponse =
           UserExpiredColorResponse.fromJson(response);
       final data = expirationColorsResponse.data;
@@ -44,7 +46,7 @@ class _SettingExpiredColorIconModalState
   Future<void> _changeExpiredColorIcon() async {
     try {
       final data = {
-        "user_id": "1",
+        "user_id": userId,
         "black_expiration_date": int.parse(_expiredColorIconController.black),
         "red_expiration_date": int.parse(_expiredColorIconController.red),
         "yellow_expiration_date": int.parse(_expiredColorIconController.yellow)

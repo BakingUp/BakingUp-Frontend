@@ -1,4 +1,5 @@
 // Importing libraries
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -40,6 +41,7 @@ class _AddEditRecipeIngredientScreenState
   FocusNode ingredientSearchFocusNode = FocusNode();
   String selectedIngredientFiltering = "Stock Name";
   String selectedIngredientSorting = "Ascending Order";
+  final userId = FirebaseAuth.instance.currentUser!.uid;
   final List<String> ingredientFilterList = [
     'Stock Name',
     'Quantity',
@@ -67,7 +69,7 @@ class _AddEditRecipeIngredientScreenState
 
     try {
       final response = await NetworkService.instance
-          .get('/api/ingredient/getAllIngredients?user_id=1');
+          .get('/api/ingredient/getAllIngredients?user_id=$userId');
 
       final ingredientListResponse = IngredientListResponse.fromJson(response);
       final data = ingredientListResponse.data;

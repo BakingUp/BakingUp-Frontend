@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -33,6 +34,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
   final FocusNode totalMinsFocusNode = FocusNode();
   final FocusNode servingsFocusNode = FocusNode();
   final FocusNode instructionFocusNode = FocusNode();
+  final userId = FirebaseAuth.instance.currentUser!.uid;
 
   List<RecipeIngredient> recipeIngredients = [];
 
@@ -152,7 +154,7 @@ class _AddRecipeScreenState extends State<AddRecipeScreen> {
                 onSave: () async {
                   try {
                     final data = {
-                      "user_id": "1",
+                      "user_id": userId,
                       "recipe_eng_name": controller.engNameController.text,
                       "recipe_thai_name": controller.thaiNameController.text,
                       "recipe_img": convertFilesToBase64(_recipeImages),
