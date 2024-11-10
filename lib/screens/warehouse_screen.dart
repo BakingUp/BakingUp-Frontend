@@ -1,12 +1,13 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/enum/expiration_status.dart';
 import 'package:bakingup_frontend/models/warehouse.dart';
-import 'package:bakingup_frontend/screens/add_edit_ingredient_screen.dart';
-import 'package:bakingup_frontend/screens/add_edit_recipe_screen.dart';
+import 'package:bakingup_frontend/screens/add_ingredient_screen.dart';
+import 'package:bakingup_frontend/screens/add_recipe_screen.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/bottom_navbar.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
+import 'package:bakingup_frontend/widgets/baking_up_error.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_modal_bottom.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_two_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_no_result.dart';
@@ -14,6 +15,7 @@ import 'package:bakingup_frontend/widgets/baking_up_search_bar.dart';
 import 'package:bakingup_frontend/widgets/baking_up_tab_button.dart';
 import 'package:bakingup_frontend/widgets/warehouse/warehouse_ingredient/warehouse_ingredient_list.dart';
 import 'package:bakingup_frontend/widgets/warehouse/warehouse_recipe/warehouse_recipes_list.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class WarehouseScreen extends StatefulWidget {
@@ -54,6 +56,8 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
   FocusNode recipeSearchFocusNode = FocusNode();
   FocusNode ingredientSearchFocusNode = FocusNode();
   bool noResult = false;
+  final userId = FirebaseAuth.instance.currentUser!.uid;
+
   @override
   void initState() {
     super.initState();
@@ -70,7 +74,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
 
     try {
       final response = await NetworkService.instance
-          .get('/api/recipe/getAllRecipes?user_id=1');
+          .get('/api/recipe/getAllRecipes?user_id=$userId');
 
       final recipeListResponse = RecipeListResponse.fromJson(response);
       final data = recipeListResponse.data;
@@ -104,7 +108,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
 
     try {
       final response = await NetworkService.instance
-          .get('/api/ingredient/getAllIngredients?user_id=1');
+          .get('/api/ingredient/getAllIngredients?user_id=$userId');
 
       final ingredientListResponse = IngredientListResponse.fromJson(response);
       final data = ingredientListResponse.data;
@@ -291,7 +295,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const AddEditRecipeScreen(),
+                          builder: (context) => const AddRecipeScreen(),
                         ),
                       ).then((_) {
                         _fetchRecipeList();
@@ -300,7 +304,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const AddEditIngredientScreen(),
+                          builder: (context) => const AddIngredientScreen(),
                         ),
                       ).then((_) {
                         _fetchIngredientList();
@@ -410,7 +414,12 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                       ],
                     ),
                   ),
-                  if (tabIndex == 1 && noResult)
+                  if (tabIndex == 1 && isError)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: const BakingUpError(),
+                    )
+                  else if (tabIndex == 1 && noResult)
                     Container(
                       margin: EdgeInsets.only(
                           top: MediaQuery.of(context).size.height * 0.1),
@@ -435,7 +444,12 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                       isLoading: isLoading,
                       fetchRecipeList: _fetchRecipeList,
                     ),
-                  if (tabIndex == 2 && noResult)
+                  if (tabIndex == 2 && isError)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: const BakingUpError(),
+                    )
+                  else if (tabIndex == 2 && noResult)
                     Container(
                       margin: EdgeInsets.only(
                           top: MediaQuery.of(context).size.height * 0.1),

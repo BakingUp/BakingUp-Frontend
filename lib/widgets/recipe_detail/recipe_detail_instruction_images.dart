@@ -1,5 +1,6 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class RecipeDetailInstructionImages extends StatefulWidget {
@@ -60,7 +61,7 @@ class _RecipeDetailInstructionImagesState
                 },
                 child: !widget.isLoading
                     ? Image.network(
-                        widget.imageUrl[index],
+                        '${dotenv.env['API_BASE_URL']}/${widget.imageUrl[index]}',
                         fit: BoxFit.cover,
                       )
                     : Container(),

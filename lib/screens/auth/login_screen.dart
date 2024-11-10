@@ -2,8 +2,10 @@ import 'package:bakingup_frontend/models/auth/login_controller.dart';
 import 'package:bakingup_frontend/screens/home_screen.dart';
 import 'package:bakingup_frontend/screens/auth/register_screen.dart';
 import 'package:bakingup_frontend/screens/auth/forgot_password_screen.dart';
+import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/widgets/baking_up_theme_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:bakingup_frontend/constants/colors.dart';
 
@@ -20,9 +22,21 @@ class _LoginScreenState extends State<LoginScreen> {
   String errorMessage = "";
   final LoginTextEditController _loginController = LoginTextEditController();
 
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  FirebaseAuth user = FirebaseAuth.instance;
+
   void navigate() {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+  }
+
+  Future<String> getDeviceToken() async {
+    try {
+      return (await messaging.getToken()) ?? '';
+    } catch (e) {
+      debugPrint("Error retrieving device token: $e");
+      return '';
+    }
   }
 
   @override
@@ -78,6 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               children: [
                                 Expanded(
                                     child: TextFormField(
+                                  cursorColor: darkBrownColor,
                                   controller: _loginController.emailController,
                                   validator: (value) {
                                     if (value == null ||
@@ -99,7 +114,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                         ),
                                       ),
                                       focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(color: darkBrownColor, width: 2),
+                                        borderSide: BorderSide(
+                                            color: darkBrownColor, width: 2),
                                         borderRadius: BorderRadius.circular(25),
                                       ),
                                       prefixIcon: Icon(
@@ -131,13 +147,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               children: [
                                 Expanded(
                                     child: TextFormField(
+                                  cursorColor: darkBrownColor,
                                   controller:
                                       _loginController.passwordController,
                                   obscureText: passwordVisible,
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       setState(() => errorMessage = "");
-                                      return 'Please enter password';
+                                      return 'Please enter a password';
                                     }
                                     return null;
                                   },
@@ -150,7 +167,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                             Radius.circular(25)),
                                       ),
                                       focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(color: darkBrownColor, width: 2),
+                                        borderSide: BorderSide(
+                                            color: darkBrownColor, width: 2),
                                         borderRadius: BorderRadius.circular(25),
                                       ),
                                       prefixIcon: Icon(
@@ -287,8 +305,35 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 email: _loginController.email,
                                                 password:
                                                     _loginController.password);
-                                        navigate();
+
+                                        var token = await getDeviceToken();
+                                        final data = {
+                                          "user_id": user.currentUser?.uid,
+                                          "device_token": token,
+                                        };
+
+                                        final response =
+                                            await NetworkService.instance
+                                                .post(
+                                          "/api/auth/addDeviceToken",
+                                          data: data,
+                                        )
+                                                .catchError((error) {
+                                          debugPrint(
+                                              "Post request failed: $error");
+                                        });
+
+                                        if (response == null) {
+                                          debugPrint('API response is null');
+                                        } else if (response is! Map) {
+                                          debugPrint(
+                                              'Unexpected response type: ${response.runtimeType}');
+                                        } else {
+                                          debugPrint('API response: $response');
+                                        }
+
                                         debugPrint("Successfully login");
+                                        navigate();
                                       } on FirebaseAuthException catch (e) {
                                         // ignore: use_build_context_synchronously
                                         Navigator.of(context).pop();

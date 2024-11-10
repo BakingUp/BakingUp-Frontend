@@ -7,7 +7,7 @@ import 'package:shimmer/shimmer.dart';
 
 class RecipeDetailInstructionsSection extends StatelessWidget {
   final List<String> instructionUrls;
-  final List<String> instructionSteps;
+  final String instructionSteps;
   final bool isLoading;
   const RecipeDetailInstructionsSection({
     super.key,
@@ -21,7 +21,7 @@ class RecipeDetailInstructionsSection extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(25, 0, 25, 8),
       child: SizedBox(
-        height: MediaQuery.of(context).size.height - 550,
+        height: MediaQuery.of(context).size.height - 520,
         child: SingleChildScrollView(
           child: Column(
             children: [

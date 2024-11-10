@@ -1,13 +1,17 @@
-import 'package:bakingup_frontend/screens/add_edit_recipe_screen.dart';
+import 'package:bakingup_frontend/screens/add_recipe_screen.dart';
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class AddEditRecipeIngredient extends StatelessWidget {
   final List<RecipeIngredient> recipeIngredients;
   final int index;
 
-  const AddEditRecipeIngredient(
-      {super.key, required this.recipeIngredients, required this.index});
+  const AddEditRecipeIngredient({
+    super.key,
+    required this.recipeIngredients,
+    required this.index,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +38,18 @@ class AddEditRecipeIngredient extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(13),
                 child: Image.network(
-                  recipeIngredients[index].imgUrl,
+                  "${dotenv.env['API_BASE_URL']}/${recipeIngredients[index].imgUrl}",
                   width: 90,
                   height: 60,
                   fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset(
+                      'assets/icons/no-image.jpg',
+                      width: 90,
+                      height: 60,
+                      fit: BoxFit.cover,
+                    );
+                  },
                 ),
               ),
               const Padding(padding: EdgeInsets.only(right: 16.0)),
@@ -60,7 +72,7 @@ class AddEditRecipeIngredient extends StatelessWidget {
             children: [
               const Padding(padding: EdgeInsets.only(left: 20.0)),
               Text(
-                recipeIngredients[index].quantity,
+                "${recipeIngredients[index].quantity} ${recipeIngredients[index].unit}",
                 style: TextStyle(
                   color: blackColor,
                   fontFamily: 'Inter',

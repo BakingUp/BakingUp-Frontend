@@ -1,12 +1,16 @@
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/utilities/regex.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shimmer/shimmer.dart';
 
 class RecipeDetailHiddenCosts extends StatelessWidget {
   final bool isLoading;
+  final double hiddenCost;
   const RecipeDetailHiddenCosts({
     super.key,
     required this.isLoading,
+    required this.hiddenCost,
   });
 
   @override
@@ -21,9 +25,9 @@ class RecipeDetailHiddenCosts extends StatelessWidget {
               color: Colors.white,
             ),
           )
-        : const Text(
-            '12.8 ฿',
-            style: TextStyle(
+        : Text(
+            "${hiddenCost == -1 ? "-" : NumberFormat('#,##0.00').format(hiddenCost).replaceAll(removeTrailingZeros, '')} ฿",
+            style: const TextStyle(
               fontSize: 16,
               fontFamily: 'Inter',
               fontStyle: FontStyle.normal,

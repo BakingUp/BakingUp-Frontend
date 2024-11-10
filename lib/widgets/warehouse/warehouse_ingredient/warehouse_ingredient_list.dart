@@ -36,6 +36,15 @@ class _WarehouseIngredientListState extends State<WarehouseIngredientList> {
 
     await NetworkService.instance
         .delete('/api/ingredient/deleteIngredient?ingredient_id=$ingredientId');
+
+    if (widget.ingredientList.length == 1) {
+      widget.fetchIngredientList();
+    } else {
+      setState(() {
+        widget.ingredientList.removeWhere(
+            (ingredient) => ingredient.ingredientId == ingredientId);
+      });
+    }
   }
 
   @override
@@ -129,11 +138,6 @@ class _WarehouseIngredientListState extends State<WarehouseIngredientList> {
                                     },
                                   );
                                 });
-                          },
-                          onDismissed: (direction) {
-                            setState(() {
-                              widget.ingredientList.removeAt(index);
-                            });
                           },
                           child: WarehouseIngredientsItem(
                             ingredientList: widget.ingredientList,

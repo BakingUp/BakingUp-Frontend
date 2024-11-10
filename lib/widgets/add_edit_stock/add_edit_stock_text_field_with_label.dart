@@ -1,8 +1,18 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:flutter/material.dart';
 
-class AddEditStockLstTextField extends StatelessWidget {
-  const AddEditStockLstTextField({super.key});
+class AddEditStockTextFieldWithLabel extends StatelessWidget {
+  final TextEditingController controller;
+  final String labelText;
+  final FocusNode focusNode;
+  final VoidCallback onTextChanged;
+  const AddEditStockTextFieldWithLabel({
+    super.key,
+    required this.controller,
+    required this.labelText,
+    required this.focusNode,
+    required this.onTextChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -10,6 +20,9 @@ class AddEditStockLstTextField extends StatelessWidget {
       width: 120,
       height: 45,
       child: TextField(
+        onChanged: (_) => onTextChanged(),
+        focusNode: focusNode,
+        controller: controller,
         maxLines: 1,
         style: const TextStyle(
           fontSize: 12,
@@ -26,7 +39,7 @@ class AddEditStockLstTextField extends StatelessWidget {
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: darkGreyColor, width: 0.5),
           ),
-          labelText: "LST",
+          labelText: labelText,
           floatingLabelBehavior: FloatingLabelBehavior.always,
           labelStyle: const TextStyle(
             fontFamily: 'Inter',

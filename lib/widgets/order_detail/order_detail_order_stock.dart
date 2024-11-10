@@ -1,12 +1,15 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/models/instore_order_detail.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class OrderDetailOrderStock extends StatelessWidget {
   final List<OrderStock> orderStockList;
   final int index;
+  final bool isPreOrder;
+
   const OrderDetailOrderStock(
-      {super.key, required this.orderStockList, required this.index});
+      {super.key, required this.orderStockList, required this.index, required this.isPreOrder});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +17,7 @@ class OrderDetailOrderStock extends StatelessWidget {
       margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
       padding: const EdgeInsets.fromLTRB(12, 20, 12, 20),
       decoration: BoxDecoration(
-        color: beigeColor,
+        color: isPreOrder ? pinkColor : beigeColor,
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
@@ -33,11 +36,19 @@ class OrderDetailOrderStock extends StatelessWidget {
               ClipRRect(
                 borderRadius: BorderRadius.circular(13),
                 child: Image.network(
-                  orderStockList[index].imgUrl,
-                  width: 90,
-                  height: 60,
-                  fit: BoxFit.cover,
-                ),
+                      '${dotenv.env['API_BASE_URL']}/${orderStockList[index].imgUrl}',
+                      width: 90,
+                      height: 60,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          'assets/icons/no-image.jpg',
+                          width: 90,
+                          height: 60,
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
               ),
               const Padding(padding: EdgeInsets.only(right: 16.0)),
             ],

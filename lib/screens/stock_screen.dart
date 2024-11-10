@@ -1,16 +1,19 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/enum/lst_status.dart';
 import 'package:bakingup_frontend/models/stock.dart';
-import 'package:bakingup_frontend/screens/add_edit_stock_screen.dart';
+import 'package:bakingup_frontend/models/warehouse.dart';
+import 'package:bakingup_frontend/screens/add_stock_screen.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/bottom_navbar.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
+import 'package:bakingup_frontend/widgets/baking_up_error.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_modal_bottom.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_two_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_no_result.dart';
 import 'package:bakingup_frontend/widgets/baking_up_search_bar.dart';
 import 'package:bakingup_frontend/widgets/stock/stock_list.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class StockScreen extends StatefulWidget {
@@ -27,6 +30,7 @@ class _StockScreenState extends State<StockScreen> {
   List<StockItemData> stocks = [];
   List<StockItemData> filteredStocks = [];
   final TextEditingController _searchStockController = TextEditingController();
+  int recipeLength = -1;
   final List<String> stockFilterList = [
     'Stock Name',
     'Quantity',
@@ -38,6 +42,7 @@ class _StockScreenState extends State<StockScreen> {
   String selectedStockSorting = "Ascending Order";
   FocusNode stockSearchFocusNode = FocusNode();
   bool noResult = false;
+  final userId = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   void initState() {
@@ -55,14 +60,21 @@ class _StockScreenState extends State<StockScreen> {
 
     try {
       final response = await NetworkService.instance
-          .get('/api/stock/getAllStocks?user_id=1');
+          .get('/api/stock/getAllStocks?user_id=$userId');
+
+      final recipeResponse = await NetworkService.instance
+          .get('/api/recipe/getAllRecipes?user_id=$userId');
 
       final stockResponse = StockListResponse.fromJson(response);
+      final allRecipeResponse = RecipeListResponse.fromJson(recipeResponse);
 
       final data = stockResponse.data;
+      final allRecipeLength = allRecipeResponse.data.recipeList.length;
+
       setState(() {
         stocks = data.stocks;
         filteredStocks = stocks;
+        recipeLength = allRecipeLength;
         if (stockResponse.status == 200 && stocks.isEmpty) {
           noResult = true;
         }
@@ -145,118 +157,181 @@ class _StockScreenState extends State<StockScreen> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        stockSearchFocusNode.unfocus();
-      },
-      child: Scaffold(
-        backgroundColor: backgroundColor,
-        appBar: AppBar(
+        onTap: () {
+          stockSearchFocusNode.unfocus();
+        },
+        child: Scaffold(
           backgroundColor: backgroundColor,
-          scrolledUnderElevation: 0,
-          title: const Text(
-            "Bakery Stock",
-            style: TextStyle(
-              fontSize: 24,
-              fontFamily: 'Inter',
-              fontStyle: FontStyle.normal,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          leading: Builder(
-            builder: (context) {
-              return IconButton(
-                icon: const Icon(Icons.menu),
-                onPressed: () {
-                  Scaffold.of(context).openDrawer();
-                },
-              );
-            },
-          ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 14.0),
-              child: BakingUpCircularAddButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const AddEditStockScreen()));
-                },
+          appBar: AppBar(
+            backgroundColor: backgroundColor,
+            scrolledUnderElevation: 0,
+            title: const Text(
+              "Bakery Stock",
+              style: TextStyle(
+                fontSize: 24,
+                fontFamily: 'Inter',
+                fontStyle: FontStyle.normal,
+                fontWeight: FontWeight.w500,
               ),
-            )
-          ],
-        ),
-        bottomNavigationBar: const BottomNavbar(),
-        drawer: BakingUpDrawer(
-          currentDrawerIndex: _currentDrawerIndex,
-        ),
-        body: Container(
-            margin: const EdgeInsets.only(top: 20),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(40, 0, 40, 15),
-                  child: Row(
-                    children: [
-                      BakingUpSearchBar(
-                        hintText: 'Search Bakery Stock',
-                        controller: _searchStockController,
-                        onChanged: _searchStocks,
-                        focusNode: stockSearchFocusNode,
+            ),
+            leading: Builder(
+              builder: (context) {
+                return IconButton(
+                  icon: const Icon(Icons.menu),
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                );
+              },
+            ),
+            actions: [
+              recipeLength != stocks.length
+                  ? Padding(
+                      padding: const EdgeInsets.only(right: 14.0),
+                      child: BakingUpCircularAddButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AddStockScreen(),
+                            ),
+                          ).then((value) {
+                            _fetchStockList();
+                          });
+                        },
                       ),
-                      const SizedBox(width: 12),
-                      GestureDetector(
-                          onTap: () {
-                            showModalBottomSheet<void>(
-                              context: context,
-                              backgroundColor: backgroundColor,
-                              shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(40.0),
-                                  topRight: Radius.circular(40.0),
+                    )
+                  : Container()
+            ],
+          ),
+          bottomNavigationBar: const BottomNavbar(),
+          drawer: BakingUpDrawer(
+            currentDrawerIndex: _currentDrawerIndex,
+          ),
+          body: Container(
+              margin: const EdgeInsets.only(top: 20),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(40, 0, 40, 15),
+                    child: Row(
+                      children: [
+                        BakingUpSearchBar(
+                          hintText: 'Search Bakery Stock',
+                          controller: _searchStockController,
+                          onChanged: _searchStocks,
+                          focusNode: stockSearchFocusNode,
+                        ),
+                        const SizedBox(width: 12),
+                        GestureDetector(
+                            onTap: () {
+                              showModalBottomSheet<void>(
+                                context: context,
+                                backgroundColor: backgroundColor,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(40.0),
+                                    topRight: Radius.circular(40.0),
+                                  ),
                                 ),
-                              ),
-                              builder: (BuildContext context) {
-                                return BakingUpFilterModalBottom(
-                                  optionsOne: stockFilterList,
-                                  optionOneName: "Filter by",
-                                  defaultFilteringValue: selectedStockFiltering,
-                                  defaultSortingValue: selectedStockSorting,
-                                  filterFunction: _filterStocks,
-                                );
-                              },
-                            );
-                          },
-                          child: const BakingUpFilterTwoButton())
-                    ],
+                                builder: (BuildContext context) {
+                                  return BakingUpFilterModalBottom(
+                                    optionsOne: stockFilterList,
+                                    optionOneName: "Filter by",
+                                    defaultFilteringValue:
+                                        selectedStockFiltering,
+                                    defaultSortingValue: selectedStockSorting,
+                                    filterFunction: _filterStocks,
+                                  );
+                                },
+                              );
+                            },
+                            child: const BakingUpFilterTwoButton())
+                      ],
+                    ),
                   ),
-                ),
-                if (noResult)
-                  Container(
-                    margin: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height * 0.15),
-                    child: const BakingUpNoResult(
-                      message: "You currently have no stocks",
+                  if (isError)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 40,
+                        vertical: 10,
+                      ),
+                      child: const BakingUpError(),
+                    )
+                  else if (noResult)
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height * 0.15),
+                      child: const BakingUpNoResult(
+                        message: "You currently have no stocks",
+                      ),
+                    )
+                  else if (!noResult &&
+                      stocks.isNotEmpty &&
+                      filteredStocks.isEmpty)
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.height * 0.15),
+                      child: const BakingUpNoResult(
+                        message: "No results found",
+                      ),
+                    )
+                  else if (!noResult)
+                    StockList(
+                      stockList: filteredStocks,
+                      isLoading: isLoading,
+                      fetchStocks: _fetchStockList,
                     ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              color: greyColor,
+                              borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(13),
+                                  bottomLeft: Radius.circular(13))),
+                          child: Tooltip(
+                            verticalOffset: -20,
+                            showDuration: const Duration(seconds: 5),
+                            margin: const EdgeInsets.only(right: 40),
+                            triggerMode: TooltipTriggerMode.tap,
+                            padding: EdgeInsets.zero,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[700],
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            richMessage: TextSpan(
+                              children: [
+                                WidgetSpan(
+                                  child: Container(
+                                    width: 200,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 8),
+                                    child: const Text(
+                                      "These colors on each stock refer to its low stock threshold.",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 13,
+                                          fontFamily: 'Inter',
+                                          fontStyle: FontStyle.normal,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            child: Image.asset(
+                              'assets/icons/info_icon.png',
+                              width: 20,
+                              height: 20,
+                            ),
+                          ))
+                    ],
                   )
-                else if (!noResult &&
-                    stocks.isNotEmpty &&
-                    filteredStocks.isEmpty)
-                  Container(
-                    margin: EdgeInsets.only(
-                        top: MediaQuery.of(context).size.height * 0.15),
-                    child: const BakingUpNoResult(
-                      message: "No results found",
-                    ),
-                  )
-                else if (!noResult)
-                  StockList(
-                    stockList: filteredStocks,
-                    isLoading: isLoading,
-                  )
-              ],
-            )),
-      ),
-    );
+                ],
+              )),
+        ));
   }
 }

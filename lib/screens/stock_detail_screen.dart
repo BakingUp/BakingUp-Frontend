@@ -1,4 +1,5 @@
 // Importing libraries
+import 'package:bakingup_frontend/screens/add_edit_stock_information_screen.dart';
 import 'package:flutter/material.dart';
 // Importing files
 import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
@@ -16,6 +17,7 @@ import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_notify_me.da
 import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_quantity.dart';
 import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_selling_price.dart';
 import 'package:bakingup_frontend/widgets/stock_detail/stock_detail_stock_name.dart';
+import 'package:intl/intl.dart';
 
 class StockDetailScreen extends StatefulWidget {
   final String? recipeId;
@@ -35,6 +37,13 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
   List<StockDetail> stockDetails = [];
   bool isLoading = true;
   bool isError = false;
+  final List<String> stockFilterList = [
+    'Quantity',
+    'Sell-By Date',
+  ];
+  String selectedStockFiltering = "Quantity";
+  String selectedStockSorting = "Ascending Order";
+  final DateFormat dateFormat = DateFormat('dd/MM/yyyy');
 
   @override
   void initState() {
@@ -73,6 +82,45 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
     }
   }
 
+  void _filterStock(
+      String selectingStockFiltering, String selectingStockSorting) {
+    setState(() {
+      selectedStockFiltering = selectingStockFiltering;
+      selectedStockSorting = selectingStockSorting;
+    });
+    if (selectedStockSorting == "Ascending Order") {
+      switch (selectedStockFiltering) {
+        case "Quantity":
+          stockDetails.sort((a, b) => a.quantity.compareTo(b.quantity));
+          break;
+        case "Sell-By Date":
+          stockDetails.sort((a, b) {
+            DateTime dateA = dateFormat.parse(a.sellByDate);
+            DateTime dateB = dateFormat.parse(b.sellByDate);
+            return dateA.compareTo(dateB);
+          });
+          break;
+        default:
+          stockDetails.sort((a, b) => a.quantity.compareTo(b.quantity));
+      }
+    } else {
+      switch (selectedStockFiltering) {
+        case "Quantity":
+          stockDetails.sort((a, b) => b.quantity.compareTo(a.quantity));
+          break;
+        case "Sell-By Date":
+          stockDetails.sort((a, b) {
+            DateTime dateA = dateFormat.parse(a.sellByDate);
+            DateTime dateB = dateFormat.parse(b.sellByDate);
+            return dateB.compareTo(dateA);
+          });
+          break;
+        default:
+          stockDetails.sort((a, b) => b.quantity.compareTo(a.quantity));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,7 +130,8 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
           BakingUpDetailImage(
             imageUrl: stockUrl,
             isLoading: isLoading,
-            noBaseURL: true,
+            noBaseURL: false,
+            isScaled: false,
           ),
           const StockDetailBackButtonContainer(
             children: [
@@ -116,12 +165,57 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                     ),
                   )
                 ] else ...[
-                  const Padding(
-                    padding: EdgeInsets.all(20.0),
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        BakingUpFilterButton(),
+                        Tooltip(
+                          verticalOffset: -20,
+                          showDuration: const Duration(seconds: 5),
+                          margin: const EdgeInsets.only(right: 40, top: 45),
+                          triggerMode: TooltipTriggerMode.tap,
+                          padding: EdgeInsets.zero,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[700],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          richMessage: TextSpan(
+                            children: [
+                              WidgetSpan(
+                                child: Container(
+                                  width: 200,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 8),
+                                  child: const Text(
+                                    "These color on each stock refer to its low stock threshold.",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 13,
+                                        fontFamily: 'Inter',
+                                        fontStyle: FontStyle.normal,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          child: Image.asset(
+                            'assets/icons/info_icon.png',
+                            width: 20,
+                            height: 20,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 13,
+                        ),
+                        BakingUpFilterButton(
+                          optionsOne: stockFilterList,
+                          optionOneName: "Filter by",
+                          defaultFilteringValue: selectedStockFiltering,
+                          defaultSortingValue: selectedStockSorting,
+                          filterFunction: _filterStock,
+                        ),
                       ],
                     ),
                   ),
@@ -151,13 +245,28 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                         StockDetailStockName(
                           stockName: stockName,
                           isLoading: isLoading,
+                          recipeId: widget.recipeId ?? '',
+                          fetchStockDetails: _fetchStockDetails,
                         ),
                         const Padding(
                           padding: EdgeInsets.only(bottom: 8.0),
                         ),
                       ],
                     ),
-                    const BakingUpCircularAddButton(),
+                    BakingUpCircularAddButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddEditStockInformationScreen(
+                              recipeId: widget.recipeId,
+                            ),
+                          ),
+                        ).then((_) {
+                          _fetchStockDetails();
+                        });
+                      },
+                    ),
                   ],
                 ),
                 Row(

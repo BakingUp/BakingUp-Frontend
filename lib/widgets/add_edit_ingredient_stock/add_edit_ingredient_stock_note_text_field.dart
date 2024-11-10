@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 
 class AddEditIngredientStockNoteTextField extends StatelessWidget {
   final TextEditingController controller;
+  final FocusNode focusNode;
   const AddEditIngredientStockNoteTextField({
     super.key,
     required this.controller,
+    required this.focusNode,
   });
 
   @override
@@ -13,6 +15,7 @@ class AddEditIngredientStockNoteTextField extends StatelessWidget {
     return SizedBox(
       width: MediaQuery.of(context).size.width - 60,
       child: TextField(
+        focusNode: focusNode,
         controller: controller,
         maxLines: null,
         style: const TextStyle(

@@ -56,9 +56,6 @@ DashboardChartData _$DashboardChartDataFromJson(Map<String, dynamic> json) =>
       costRevenue: (json['cost_revenue'] as List<dynamic>)
           .map((e) => CostRevenueData.fromJson(e as Map<String, dynamic>))
           .toList(),
-      netProfit: (json['net_profit'] as List<dynamic>)
-          .map((e) => NetProfitData.fromJson(e as Map<String, dynamic>))
-          .toList(),
       profitThreshold: (json['profit_threshold'] as List<dynamic>)
           .map((e) => ProfitThreshold.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -67,7 +64,6 @@ DashboardChartData _$DashboardChartDataFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$DashboardChartDataToJson(DashboardChartData instance) =>
     <String, dynamic>{
       'cost_revenue': instance.costRevenue,
-      'net_profit': instance.netProfit,
       'profit_threshold': instance.profitThreshold,
     };
 
@@ -85,18 +81,6 @@ Map<String, dynamic> _$CostRevenueDataToJson(CostRevenueData instance) =>
       'revenue': instance.revenue,
       'cost': instance.cost,
       'net_profit': instance.netProfit,
-    };
-
-NetProfitData _$NetProfitDataFromJson(Map<String, dynamic> json) =>
-    NetProfitData(
-      month: json['month'] as String,
-      profit: (json['profit'] as num).toDouble(),
-    );
-
-Map<String, dynamic> _$NetProfitDataToJson(NetProfitData instance) =>
-    <String, dynamic>{
-      'month': instance.month,
-      'profit': instance.profit,
     };
 
 ProfitThreshold _$ProfitThresholdFromJson(Map<String, dynamic> json) =>

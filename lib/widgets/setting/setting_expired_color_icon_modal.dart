@@ -2,8 +2,10 @@ import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/models/setting.dart';
 import 'package:bakingup_frontend/models/setting/setting_expired_color_icon._controller.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:bakingup_frontend/widgets/baking_up_loading_dialog.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:bakingup_frontend/widgets/setting/setting_expired_color_icon_item.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SettingExpiredColorIconModal extends StatefulWidget {
@@ -19,11 +21,12 @@ class _SettingExpiredColorIconModalState
   final SettingExpiredColorIconController _expiredColorIconController =
       SettingExpiredColorIconController();
   final _formKey = GlobalKey<FormState>();
+  final userId = FirebaseAuth.instance.currentUser!.uid;
 
   Future<void> _getExpirationDateColors() async {
     try {
       final response = await NetworkService.instance
-          .get('/api/settings/getColorExpired?user_id=1');
+          .get('/api/settings/getColorExpired?user_id=$userId');
       final expirationColorsResponse =
           UserExpiredColorResponse.fromJson(response);
       final data = expirationColorsResponse.data;
@@ -44,15 +47,24 @@ class _SettingExpiredColorIconModalState
   Future<void> _changeExpiredColorIcon() async {
     try {
       final data = {
-        "user_id": "1",
+        "user_id": userId,
         "black_expiration_date": int.parse(_expiredColorIconController.black),
         "red_expiration_date": int.parse(_expiredColorIconController.red),
         "yellow_expiration_date": int.parse(_expiredColorIconController.yellow)
       };
+      showDialog(
+        context: context,
+        barrierColor: const Color(0xC7D9D9D9),
+        builder: (BuildContext context) {
+          return const BakingUpLoadingDialog();
+        },
+      );
       await NetworkService.instance
-          .put('/api/settings/changeColorExpired', data: data);
-      // ignore: use_build_context_synchronously
-      Navigator.of(context).pop();
+          .put('/api/settings/changeColorExpired', data: data)
+          .then((value) {
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+      });
     } catch (e) {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context)
@@ -137,6 +149,7 @@ class _SettingExpiredColorIconModalState
                     onClick: () {
                       Navigator.of(context).pop();
                     },
+                    isDisabled: false,
                   ),
                   const SizedBox(
                     width: 15,
@@ -149,6 +162,7 @@ class _SettingExpiredColorIconModalState
                         _changeExpiredColorIcon();
                       }
                     },
+                    isDisabled: false,
                   )
                 ],
               )

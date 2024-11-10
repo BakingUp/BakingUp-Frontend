@@ -6,9 +6,10 @@ import 'package:flutter/material.dart';
 class OrderDetailOrderList extends StatefulWidget {
   final List<OrderStock> orderStockList;
   final bool isLoading;
+  final bool isPreOrder;
 
   const OrderDetailOrderList(
-      {super.key, required this.orderStockList, required this.isLoading});
+      {super.key, required this.orderStockList, required this.isLoading, required this.isPreOrder});
 
   @override
   State<OrderDetailOrderList> createState() => _OrderDetailOrderListState();
@@ -26,7 +27,7 @@ class _OrderDetailOrderListState extends State<OrderDetailOrderList> {
               padding: const EdgeInsets.all(0),
               itemCount: 1,
               itemBuilder: (context, index) {
-                return const OrderDetailOrderStockLoading();
+                return OrderDetailOrderStockLoading(isPreOrder: widget.isPreOrder);
               },
             ),
           )
@@ -39,7 +40,7 @@ class _OrderDetailOrderListState extends State<OrderDetailOrderList> {
                 itemCount: widget.orderStockList.length,
                 itemBuilder: (context, index) {
                   return OrderDetailOrderStock(
-                      orderStockList: widget.orderStockList, index: index);
+                      orderStockList: widget.orderStockList, index: index, isPreOrder: widget.isPreOrder,);
                 }),
           );
   }

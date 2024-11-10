@@ -4,12 +4,13 @@ import 'package:bakingup_frontend/enum/order_type.dart';
 import 'package:bakingup_frontend/models/home.dart';
 import 'package:bakingup_frontend/screens/notification_screen.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
-import 'package:bakingup_frontend/utilities/bottom_navbar.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
+import 'package:bakingup_frontend/widgets/baking_up_date_picker.dart';
 import 'package:bakingup_frontend/widgets/baking_up_filter_two_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_no_result.dart';
 import 'package:bakingup_frontend/widgets/home/home_top_filter_bottom.dart';
 import 'package:bakingup_frontend/widgets/home/home_top_filter_list.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -29,11 +30,15 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isError = true;
   DashboardChartData chartData = DashboardChartData(
     costRevenue: [],
-    netProfit: [],
     profitThreshold: [],
   );
   int unreadNotiAmount = 0;
   bool successResponse = false;
+  List<DateTime> dates = [
+    DateTime.now(),
+  ];
+  final TextEditingController dateController = TextEditingController();
+  final userId = FirebaseAuth.instance.currentUser!.uid;
 
   List<TopProductItem> topProductList = [];
   String filterName = "Best Selling";
@@ -43,10 +48,23 @@ class _HomeScreenState extends State<HomeScreen> {
       isLoadingDashboard = true;
       isError = false;
     });
-    try {
-      final response = await NetworkService.instance
-          .get('/api/home/getDashboardChartData?user_id=1');
 
+    try {
+      String filterStartDateTime = "";
+      String filterEndDateTime = "";
+      if (dates.length == 2) {
+        DateTime startDateTime = dates[0].toUtc();
+        filterStartDateTime = startDateTime.toIso8601String();
+        DateTime endDateTime = dates[1].toUtc();
+        filterEndDateTime = endDateTime.toIso8601String();
+      } else {
+        DateTime startDateTime = DateTime(2000, 1, 1).toUtc();
+        filterStartDateTime = startDateTime.toIso8601String();
+        DateTime endDateTime = DateTime.now().toUtc();
+        filterEndDateTime = endDateTime.toIso8601String();
+      }
+      final response = await NetworkService.instance.get(
+          '/api/home/getDashboardChartData?user_id={$userId}&start_date_time=$filterStartDateTime&end_date_time=$filterEndDateTime');
       final chartDataResponse = DashboardChartResponse.fromJson(response);
       final data = chartDataResponse.data;
       setState(() {
@@ -71,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     try {
       final response = await NetworkService.instance
-          .get('/api/home/getUnreadNotification?user_id=1');
+          .get('/api/home/getUnreadNotification?user_id=$userId');
       final unreadNotiResponse = UnreadNotificationResponse.fromJson(response);
       final data = unreadNotiResponse.data;
       setState(() {
@@ -95,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     List<String> orderPlatform = ["STORE"];
     List<String> orderType = ["BULK_ORDER"];
-    String userID = "1";
+    String userID = FirebaseAuth.instance.currentUser!.uid;
     try {
       final data = {
         "filter_type": filterName,
@@ -141,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     List<String> orderPlatform = [];
     List<String> orderType = [];
-    String userID = "1";
+    String userID = FirebaseAuth.instance.currentUser!.uid;
 
     if (filterType != "Wasted Ingredients" &&
         filterType != "Wasted Bakery Stock") {
@@ -167,6 +185,8 @@ class _HomeScreenState extends State<HomeScreen> {
           "filter_type": filterType,
           "order_types": orderType,
           "sales_channel": orderPlatform,
+          "start_date_time": "2024-09-01T15:30:00Z",
+          "end_date_time": "2024-11-02T15:30:00Z",
           "user_id": userID
         };
       } else if (filterType != "Wasted Ingredients") {
@@ -204,6 +224,40 @@ class _HomeScreenState extends State<HomeScreen> {
         isLoading = false;
       });
     }
+  }
+
+  void showDatePickerBottomSheet(BuildContext context, Color backgroundColor) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: backgroundColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(40.0),
+          topRight: Radius.circular(40.0),
+        ),
+      ),
+      builder: (BuildContext builder) {
+        return BakingUpDatePicker(
+          dates: dates,
+          onDateApply: (List<DateTime> newDates) {
+            setState(() {
+              dates = newDates;
+            });
+
+            int day = newDates[0].day;
+            int month = newDates[0].month;
+            int year = newDates[0].year;
+
+            String formattedDay = day < 10 ? '0$day' : '$day';
+            String formattedMonth = month < 10 ? '0$month' : '$month';
+
+            dateController.text = "$formattedDay/$formattedMonth/$year";
+            _fetchDashboardChartData();
+          },
+          rangeType: true,
+        );
+      },
+    );
   }
 
   final PageController _pageController = PageController();
@@ -297,11 +351,68 @@ class _HomeScreenState extends State<HomeScreen> {
       drawer: BakingUpDrawer(
         currentDrawerIndex: _currentDrawerIndex,
       ),
-      bottomNavigationBar: const BottomNavbar(),
       body: Container(
         padding: const EdgeInsets.only(left: 10, right: 10, top: 0, bottom: 20),
         child: Column(
           children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      _currentPageIndex == 0
+                          ? 'Cost & Revenue'
+                          : 'Profit Threshold',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontFamily: 'Inter',
+                        fontStyle: FontStyle.normal,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: GestureDetector(
+                onTap: () {
+                  showDatePickerBottomSheet(context, backgroundColor);
+                },
+                child: Container(
+                  width: dates.length == 2 ? 200 : 120,
+                  height: 25,
+                  padding: const EdgeInsets.only(
+                      top: 3, right: 5, left: 5, bottom: 5),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: lightGreyColor,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text(
+                        dates.length == 2
+                            ? "${dates[0].toString().substring(0, 11)} - ${dates[1].toString().substring(0, 11)}"
+                            : "Date Range",
+                        style: const TextStyle(
+                          fontFamily: 'Inter',
+                          fontSize: 13,
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                      Icon(
+                        Icons.calendar_today,
+                        color: darkGreyColor,
+                        size: 15,
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
             SizedBox(
               height: 300,
               child: Stack(
@@ -335,16 +446,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 300,
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: SfCartesianChart(
-                            title: ChartTitle(
-                              text: "Cost & Revenue",
-                              textStyle: TextStyle(
-                                color: blackColor,
-                                fontFamily: 'Inter',
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 20,
-                              ),
-                            ),
                             primaryXAxis: CategoryAxis(
                               title: AxisTitle(
                                 text: 'Months',
@@ -369,10 +470,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             legend: const Legend(isVisible: true),
                             tooltipBehavior: TooltipBehavior(enable: true),
                             series: <CartesianSeries<CostRevenueData, String>>[
-                              ColumnSeries<CostRevenueData, String>(
+                              StackedColumnSeries<CostRevenueData, String>(
                                 dataSource: chartData.costRevenue,
                                 xValueMapper: (CostRevenueData item, _) =>
-                                    item.month.substring(0, 3),
+                                    item.month,
                                 yValueMapper: (CostRevenueData item, _) =>
                                     item.revenue,
                                 name: "Revenue",
@@ -380,10 +481,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 dataLabelSettings:
                                     const DataLabelSettings(isVisible: false),
                               ),
-                              ColumnSeries<CostRevenueData, String>(
+                              StackedColumnSeries<CostRevenueData, String>(
                                 dataSource: chartData.costRevenue,
                                 xValueMapper: (CostRevenueData item, _) =>
-                                    item.month.substring(0, 3),
+                                    item.month,
                                 yValueMapper: (CostRevenueData item, _) =>
                                     item.cost,
                                 name: "Costs",
@@ -391,10 +492,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 dataLabelSettings:
                                     const DataLabelSettings(isVisible: false),
                               ),
-                              ColumnSeries<CostRevenueData, String>(
+                              StackedColumnSeries<CostRevenueData, String>(
                                 dataSource: chartData.costRevenue,
                                 xValueMapper: (CostRevenueData item, _) =>
-                                    item.month.substring(0, 3),
+                                    item.month,
                                 yValueMapper: (CostRevenueData item, _) =>
                                     item.netProfit,
                                 name: "Net Profit",
@@ -410,16 +511,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 300,
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: SfCartesianChart(
-                            title: ChartTitle(
-                              text: "Profit Threshold",
-                              textStyle: TextStyle(
-                                color: blackColor,
-                                fontFamily: 'Inter',
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 20,
-                              ),
-                            ),
                             primaryXAxis: CategoryAxis(
                               title: AxisTitle(
                                 textStyle: TextStyle(

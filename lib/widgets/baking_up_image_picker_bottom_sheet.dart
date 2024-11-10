@@ -2,12 +2,12 @@ import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:flutter/material.dart';
 
 class BakingUpImagePickerBottomSheet {
-  static void show(
+  static Future<bool?> show(
     BuildContext context,
-    VoidCallback onTakePhoto,
-    VoidCallback onChooseFromGallery,
-  ) {
-    showModalBottomSheet(
+    Future<void> Function() onTakePhoto,
+    Future<void> Function() onChooseFromGallery,
+  ) async {
+    return await showModalBottomSheet<bool>(
       context: context,
       builder: (BuildContext context) {
         return Wrap(
@@ -23,9 +23,10 @@ class BakingUpImagePickerBottomSheet {
                   ),
                 ),
               ),
-              onTap: () {
-                onTakePhoto();
-                Navigator.of(context).pop();
+              onTap: () async {
+                await onTakePhoto();
+                // ignore: use_build_context_synchronously
+                Navigator.of(context).pop(true);
               },
             ),
             Divider(
@@ -44,9 +45,10 @@ class BakingUpImagePickerBottomSheet {
                   ),
                 ),
               ),
-              onTap: () {
-                onChooseFromGallery();
-                Navigator.of(context).pop();
+              onTap: () async {
+                await onChooseFromGallery();
+                // ignore: use_build_context_synchronously
+                Navigator.of(context).pop(true);
               },
             ),
             ListTile(
@@ -62,7 +64,7 @@ class BakingUpImagePickerBottomSheet {
                 ),
               ),
               onTap: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(false);
               },
             ),
           ],

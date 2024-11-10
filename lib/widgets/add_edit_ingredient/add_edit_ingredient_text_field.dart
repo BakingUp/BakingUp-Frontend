@@ -1,9 +1,46 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-class AddEditIngredientTextField extends StatelessWidget {
+class AddEditIngredientTextField extends StatefulWidget {
   final TextEditingController controller;
-  const AddEditIngredientTextField({super.key, required this.controller});
+  final int lengthLimit;
+  final int min;
+  final int max;
+  final VoidCallback onTextChanged;
+  final FocusNode focusNode;
+  const AddEditIngredientTextField({
+    super.key,
+    required this.controller,
+    required this.lengthLimit,
+    required this.min,
+    required this.max,
+    required this.onTextChanged,
+    required this.focusNode,
+  });
+
+  @override
+  State<AddEditIngredientTextField> createState() =>
+      _AddEditIngredientTextFieldState();
+}
+
+class _AddEditIngredientTextFieldState
+    extends State<AddEditIngredientTextField> {
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.addListener(_onTextChanged);
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_onTextChanged);
+    super.dispose();
+  }
+
+  void _onTextChanged() {
+    widget.onTextChanged();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,8 +49,15 @@ class AddEditIngredientTextField extends StatelessWidget {
       height: 45,
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: TextField(
-        controller: controller,
+        focusNode: widget.focusNode,
+        controller: widget.controller,
         maxLines: 1,
+        keyboardType: TextInputType.number,
+        inputFormatters: [
+          FilteringTextInputFormatter.digitsOnly,
+          LengthLimitingTextInputFormatter(widget.lengthLimit),
+          CustomRangeTextInputFormatter(widget.min, widget.max),
+        ],
         style: const TextStyle(
           fontSize: 12,
           fontFamily: 'Inter',
@@ -33,5 +77,27 @@ class AddEditIngredientTextField extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class CustomRangeTextInputFormatter extends TextInputFormatter {
+  final int min;
+  final int max;
+
+  CustomRangeTextInputFormatter(this.min, this.max);
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    if (newValue.text.isEmpty) {
+      return newValue;
+    }
+    final int value = int.parse(newValue.text);
+    if (value < min || value > max) {
+      return oldValue;
+    }
+    return newValue;
   }
 }

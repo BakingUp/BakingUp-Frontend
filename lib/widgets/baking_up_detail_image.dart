@@ -7,12 +7,14 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 class BakingUpDetailImage extends StatefulWidget {
   final List<String> imageUrl;
   final bool isLoading;
+  final bool? isScaled;
   final bool? noBaseURL;
 
   const BakingUpDetailImage({
     super.key,
     required this.imageUrl,
     required this.isLoading,
+    this.isScaled,
     this.noBaseURL = false,
   });
 
@@ -90,7 +92,9 @@ class _IngredientDetailImageState extends State<BakingUpDetailImage> {
               ),
               widget.imageUrl.length > 1
                   ? Positioned(
-                      top: MediaQuery.of(context).size.width / 1.5 - 30,
+                      top: widget.isScaled!
+                          ? MediaQuery.of(context).size.width / 1.5 - 70
+                          : MediaQuery.of(context).size.width / 1.5 - 30,
                       left: 0,
                       right: 0,
                       child: Center(
