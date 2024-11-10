@@ -2,7 +2,6 @@
 import 'dart:developer';
 import 'package:bakingup_frontend/models/edit_ingredient_stock_detail.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient_stock/add_edit_ingredient_stock_unit.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -44,7 +43,6 @@ class _EditIngredientStockScreenState extends State<EditIngredientStockScreen> {
   FocusNode priceFocusNode = FocusNode();
   FocusNode supplierFocusNode = FocusNode();
   FocusNode noteFocusNode = FocusNode();
-  final userId = FirebaseAuth.instance.currentUser!.uid;
 
   final AddEditIngredientStockController _controller =
       AddEditIngredientStockController();
