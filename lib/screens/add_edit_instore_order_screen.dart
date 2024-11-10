@@ -14,6 +14,7 @@ import 'package:bakingup_frontend/widgets/baking_up_circular_add_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dropdown.dart';
 import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
+import 'package:bakingup_frontend/widgets/baking_up_loading_dialog.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_tab_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -563,6 +564,14 @@ class _AddEditInstoreOrderScreenState extends State<AddEditInstoreOrderScreen> {
                                       "note_create_at":
                                           DateTime.now().toUtc().toString()
                                     };
+                                    Navigator.of(context).pop();
+                                    showDialog(
+                                      context: context,
+                                      barrierColor: const Color(0xC7D9D9D9),
+                                      builder: (BuildContext context) {
+                                        return const BakingUpLoadingDialog();
+                                      },
+                                    );
                                     await NetworkService.instance
                                         .post(
                                       "/api/order/addInStoreOrder",
@@ -1138,6 +1147,14 @@ class _AddEditInstoreOrderScreenState extends State<AddEditInstoreOrderScreen> {
                                       "note_create_at":
                                           DateTime.now().toUtc().toString()
                                     };
+                                    Navigator.of(context).pop();
+                                    showDialog(
+                                      context: context,
+                                      barrierColor: const Color(0xC7D9D9D9),
+                                      builder: (BuildContext context) {
+                                        return const BakingUpLoadingDialog();
+                                      },
+                                    );
                                     await NetworkService.instance
                                         .post(
                                       "/api/order/addPreOrderOrder",

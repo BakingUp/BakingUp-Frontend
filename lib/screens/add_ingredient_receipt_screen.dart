@@ -11,6 +11,7 @@ import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/regex.dart';
 import 'package:bakingup_frontend/widgets/add_ingredient_receipt/add_ingredient_receipt_ingredient_detail_loading.dart';
 import 'package:bakingup_frontend/widgets/baking_up_image_picker_bottom_sheet.dart';
+import 'package:bakingup_frontend/widgets/baking_up_no_result.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -231,17 +232,26 @@ class _AddIngredientReceiptScreenState
                             );
                           },
                         )
-                      : ListView.builder(
-                          itemCount: ingredientDetail.length,
-                          itemBuilder: (context, index) {
-                            return AddIngredientReceiptIngredientDetail(
-                              ingredientDetail: ingredientDetail[index],
-                              index: index + 1,
-                              ingredientIdsAndNames: ingredientIdsAndNames,
-                              onAddIngredient: onAddIngredient,
-                            );
-                          },
-                        ),
+                      : ingredientDetail.isEmpty
+                          ? const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                BakingUpNoResult(
+                                    message:
+                                        "No results found. Please try again."),
+                              ],
+                            )
+                          : ListView.builder(
+                              itemCount: ingredientDetail.length,
+                              itemBuilder: (context, index) {
+                                return AddIngredientReceiptIngredientDetail(
+                                  ingredientDetail: ingredientDetail[index],
+                                  index: index + 1,
+                                  ingredientIdsAndNames: ingredientIdsAndNames,
+                                  onAddIngredient: onAddIngredient,
+                                );
+                              },
+                            ),
                 ),
               ],
             ),
