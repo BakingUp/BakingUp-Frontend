@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 class BakingUpDatePicker extends StatelessWidget {
   final List<DateTime> dates;
   final ValueChanged<List<DateTime>> onDateApply;
-  const BakingUpDatePicker({
-    super.key,
-    required this.dates,
-    required this.onDateApply,
-  });
+  final bool? rangeType;
+  const BakingUpDatePicker(
+      {super.key,
+      required this.dates,
+      required this.onDateApply,
+      this.rangeType});
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +84,10 @@ class BakingUpDatePicker extends StatelessWidget {
                     'Fri',
                     'Sat',
                   ],
+                  calendarType: rangeType == true
+                      ? CalendarDatePicker2Type.range
+                      : CalendarDatePicker2Type.single,
+                  selectedRangeHighlightColor: greenRangeCalendar,
                   calendarViewMode: CalendarDatePicker2Mode.scroll,
                   weekdayLabelTextStyle: TextStyle(
                     color: darkGreyColor,

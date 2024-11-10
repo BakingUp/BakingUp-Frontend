@@ -23,3 +23,4 @@ Color errorLightRedColor = const Color(0xFFF8C8C8);
 Color errorRedColor = const Color(0xFFD80808);
 Color blueColor = const Color(0xFF0D6EFF);
 Color lightPinkColor = const Color(0xFFFFCDD2);
+Color greenRangeCalendar = const Color(0xFFC8E6C9);
