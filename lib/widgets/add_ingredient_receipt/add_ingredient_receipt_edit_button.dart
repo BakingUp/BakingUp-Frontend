@@ -1,3 +1,4 @@
+import 'package:bakingup_frontend/models/get_all_ingredient_ids_and_names.dart';
 import 'package:bakingup_frontend/screens/add_ingredient_receipt_detail_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -5,26 +6,22 @@ class AddIngredientReceiptEditButton extends StatelessWidget {
   final String? ingredientName;
   final String? ingredientQuantity;
   final String? ingredientPrice;
+  final List<Ingredient>? ingredientIdsAndNames;
+  final int? index;
   final Function(
     dynamic,
     dynamic,
     dynamic,
     dynamic,
-    dynamic,
-    dynamic,
-    dynamic,
-    dynamic,
-    dynamic,
-    dynamic,
-    dynamic,
-    dynamic,
-    dynamic,
   )? onAddIngredient;
+
   const AddIngredientReceiptEditButton({
     super.key,
     this.ingredientName,
     this.ingredientQuantity,
     this.ingredientPrice,
+    this.ingredientIdsAndNames,
+    this.index,
     this.onAddIngredient,
   });
 
@@ -40,6 +37,8 @@ class AddIngredientReceiptEditButton extends StatelessWidget {
               ingredientName: ingredientName ?? '',
               ingredientQuantity: ingredientQuantity ?? '',
               ingredientPrice: ingredientPrice ?? '',
+              index: index != null ? index! - 1 : 0,
+              ingredientIdsAndNames: ingredientIdsAndNames ?? [],
               onAddIngredient: onAddIngredient,
             ),
           ),

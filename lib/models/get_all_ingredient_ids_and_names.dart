@@ -42,11 +42,14 @@ class Ingredient {
   final String ingredientEngName;
   @JsonKey(name: 'ingredient_thai_name')
   final String ingredientThaiName;
+  @JsonKey(name: 'unit')
+  final String unit;
 
   Ingredient({
     required this.ingredientId,
     required this.ingredientEngName,
     required this.ingredientThaiName,
+    required this.unit,
   });
 
   factory Ingredient.fromJson(Map<String, dynamic> json) =>

@@ -38,6 +38,7 @@ Ingredient _$IngredientFromJson(Map<String, dynamic> json) => Ingredient(
       ingredientId: json['ingredient_id'] as String,
       ingredientEngName: json['ingredient_eng_name'] as String,
       ingredientThaiName: json['ingredient_thai_name'] as String,
+      unit: json['unit'] as String,
     );
 
 Map<String, dynamic> _$IngredientToJson(Ingredient instance) =>
@@ -45,4 +46,5 @@ Map<String, dynamic> _$IngredientToJson(Ingredient instance) =>
       'ingredient_id': instance.ingredientId,
       'ingredient_eng_name': instance.ingredientEngName,
       'ingredient_thai_name': instance.ingredientThaiName,
+      'unit': instance.unit,
     };

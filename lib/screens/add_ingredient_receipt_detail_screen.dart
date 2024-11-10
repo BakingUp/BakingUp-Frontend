@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/models/add_ingredient_receipt_detail_controller.dart';
 import 'package:bakingup_frontend/models/get_all_ingredient_ids_and_names.dart';
+import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_container.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_name_text_field.dart';
@@ -21,7 +22,6 @@ import 'package:bakingup_frontend/widgets/baking_up_dropdown.dart';
 import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_image_picker.dart';
-import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -29,17 +29,9 @@ class AddIngredientReceiptDetailScreen extends StatefulWidget {
   final String ingredientName;
   final String ingredientQuantity;
   final String ingredientPrice;
-  final List<Ingredient>? ingredients;
-    final Function(
-    dynamic,
-    dynamic,
-    dynamic,
-    dynamic,
-    dynamic,
-    dynamic,
-    dynamic,
-    dynamic,
-    dynamic,
+  final int? index;
+  final List<Ingredient>? ingredientIdsAndNames;
+  final Function(
     dynamic,
     dynamic,
     dynamic,
@@ -50,7 +42,8 @@ class AddIngredientReceiptDetailScreen extends StatefulWidget {
     required this.ingredientName,
     required this.ingredientQuantity,
     required this.ingredientPrice,
-    this.ingredients,
+    this.index,
+    this.ingredientIdsAndNames,
     this.onAddIngredient,
   });
 
@@ -65,8 +58,12 @@ class _AddIngredientReceiptDetailScreenState
   final int _currentDrawerIndex = 4;
   final List<File> _images = [];
   String selectedUnit = '';
+  final ingredientIds = [];
+  final ingredientNames = [];
+  bool isIngredientNameInIngredientNames = false;
   final AddIngredientReceiptDetailController _controller =
       AddIngredientReceiptDetailController();
+  String ingredientId = '';
 
   String convertUnit(String unit) {
     switch (unit) {
@@ -78,6 +75,21 @@ class _AddIngredientReceiptDetailScreenState
         return 'L';
       case 'Millilitres':
         return 'ML';
+      default:
+        return '';
+    }
+  }
+
+  String convertAbbreviation(String abbreviation) {
+    switch (abbreviation) {
+      case 'G':
+        return 'Grams';
+      case 'KG':
+        return 'Kilograms';
+      case 'L':
+        return 'Litres';
+      case 'ML':
+        return 'Millilitres';
       default:
         return '';
     }
@@ -126,6 +138,29 @@ class _AddIngredientReceiptDetailScreenState
       final bytes = file.readAsBytesSync();
       return base64Encode(bytes);
     }).toList();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      _controller.engName = widget.ingredientName;
+      _controller.quantity = widget.ingredientQuantity;
+      _controller.price = widget.ingredientPrice;
+      for (var element in widget.ingredientIdsAndNames!) {
+        ingredientIds.add(element.ingredientId);
+        ingredientNames.add(element.ingredientEngName.toLowerCase());
+      }
+      isIngredientNameInIngredientNames = ingredientNames
+          .contains(_controller.engNameController.text.toLowerCase());
+      if (isIngredientNameInIngredientNames) {
+        final index = ingredientNames
+            .indexOf(_controller.engNameController.text.toLowerCase());
+        ingredientId = ingredientIds[index];
+        selectedUnit =
+            '${widget.ingredientIdsAndNames![index].unit.toLowerCase()}.';
+      }
+    });
   }
 
   @override
@@ -178,54 +213,68 @@ class _AddIngredientReceiptDetailScreenState
           const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
+              Column(
                 children: [
-                  const Text(
-                    'Ingredient Name',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
+                  Row(
+                    children: [
+                      const Text(
+                        'Ingredient Name',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontFamily: 'Inter',
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      Text(
+                        '*',
+                        style: TextStyle(
+                          color: redColor,
+                          fontSize: 20,
+                          fontFamily: 'Inter',
+                          fontStyle: FontStyle.normal,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    '*',
-                    style: TextStyle(
-                      color: redColor,
-                      fontSize: 20,
-                      fontFamily: 'Inter',
-                      fontStyle: FontStyle.normal,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
+                  const SizedBox(height: 10),
                 ],
               ),
               Column(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   AddEditIngredientNameTextField(
-                    label: 'English',
+                    label: 'Ingredient Name',
                     controller: _controller.engNameController,
                     onTextChanged: () {
-                      setState(() {});
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  AddEditIngredientNameTextField(
-                    label: 'Thai',
-                    controller: _controller.thaiNameController,
-                    onTextChanged: () {
-                      setState(() {});
+                      setState(() {
+                        isIngredientNameInIngredientNames = ingredientNames
+                            .contains(_controller.engNameController.text
+                                .toLowerCase());
+                        log(ingredientNames
+                            .contains(_controller.engNameController.text
+                                .toLowerCase())
+                            .toString());
+                        if (isIngredientNameInIngredientNames) {
+                          final index = ingredientNames.indexOf(
+                              _controller.engNameController.text.toLowerCase());
+                          ingredientId = ingredientIds[index];
+                          selectedUnit =
+                              '${widget.ingredientIdsAndNames![index].unit.toLowerCase()}.';
+                        } else {
+                          selectedUnit = '';
+                        }
+                      });
                     },
                   ),
                 ],
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -324,6 +373,7 @@ class _AddIngredientReceiptDetailScreenState
                         _controller.ingredientLessThanController.text = '';
                       });
                     },
+                    disabled: isIngredientNameInIngredientNames,
                   )
                 ],
               ),
@@ -420,74 +470,80 @@ class _AddIngredientReceiptDetailScreenState
             ],
           ),
           const SizedBox(height: 50),
-          const AddEditIngredientTitle(title: "Notification Setting"),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              const Flexible(
-                child: Text(
-                  'Notify me when an ingredient falls below',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontFamily: 'Inter',
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-              AddEditIngredientTextField(
-                controller: _controller.ingredientLessThanController,
-                lengthLimit: getUnitLengthLimit(selectedUnit),
-                min: 1,
-                max: getUnitMax(selectedUnit),
-                onTextChanged: () {
-                  setState(() {});
-                },
-              ),
-              const Text(
-                'unit',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              const Text(
-                'Notify me',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              AddEditIngredientTextField(
-                controller: _controller.daysBeforeExpireController,
-                lengthLimit: 3,
-                min: 1,
-                max: 365,
-                onTextChanged: () {
-                  setState(() {});
-                },
-              ),
-              const Text(
-                'days before expiration',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 50),
+          !isIngredientNameInIngredientNames
+              ? Column(
+                  children: [
+                    const AddEditIngredientTitle(title: "Notification Setting"),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        const Flexible(
+                          child: Text(
+                            'Notify me when an ingredient falls below',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'Inter',
+                              fontStyle: FontStyle.normal,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                        AddEditIngredientTextField(
+                          controller: _controller.ingredientLessThanController,
+                          lengthLimit: getUnitLengthLimit(selectedUnit),
+                          min: 1,
+                          max: getUnitMax(selectedUnit),
+                          onTextChanged: () {
+                            setState(() {});
+                          },
+                        ),
+                        const Text(
+                          'unit',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontFamily: 'Inter',
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        const Text(
+                          'Notify me',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontFamily: 'Inter',
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        AddEditIngredientTextField(
+                          controller: _controller.daysBeforeExpireController,
+                          lengthLimit: 3,
+                          min: 1,
+                          max: 365,
+                          onTextChanged: () {
+                            setState(() {});
+                          },
+                        ),
+                        const Text(
+                          'days before expiration',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontFamily: 'Inter',
+                            fontStyle: FontStyle.normal,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 50),
+                  ],
+                )
+              : const SizedBox(),
           const AddEditIngredientStockTitle(title: "Note:"),
           const SizedBox(height: 16),
           AddEditIngredientStockNoteTextField(
@@ -499,8 +555,8 @@ class _AddIngredientReceiptDetailScreenState
             children: [
               BakingUpLongActionButton(
                 title: 'Save',
-                color: getIsDisabled() ? greyColor : lightGreenColor,
-                isDisabled: getIsDisabled(),
+                color: lightGreenColor,
+                isDisabled: false,
                 dialogParams: BakingUpDialogParams(
                   title: 'Confirm Adding Ingredient?',
                   imgUrl: 'assets/icons/warning.png',
@@ -513,47 +569,111 @@ class _AddIngredientReceiptDetailScreenState
                     Navigator.of(context).pop();
                   },
                   secondButtonOnClick: () async {
-                    try {
-                      final data = {
-                        "day_before_expire":
-                            _controller.daysBeforeExpireController.text,
-                        "ingredient_eng_name":
-                            _controller.engNameController.text,
-                        "ingredient_thai_name":
-                            _controller.thaiNameController.text,
-                        "stock_less_than":
-                            _controller.ingredientLessThanController.text,
-                        "unit": convertUnit(selectedUnit),
-                        "user_id": "1",
-                        "img": convertFilesToBase64(_images),
-                      };
-                      log(data.toString());
-                      await NetworkService.instance
-                          .post(
-                        "/api/ingredient/addIngredient",
-                        data: data,
-                      )
-                          .then(
-                        (value) {
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
-                        },
-                      );
-                    } catch (e) {
-                      log(e.toString());
-                      // ignore: use_build_context_synchronously
-                      Navigator.of(context).pop();
-                      // ignore: use_build_context_synchronously
-                      Navigator.of(context).overlay!.insert(
-                        OverlayEntry(
-                          builder: (BuildContext context) {
-                            return const BakingUpErrorTopNotification(
-                              message:
-                                  "Sorry, we couldn’t add the ingredient due to a system error. Please try again later.",
+                    if (isIngredientNameInIngredientNames) {
+                      try {
+                        final data = {
+                          "user_id": "1",
+                          "ingredient_id": ingredientId,
+                          "price": _controller.priceController.text,
+                          "quantity": _controller.quantityController.text,
+                          "expiration_date":
+                              _controller.expirationDateController.text,
+                          "supplier": _controller.supplierController.text,
+                          "ingredient_brand": _controller.brandController.text,
+                          "img": _images.isNotEmpty
+                              ? convertFilesToBase64(_images)[0]
+                              : "",
+                          "note": _controller.noteController.text,
+                        };
+                        await NetworkService.instance
+                            .post(
+                          "/api/ingredient/addIngredientStock",
+                          data: data,
+                        )
+                            .then(
+                          (value) {
+                            widget.onAddIngredient!(
+                              widget.index ?? 0,
+                              _controller.engNameController.text,
+                              _controller.quantityController.text,
+                              _controller.priceController.text,
                             );
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
                           },
-                        ),
-                      );
+                        );
+                      } catch (e) {
+                        log(e.toString());
+                        // ignore: use_build_context_synchronously
+                        Navigator.of(context).pop();
+                        // ignore: use_build_context_synchronously
+                        Navigator.of(context).overlay!.insert(
+                          OverlayEntry(
+                            builder: (BuildContext context) {
+                              return const BakingUpErrorTopNotification(
+                                message:
+                                    "Sorry, we couldn’t add the ingredient due to a system error. Please try again later.",
+                              );
+                            },
+                          ),
+                        );
+                      }
+                    } else {
+                      try {
+                        final data = {
+                          "brand": _controller.brandController.text,
+                          "day_before_expire":
+                              _controller.daysBeforeExpireController.text,
+                          "expiration_date":
+                              _controller.expirationDateController.text,
+                          "img": _images.isNotEmpty
+                              ? convertFilesToBase64(_images)[0]
+                              : "",
+                          "ingredient_eng_name":
+                              _controller.engNameController.text,
+                          "ingredient_thai_name":
+                              _controller.thaiNameController.text,
+                          "note": _controller.noteController.text,
+                          "price": _controller.priceController.text,
+                          "quantity": _controller.quantityController.text,
+                          "stock_less_than":
+                              _controller.ingredientLessThanController.text,
+                          "supplier": _controller.supplierController.text,
+                          "unit": convertUnit(selectedUnit),
+                          "user_id": "1",
+                        };
+                        log(data.toString());
+                        await NetworkService.instance
+                            .post(
+                          "/api/ingredient/addIngredientAndStock",
+                          data: data,
+                        )
+                            .then((value) {
+                          widget.onAddIngredient!(
+                            widget.index ?? 0,
+                            _controller.engNameController.text,
+                            _controller.quantityController.text,
+                            _controller.priceController.text,
+                          );
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        });
+                      } catch (e) {
+                        log(e.toString());
+                        // ignore: use_build_context_synchronously
+                        Navigator.of(context).pop();
+                        // ignore: use_build_context_synchronously
+                        Navigator.of(context).overlay!.insert(
+                          OverlayEntry(
+                            builder: (BuildContext context) {
+                              return const BakingUpErrorTopNotification(
+                                message:
+                                    "Sorry, we couldn’t add the ingredient due to a system error. Please try again later.",
+                              );
+                            },
+                          ),
+                        );
+                      }
                     }
                   },
                 ),

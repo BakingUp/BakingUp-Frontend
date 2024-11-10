@@ -1,4 +1,5 @@
 // Importing libraries
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -38,11 +39,11 @@ class _AddIngredientReceiptScreenState
   final int _currentDrawerIndex = 4;
   bool isError = false;
   bool isLoading = true;
+  bool isAtLeastOneEdited = false;
+  bool isAllEdited = false;
   List<IngredientDetail> ingredientDetail = [];
   File _receiptImage = File('');
   List<ids.Ingredient> ingredientIdsAndNames = [];
-  List<AddIngredient> addIngredient = [];
-  List<AddIngredientDetail> addIngredientDetail = [];
 
   Future<void> _fetchIngredients(File file) async {
     try {
@@ -79,6 +80,8 @@ class _AddIngredientReceiptScreenState
           ids.GetAllIngredientIdsAndNamesResponse.fromJson(ingredientData);
 
       setState(() {
+        isAtLeastOneEdited = false;
+        isAllEdited = false;
         ingredientIdsAndNames =
             getAllIngredientIdsAndNamesResponse.data.ingredients;
         ingredientDetail.clear();
@@ -129,34 +132,11 @@ class _AddIngredientReceiptScreenState
   }
 
   void onAddIngredient(
-      index,
-      ingredientEngName,
-      ingredientThaiName,
-      unit,
-      stockLessThan,
-      dayBeforeExpire,
-      supplier,
-      quantity,
-      price,
-      note,
-      ingredientBrand,
-      expirationDate,
-      image) {
-    final newIngredient = AddIngredient(
-      ingredientEngName: ingredientEngName,
-      ingredientThaiName: ingredientThaiName,
-      unit: unit,
-      stockLessThan: stockLessThan,
-      dayBeforeExpire: dayBeforeExpire,
-      supplier: supplier,
-      quantity: quantity,
-      price: price,
-      note: note,
-      ingredientBrand: ingredientBrand,
-      expirationDate: expirationDate,
-      image: image,
-    );
-
+    index,
+    ingredientEngName,
+    quantity,
+    price,
+  ) {
     final newIngredientDetail = IngredientDetail(
       ingredientName: ingredientEngName,
       ingredientQuantity: quantity,
@@ -166,8 +146,16 @@ class _AddIngredientReceiptScreenState
 
     ingredientDetail[index] = newIngredientDetail;
     setState(() {
-      addIngredient.add(newIngredient);
+      isAtLeastOneEdited = true;
+      isAllEdited = ingredientDetail.every((element) => element.isEdited);
     });
+  }
+
+  List<String> convertFilesToBase64(List<File> files) {
+    return files.map((file) {
+      final bytes = file.readAsBytesSync();
+      return base64Encode(bytes);
+    }).toList();
   }
 
   @override
@@ -247,6 +235,7 @@ class _AddIngredientReceiptScreenState
                             return AddIngredientReceiptIngredientDetail(
                               ingredientDetail: ingredientDetail[index],
                               index: index + 1,
+                              ingredientIdsAndNames: ingredientIdsAndNames,
                               onAddIngredient: onAddIngredient,
                             );
                           },
@@ -261,20 +250,41 @@ class _AddIngredientReceiptScreenState
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(width: 8),
-                BakingUpLongActionButton(
-                  title: 'Confirm',
-                  color: lightGreenColor,
-                  isDisabled: false,
-                  dialogParams: BakingUpDialogParams(
-                    title: 'Confirm Adding Ingredient?',
-                    imgUrl: 'assets/icons/warning.png',
-                    content:
-                        'You\'re about to add new ingredient data to the warehouse.',
-                    grayButtonTitle: 'Cancel',
-                    secondButtonTitle: 'Confirm',
-                    secondButtonColor: lightGreenColor,
-                  ),
-                )
+                isAllEdited
+                    ? BakingUpLongActionButton(
+                        title: 'Done',
+                        color: isAtLeastOneEdited ? lightGreenColor : greyColor,
+                        isDisabled: !isAtLeastOneEdited,
+                        dialogParams: BakingUpDialogParams(
+                          title: 'Confirm Adding Ingredient?',
+                          imgUrl: 'assets/icons/warning.png',
+                          content: 'Are you sure you want to continue?',
+                          grayButtonTitle: 'Cancel',
+                          secondButtonTitle: 'Confirm',
+                          secondButtonColor: lightGreenColor,
+                          secondButtonOnClick: () async {
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      )
+                    : BakingUpLongActionButton(
+                        title: 'Done',
+                        color: isAtLeastOneEdited ? lightGreenColor : greyColor,
+                        isDisabled: !isAtLeastOneEdited,
+                        dialogParams: BakingUpDialogParams(
+                          title: 'Confirm Adding Ingredient?',
+                          imgUrl: 'assets/icons/warning.png',
+                          content:
+                              'Are you sure? All of the unedited ingredients will be discarded.',
+                          grayButtonTitle: 'Cancel',
+                          secondButtonTitle: 'Confirm',
+                          secondButtonColor: lightGreenColor,
+                          secondButtonOnClick: () async {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      )
               ],
             ),
           ),
@@ -295,57 +305,5 @@ class IngredientDetail {
     required this.ingredientQuantity,
     required this.ingredientPrice,
     required this.isEdited,
-  });
-}
-
-class AddIngredient {
-  final String ingredientEngName;
-  final String ingredientThaiName;
-  final String unit;
-  final String stockLessThan;
-  final String dayBeforeExpire;
-  final String supplier;
-  final String quantity;
-  final String price;
-  final String note;
-  final String ingredientBrand;
-  final String expirationDate;
-  final File image;
-
-  AddIngredient({
-    required this.ingredientEngName,
-    required this.ingredientThaiName,
-    required this.unit,
-    required this.stockLessThan,
-    required this.dayBeforeExpire,
-    required this.supplier,
-    required this.quantity,
-    required this.price,
-    required this.note,
-    required this.ingredientBrand,
-    required this.expirationDate,
-    required this.image,
-  });
-}
-
-class AddIngredientDetail {
-  final String ingredientId;
-  final String supplier;
-  final String quantity;
-  final String price;
-  final String note;
-  final String ingredientBrand;
-  final String expirationDate;
-  final File image;
-
-  AddIngredientDetail({
-    required this.ingredientId,
-    required this.supplier,
-    required this.quantity,
-    required this.price,
-    required this.note,
-    required this.ingredientBrand,
-    required this.expirationDate,
-    required this.image,
   });
 }
