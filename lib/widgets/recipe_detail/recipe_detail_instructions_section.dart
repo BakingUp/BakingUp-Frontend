@@ -21,7 +21,7 @@ class RecipeDetailInstructionsSection extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(25, 0, 25, 8),
       child: SizedBox(
-        height: MediaQuery.of(context).size.height - 550,
+        height: MediaQuery.of(context).size.height - 510,
         child: SingleChildScrollView(
           child: Column(
             children: [
