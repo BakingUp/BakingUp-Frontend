@@ -19,7 +19,7 @@ class OrderDetailTypeOfOrder extends StatelessWidget {
       case OrderType.festival:
         return 'Festival';
       case OrderType.specialDay:
-        return 'Spacial Day';
+        return 'Special Day';
       default:
         return 'Other';
     }
