@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/enum/order_platform.dart';
 import 'package:bakingup_frontend/enum/order_status.dart';
@@ -5,9 +6,9 @@ import 'package:bakingup_frontend/enum/order_type.dart';
 import 'package:bakingup_frontend/enum/pick_up_method.dart';
 import 'package:bakingup_frontend/models/instore_order_detail.dart';
 import 'package:bakingup_frontend/models/preorder_order_detail.dart';
-import 'package:bakingup_frontend/screens/add_edit_preorder_order_screen.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/string_extensions.dart';
+import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
 import 'package:bakingup_frontend/widgets/order_detail/order_detail_note.dart';
 import 'package:bakingup_frontend/widgets/order_detail/order_detail_order_date.dart';
 import 'package:bakingup_frontend/widgets/order_detail/order_detail_order_list.dart';
@@ -18,7 +19,6 @@ import 'package:bakingup_frontend/widgets/order_detail/order_detail_profit.dart'
 import 'package:bakingup_frontend/widgets/order_detail/order_detail_text.dart';
 import 'package:bakingup_frontend/widgets/order_detail/order_detail_total.dart';
 import 'package:bakingup_frontend/widgets/order_detail/order_detail_type_of_order.dart';
-import 'package:bakingup_frontend/widgets/order_detail/order_edit_button.dart';
 import 'package:bakingup_frontend/widgets/order_detail/status_dropdown.dart';
 import 'package:flutter/material.dart';
 
@@ -88,6 +88,11 @@ class _PreorderOrderDetailScreenState extends State<PreorderOrderDetailScreen> {
         orderNoteText = data.orderNoteText ?? '';
         orderNoteCreateAt = data.orderNoteCreateAt ?? '';
         selectedStatus = orderStatus.toString().split('.').last.capitalize();
+        
+        if (selectedStatus == 'Inprocess') {
+          selectedStatus = 'In-Process';
+        }
+
       });
     } catch (e) {
       setState(() {
@@ -100,6 +105,19 @@ class _PreorderOrderDetailScreenState extends State<PreorderOrderDetailScreen> {
     }
   }
 
+  String convertOrderStatus(String orderStatus) {
+    switch (orderStatus) {
+      case 'Done':
+        return 'DONE';
+      case 'In-Process':
+        return 'IN_PROCESS';
+      case 'Cancel':
+        return 'CANCEL';
+      default:
+        return '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,30 +125,29 @@ class _PreorderOrderDetailScreenState extends State<PreorderOrderDetailScreen> {
       appBar: AppBar(
         backgroundColor: backgroundColor,
         scrolledUnderElevation: 0,
-        title: Center(
-          child: Column(
-            children: [
-              Text(
-                'Order #$orderIndex',
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w500,
-                ),
+        centerTitle: true,
+        title: Column(
+          children: [
+            Text(
+              'Order #$orderIndex',
+              style: const TextStyle(
+                fontSize: 24,
+                fontFamily: 'Inter',
+                fontStyle: FontStyle.normal,
+                fontWeight: FontWeight.w500,
               ),
-              Text(
-                'Date: $orderDate $orderTime',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontFamily: 'Inter',
-                  fontStyle: FontStyle.normal,
-                  fontWeight: FontWeight.w300,
-                  color: blackColor,
-                ),
-              )
-            ],
-          ),
+            ),
+            Text(
+              'Date: $orderDate $orderTime',
+              style: TextStyle(
+                fontSize: 12,
+                fontFamily: 'Inter',
+                fontStyle: FontStyle.normal,
+                fontWeight: FontWeight.w300,
+                color: blackColor,
+              ),
+            )
+          ],
         ),
         leading: Builder(
           builder: (context) {
@@ -142,19 +159,6 @@ class _PreorderOrderDetailScreenState extends State<PreorderOrderDetailScreen> {
             );
           },
         ),
-        actions: [
-          Padding(
-              padding: const EdgeInsets.only(right: 14),
-              child: OrderEditButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              const AddEditPreorderOrderScreen()));
-                },
-              ))
-        ],
       ),
       body: SingleChildScrollView(
         physics: const ScrollPhysics(),
@@ -215,14 +219,39 @@ class _PreorderOrderDetailScreenState extends State<PreorderOrderDetailScreen> {
                     width: 20,
                   ),
                   StatusDropdown(
-                      options: const ['Done', 'In Process', 'Cancel'],
+                      options: const ['Done', 'In-Process', 'Cancel'],
                       orderStatus: orderStatus,
                       topic: 'Order status',
                       selectedOption: selectedStatus,
-                      onApply: (String value) {
-                        setState(() {
-                          selectedStatus = value;
-                        });
+                      onApply: (String value) async {
+                        try {
+                          final data = {
+                            "order_id": widget.orderId,
+                            "order_status": convertOrderStatus(value),
+                          };
+                          await NetworkService.instance
+                              .put(
+                                  "/api/order/editOrderStatus",
+                                  data: data)
+                              .then((res) {
+                            setState(() {
+                              selectedStatus = value;
+                            });
+                          });
+                        } catch (e) {
+                          log(e.toString());
+                          // ignore: use_build_context_synchronously
+                          Navigator.of(context).overlay!.insert(
+                            OverlayEntry(
+                              builder: (BuildContext context) {
+                                return const BakingUpErrorTopNotification(
+                                  message:
+                                      "Sorry, we couldn’t change the order status due to a system error. Please try again later.",
+                                );
+                              },
+                            ),
+                          );
+                        }
                       })
                 ],
               ),

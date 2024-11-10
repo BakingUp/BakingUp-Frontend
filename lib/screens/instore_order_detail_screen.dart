@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/enum/order_platform.dart';
 import 'package:bakingup_frontend/enum/order_status.dart';
@@ -5,6 +7,7 @@ import 'package:bakingup_frontend/enum/order_type.dart';
 import 'package:bakingup_frontend/models/instore_order_detail.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/string_extensions.dart';
+import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
 import 'package:bakingup_frontend/widgets/order_detail/order_detail_note.dart';
 import 'package:bakingup_frontend/widgets/order_detail/order_detail_order_date.dart';
 import 'package:bakingup_frontend/widgets/order_detail/order_detail_order_list.dart';
@@ -85,6 +88,19 @@ class _InStoreOrderDetailScreenState extends State<InStoreOrderDetailScreen> {
     }
   }
 
+  String convertOrderStatus(String orderStatus) {
+    switch (orderStatus) {
+      case 'Done':
+        return 'DONE';
+      case 'In-Process':
+        return 'IN_PROCESS';
+      case 'Cancel':
+        return 'CANCEL';
+      default:
+        return '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -153,10 +169,35 @@ class _InStoreOrderDetailScreenState extends State<InStoreOrderDetailScreen> {
                       orderStatus: orderStatus,
                       topic: 'Order status',
                       selectedOption: selectedStatus,
-                      onApply: (String value) {
-                        setState(() {
-                          selectedStatus = value;
-                        });
+                      onApply: (String value) async {
+                        try {
+                          final data = {
+                            "order_id": widget.orderId,
+                            "order_status": convertOrderStatus(value),
+                          };
+                          await NetworkService.instance
+                              .put(
+                                  "/api/order/editOrderStatus",
+                                  data: data)
+                              .then((res) {
+                            setState(() {
+                              selectedStatus = value;
+                            });
+                          });
+                        } catch (e) {
+                          log(e.toString());
+                          // ignore: use_build_context_synchronously
+                          Navigator.of(context).overlay!.insert(
+                            OverlayEntry(
+                              builder: (BuildContext context) {
+                                return const BakingUpErrorTopNotification(
+                                  message:
+                                      "Sorry, we couldn’t change the order status due to a system error. Please try again later.",
+                                );
+                              },
+                            ),
+                          );
+                        }
                       })
                 ],
               ),
@@ -212,8 +253,10 @@ class _InStoreOrderDetailScreenState extends State<InStoreOrderDetailScreen> {
                 height: 30,
               ),
               OrderDetailOrderList(
-                  orderStockList: orderStockList, isLoading: isLoading, isPreOrder: false,),
-              
+                orderStockList: orderStockList,
+                isLoading: isLoading,
+                isPreOrder: false,
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: Column(
@@ -239,5 +282,3 @@ class _InStoreOrderDetailScreenState extends State<InStoreOrderDetailScreen> {
     );
   }
 }
-
-

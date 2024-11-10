@@ -13,7 +13,7 @@ import 'package:bakingup_frontend/widgets/baking_up_no_result.dart';
 import 'package:bakingup_frontend/widgets/baking_up_search_bar.dart';
 import 'package:bakingup_frontend/widgets/baking_up_tab_button.dart';
 import 'package:bakingup_frontend/widgets/order/order_info_list.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class OrderScreen extends StatefulWidget {
@@ -51,21 +51,21 @@ class _OrderScreenState extends State<OrderScreen> {
 
   bool noResult = false;
 
-  String userID = "1";
-  // FirebaseAuth auth = FirebaseAuth.instance;
+  String userID = "";
+  FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
   void initState() {
     super.initState();
     _fetchAllList();
-    // getUserId();
+    getUserId();
   }
 
-  // void getUserId(){
-  //   setState(() {
-  //     userID = auth.currentUser!.uid;
-  //   });
-  // }
+  void getUserId(){
+    setState(() {
+      userID = auth.currentUser!.uid;
+    });
+  }
 
   Future<void> _fetchAllList() async {
     setState(() {
@@ -458,7 +458,7 @@ class _OrderScreenState extends State<OrderScreen> {
                     message: "No results found",
                   ),
                 )
-              else if (tabIndex == 1 && !noResult && filteredOrders.isNotEmpty)
+              else if (tabIndex == 1 && !noResult )
                 // have result + have filter result
                 OrderInfoList(
                   orderList: filteredOrders,

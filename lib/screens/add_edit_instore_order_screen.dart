@@ -30,7 +30,6 @@ class AddEditInstoreOrderScreen extends StatefulWidget {
 class _AddEditInstoreOrderScreenState extends State<AddEditInstoreOrderScreen> {
   int tabIndex = 1;
   bool isPreOrder = false;
-  final bool _isEdit = false;
   bool isError = false;
   String selectedOrderPlatform = '';
   String selectedOrderType = '';
@@ -530,13 +529,10 @@ class _AddEditInstoreOrderScreenState extends State<AddEditInstoreOrderScreen> {
                                   getIsDisabled() ? greyColor : lightGreenColor,
                               isDisabled: getIsDisabled(),
                               dialogParams: BakingUpDialogParams(
-                                title: _isEdit
-                                    ? 'Confirm Order Changes?'
-                                    : 'Confirm Adding Order?',
+                                title: 'Confirm Adding Order?',
                                 imgUrl: 'assets/icons/order_check_icon.png',
-                                content: _isEdit
-                                    ? 'You\'re about to save edited order.'
-                                    : 'Are you sure you want to place your order?',
+                                content:
+                                    'Are you sure you want to place your order?',
                                 grayButtonTitle: 'Cancel',
                                 secondButtonTitle: 'Confirm',
                                 secondButtonColor: lightGreenColor,
@@ -1093,17 +1089,15 @@ class _AddEditInstoreOrderScreenState extends State<AddEditInstoreOrderScreen> {
                           children: [
                             BakingUpLongActionButton(
                               title: 'Confirm',
-                              color:
-                                  getPreOrderIsDisabled() ? greyColor : lightGreenColor,
+                              color: getPreOrderIsDisabled()
+                                  ? greyColor
+                                  : lightGreenColor,
                               isDisabled: getPreOrderIsDisabled(),
                               dialogParams: BakingUpDialogParams(
-                                title: _isEdit
-                                    ? 'Confirm Order Changes?'
-                                    : 'Confirm Adding Order?',
+                                title: 'Confirm Adding Order?',
                                 imgUrl: 'assets/icons/order_check_icon.png',
-                                content: _isEdit
-                                    ? 'You\'re about to save edited order.'
-                                    : 'Are you sure you want to place your order?',
+                                content:
+                                    'Are you sure you want to place your order?',
                                 grayButtonTitle: 'Cancel',
                                 secondButtonTitle: 'Confirm',
                                 secondButtonColor: lightGreenColor,
@@ -1113,8 +1107,8 @@ class _AddEditInstoreOrderScreenState extends State<AddEditInstoreOrderScreen> {
                                       _controller.orderDateController.text);
                                   try {
                                     final data = {
-                                      "customer_name":
-                                          _controller.customerNameController.text,
+                                      "customer_name": _controller
+                                          .customerNameController.text,
                                       "phone_number": _controller
                                           .customerPhoneNumberController.text,
                                       "user_id": userID,
