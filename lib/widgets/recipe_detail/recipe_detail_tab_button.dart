@@ -37,15 +37,14 @@ class RecipeDetailTabButton extends StatelessWidget {
                 child: Text(
                   text,
                   style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 15,
                     fontFamily: 'Inter',
                     fontStyle: FontStyle.normal,
                     fontWeight: FontWeight.w600,
                   ),
                   textAlign: TextAlign.center,
                   maxLines: 2,
-                  overflow: TextOverflow
-                      .visible,
+                  overflow: TextOverflow.visible,
                 ),
               ),
             ],

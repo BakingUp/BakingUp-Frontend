@@ -37,7 +37,7 @@ class BakingUpTabButton extends StatelessWidget {
                 child: Text(
                   text,
                   style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 15,
                     fontFamily: 'Inter',
                     fontStyle: FontStyle.normal,
                     fontWeight: FontWeight.w600,

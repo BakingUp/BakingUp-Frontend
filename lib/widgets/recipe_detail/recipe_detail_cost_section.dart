@@ -466,7 +466,7 @@ class RecipeDetailCostSection extends StatelessWidget {
                   : calculateTotalPrice() / servings,
               isLoading: isLoading,
             ),
-            const SizedBox(height: 30.0),
+            const SizedBox(height: 200.0),
           ],
         ),
       ),
