@@ -276,6 +276,7 @@ class _WarehouseScreenState extends State<WarehouseScreen> {
                   fontStyle: FontStyle.normal,
                   fontWeight: FontWeight.w500),
             ),
+            centerTitle: true,
             leading: Builder(
               builder: (context) {
                 return IconButton(
