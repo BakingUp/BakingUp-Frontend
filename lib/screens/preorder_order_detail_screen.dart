@@ -5,6 +5,7 @@ import 'package:bakingup_frontend/enum/order_type.dart';
 import 'package:bakingup_frontend/enum/pick_up_method.dart';
 import 'package:bakingup_frontend/models/instore_order_detail.dart';
 import 'package:bakingup_frontend/models/preorder_order_detail.dart';
+import 'package:bakingup_frontend/screens/add_edit_preorder_order_screen.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/utilities/string_extensions.dart';
 import 'package:bakingup_frontend/widgets/order_detail/order_detail_note.dart';
@@ -141,8 +142,18 @@ class _PreorderOrderDetailScreenState extends State<PreorderOrderDetailScreen> {
             );
           },
         ),
-        actions: const [
-          Padding(padding: EdgeInsets.only(right: 14), child: OrderEditButton())
+        actions: [
+          Padding(
+              padding: const EdgeInsets.only(right: 14),
+              child: OrderEditButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const AddEditPreorderOrderScreen()));
+                },
+              ))
         ],
       ),
       body: SingleChildScrollView(
@@ -242,7 +253,8 @@ class _PreorderOrderDetailScreenState extends State<PreorderOrderDetailScreen> {
                         isLoading: isLoading,
                         text: pickUpTime,
                         label: 'Pick-Up Time'),
-                    OrderDetailPickUpMethod(isLoading: isLoading, pickUpMethod: pickUpMethod),
+                    OrderDetailPickUpMethod(
+                        isLoading: isLoading, pickUpMethod: pickUpMethod),
                     const SizedBox(
                       height: 15,
                     ),
@@ -255,7 +267,10 @@ class _PreorderOrderDetailScreenState extends State<PreorderOrderDetailScreen> {
                 height: 30,
               ),
               OrderDetailOrderList(
-                  orderStockList: orderStockList, isLoading: isLoading, isPreOrder: true,),
+                orderStockList: orderStockList,
+                isLoading: isLoading,
+                isPreOrder: true,
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: Column(

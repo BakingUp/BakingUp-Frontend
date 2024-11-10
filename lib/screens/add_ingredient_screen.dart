@@ -5,6 +5,7 @@ import 'dart:io';
 
 // Importing files
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/screens/add_ingredient_receipt_screen.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_container.dart';
 import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_name_text_field.dart';
@@ -13,11 +14,13 @@ import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredien
 import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dropdown.dart';
 import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
+import 'package:bakingup_frontend/widgets/baking_up_image_picker_bottom_sheet.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:bakingup_frontend/widgets/baking_up_image_picker.dart';
 import 'package:bakingup_frontend/models/add_edit_ingredient_controller.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddIngredientScreen extends StatefulWidget {
   const AddIngredientScreen({super.key});
@@ -27,10 +30,12 @@ class AddIngredientScreen extends StatefulWidget {
 }
 
 class _AddIngredientScreenState extends State<AddIngredientScreen> {
+  final picker = ImagePicker();
   final int _currentDrawerIndex = 4;
   final List<File> _images = [];
   String selectedUnit = '';
   final AddEditIngredientController _controller = AddEditIngredientController();
+  File _receiptImage = File('');
 
   String convertUnit(String unit) {
     switch (unit) {
@@ -92,11 +97,57 @@ class _AddIngredientScreenState extends State<AddIngredientScreen> {
     }).toList();
   }
 
+  Future takePhoto() async {
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 80,
+    );
+
+    setState(() {
+      _receiptImage = File(pickedFile!.path);
+    });
+  }
+
+  Future getImageGallery() async {
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 80,
+    );
+
+    setState(() {
+      _receiptImage = File(pickedFile!.path);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: IconButton(
+              icon: Image.asset('assets/icons/scan_receipt.png'),
+              onPressed: () async {
+                final result = await BakingUpImagePickerBottomSheet.show(
+                  context,
+                  takePhoto,
+                  getImageGallery,
+                );
+                if (result == true) {
+                  Navigator.push(
+                    // ignore: use_build_context_synchronously
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddIngredientReceiptScreen(file: _receiptImage),
+                    ),
+                  );
+                }
+              },
+            ),
+          ),
+        ],
         backgroundColor: backgroundColor,
         scrolledUnderElevation: 0,
         title: const Text(

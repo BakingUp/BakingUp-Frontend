@@ -8,6 +8,7 @@ class BakingUpDropdown extends StatelessWidget {
   final String selectedOption;
   final Function(String) onApply;
   final Function(int)? onApplyIndex;
+  final bool? disabled;
   const BakingUpDropdown({
     super.key,
     required this.options,
@@ -15,12 +16,16 @@ class BakingUpDropdown extends StatelessWidget {
     required this.selectedOption,
     required this.onApply,
     this.onApplyIndex,
+    this.disabled,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        if (disabled != null && disabled!) {
+          return;
+        }
         showModalBottomSheet<void>(
           context: context,
           backgroundColor: backgroundColor,
@@ -58,7 +63,9 @@ class BakingUpDropdown extends StatelessWidget {
                 fontWeight: FontWeight.w400,
               ),
             ),
-            const Icon(Icons.arrow_drop_down),
+            disabled == null || !disabled!
+                ? const Icon(Icons.arrow_drop_down)
+                : const SizedBox(width: 3),
           ],
         ),
       ),
