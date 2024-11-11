@@ -7,7 +7,6 @@ import 'package:bakingup_frontend/utilities/bottom_navbar.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
 import 'package:bakingup_frontend/widgets/order_detail/order_detail_text.dart';
-import 'package:bakingup_frontend/widgets/profile/production_queue_list.dart';
 import 'package:bakingup_frontend/widgets/profile/profile_title.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -195,8 +194,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                ProductionQueueList(
-                    productionQueue: productionQueue, isLoading: isLoading)
+                // ProductionQueueList(
+                //     productionQueue: productionQueue, isLoading: isLoading)
               ],
             ),
           ),
