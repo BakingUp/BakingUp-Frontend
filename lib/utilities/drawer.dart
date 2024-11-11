@@ -34,10 +34,10 @@ class _BakingUpDrawerState extends State<BakingUpDrawer> {
     });
 
     try {
-      final userID = user!.uid;
+      // final userID = user!.uid;
 
       final response = await NetworkService.instance
-          .get('/api/user/getUserInfo?user_id=$userID');
+          .get('/api/user/getUserInfo?user_id=eZFuBiirKNV224pn5RFhC18pzcG3');
 
       final userResponse = UserInfoResponse.fromJson(response);
       final data = userResponse.data;
