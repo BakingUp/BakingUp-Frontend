@@ -532,7 +532,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                   width: 0), // Hides vertical grid lines
                             ),
                             primaryYAxis: const NumericAxis(),
-                            // title: const ChartTitle(text: "Profit Chart"),
                             legend: const Legend(isVisible: true),
                             tooltipBehavior: TooltipBehavior(enable: true),
                             series: <CartesianSeries<ProfitThreshold, String>>[
