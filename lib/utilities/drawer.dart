@@ -18,8 +18,8 @@ class BakingUpDrawer extends StatefulWidget {
 
 class _BakingUpDrawerState extends State<BakingUpDrawer> {
   User? user;
-  UserInfoData userInfo =
-      UserInfoData(firstName: "", lastName: "", tel: "", storeName: "");
+  UserInfoData userInfo = UserInfoData(
+      firstName: "", lastName: "", tel: "", storeName: "", productionQueue: []);
   bool isLoading = true;
   bool isError = false;
 
