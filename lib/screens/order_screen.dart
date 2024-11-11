@@ -51,20 +51,12 @@ class _OrderScreenState extends State<OrderScreen> {
 
   bool noResult = false;
 
-  String userID = "";
-  FirebaseAuth auth = FirebaseAuth.instance;
+  String userID = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   void initState() {
     super.initState();
     _fetchAllList();
-    getUserId();
-  }
-
-  void getUserId(){
-    setState(() {
-      userID = auth.currentUser!.uid;
-    });
   }
 
   Future<void> _fetchAllList() async {
@@ -458,7 +450,7 @@ class _OrderScreenState extends State<OrderScreen> {
                     message: "No results found",
                   ),
                 )
-              else if (tabIndex == 1 && !noResult )
+              else if (tabIndex == 1 && !noResult)
                 // have result + have filter result
                 OrderInfoList(
                   orderList: filteredOrders,
