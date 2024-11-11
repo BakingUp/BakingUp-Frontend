@@ -21,7 +21,7 @@ class _ProfileScreenState extends State<SettingEditProfile> {
   String userID = '';
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  final int _currentDrawerIndex = 1;
+  // final int _currentDrawerIndex = 1;
   String firstName = '';
   String lastName = '';
   String tel = '';
@@ -73,9 +73,9 @@ class _ProfileScreenState extends State<SettingEditProfile> {
     }
   }
 
-  Future<void> _signOut() async {
-    await FirebaseAuth.instance.signOut();
-  }
+  // Future<void> _signOut() async {
+  //   await FirebaseAuth.instance.signOut();
+  // }
 
   @override
   Widget build(BuildContext context) {
