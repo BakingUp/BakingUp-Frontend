@@ -53,7 +53,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     try {
       final response = await NetworkService.instance
-          .get('/api/user/getUserInfo/?user_id=$userID');
+          .get('/api/user/getUserInfo/?user_id=eZFuBiirKNV224pn5RFhC18pzcG3');
       final userInfoResponse = UserInfoResponse.fromJson(response);
       final data = userInfoResponse.data;
 
@@ -65,7 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         lastName = data.lastName;
         tel = data.tel;
         storeName = data.storeName;
-        productionQueue = data.productionQueue!;
+        // productionQueue = data.productionQueue!;
       });
     } catch (e) {
       setState(() {
@@ -184,16 +184,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 OrderDetailText(
                     isLoading: isLoading, text: storeName, label: 'Store Name'),
                 const SizedBox(height: 20),
-                Text(
-                  productionQueue.isEmpty ? '' : 'Production Queue',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontFamily: 'Inter',
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 10),
+                // Text(
+                //   productionQueue.isEmpty ? '' : 'Production Queue',
+                //   style: const TextStyle(
+                //     fontSize: 20,
+                //     fontFamily: 'Inter',
+                //     fontStyle: FontStyle.normal,
+                //     fontWeight: FontWeight.bold,
+                //   ),
+                // ),
+                // const SizedBox(height: 10),
                 // ProductionQueueList(
                 //     productionQueue: productionQueue, isLoading: isLoading)
               ],
