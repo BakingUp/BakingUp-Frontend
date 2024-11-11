@@ -1,6 +1,7 @@
 import 'package:bakingup_frontend/constants/colors.dart';
 import 'package:bakingup_frontend/models/home.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shimmer/shimmer.dart';
 
 class HomeTopFilterItem extends StatelessWidget {
@@ -51,7 +52,7 @@ class HomeTopFilterItem extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(13),
                     child: Image.network(
-                      topProductList[index].url,
+                      '${dotenv.env['API_BASE_URL']}/${topProductList[index].url}',
                       width: 100,
                       height: 70,
                       fit: BoxFit.cover,
