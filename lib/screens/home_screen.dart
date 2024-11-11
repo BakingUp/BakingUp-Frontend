@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
       isLoadingDashboard = true;
       isError = false;
     });
-
+    print("31312");
     try {
       String filterStartDateTime = "";
       String filterEndDateTime = "";
@@ -64,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
         filterEndDateTime = endDateTime.toIso8601String();
       }
       final response = await NetworkService.instance.get(
-          '/api/home/getDashboardChartData?user_id={$userId}&start_date_time=$filterStartDateTime&end_date_time=$filterEndDateTime');
+          '/api/home/getDashboardChartData?user_id=eZFuBiirKNV224pn5RFhC18pzcG3&start_date_time=$filterStartDateTime&end_date_time=$filterEndDateTime');
       final chartDataResponse = DashboardChartResponse.fromJson(response);
       final data = chartDataResponse.data;
       setState(() {
@@ -127,6 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       final topProductListResponse = TopProductResponse.fromJson(response);
 
+      print(response);
       final dataResponse = topProductListResponse.data;
       setState(() {
         topProductList = dataResponse.products;
