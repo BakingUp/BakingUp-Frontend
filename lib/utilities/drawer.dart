@@ -18,8 +18,8 @@ class BakingUpDrawer extends StatefulWidget {
 
 class _BakingUpDrawerState extends State<BakingUpDrawer> {
   User? user;
-  UserInfoData userInfo =
-      UserInfoData(firstName: "", lastName: "", tel: "", storeName: "");
+  UserInfoData userInfo = UserInfoData(
+      firstName: "", lastName: "", tel: "", storeName: "", productionQueue: []);
   bool isLoading = true;
   bool isError = false;
 
@@ -200,7 +200,7 @@ class _BakingUpDrawerState extends State<BakingUpDrawer> {
                   index: 5,
                   currentDrawerIndex: widget.currentDrawerIndex ?? -1,
                   url: "assets/icons/setting_icon.png",
-                  title: "Setting",
+                  title: "Settings",
                   routeName: settingsRoute),
             ],
           ),

@@ -174,6 +174,7 @@ class _StockScreenState extends State<StockScreen> {
                 fontWeight: FontWeight.w500,
               ),
             ),
+            centerTitle: true,
             leading: Builder(
               builder: (context) {
                 return IconButton(

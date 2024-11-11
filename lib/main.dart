@@ -1,13 +1,13 @@
 import 'package:bakingup_frontend/constants/routes.dart';
 import 'package:bakingup_frontend/firebase_options.dart';
-import 'package:bakingup_frontend/screens/add_ingredient_screen.dart';
-import 'package:bakingup_frontend/screens/add_ingredient_stock_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_instore_order_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_recipe_ingredient_screen.dart';
-import 'package:bakingup_frontend/screens/add_recipe_screen.dart';
 import 'package:bakingup_frontend/screens/add_edit_stock_information_screen.dart';
-import 'package:bakingup_frontend/screens/add_stock_screen.dart';
 import 'package:bakingup_frontend/screens/add_ingredient_receipt_screen.dart';
+import 'package:bakingup_frontend/screens/add_ingredient_screen.dart';
+import 'package:bakingup_frontend/screens/add_ingredient_stock_screen.dart';
+import 'package:bakingup_frontend/screens/add_recipe_screen.dart';
+import 'package:bakingup_frontend/screens/add_stock_screen.dart';
 import 'package:bakingup_frontend/screens/auth/login_screen.dart';
 import 'package:bakingup_frontend/screens/auth/register_screen.dart';
 import 'package:bakingup_frontend/screens/change_password_screen.dart';
@@ -32,6 +32,7 @@ import 'package:bakingup_frontend/screens/warehouse_screen.dart';
 import 'package:bakingup_frontend/services/auth/auth_gate.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/services/noti_service.dart';
+import 'package:bakingup_frontend/widgets/setting/setting_edit_profile.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -173,6 +174,9 @@ class _MainAppState extends State<MainApp> {
           case editStockRoute:
             return MaterialPageRoute(
                 builder: (context) => const EditStockScreen());
+          case editProfile:
+            return MaterialPageRoute(
+                builder: (context) => const SettingEditProfile());
           default:
             return null;
         }

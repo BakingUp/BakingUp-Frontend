@@ -1,37 +1,32 @@
 import 'package:bakingup_frontend/constants/colors.dart';
-import 'package:bakingup_frontend/constants/routes.dart';
 import 'package:bakingup_frontend/models/user_info.dart';
 import 'package:bakingup_frontend/screens/setting_screen.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
-import 'package:bakingup_frontend/utilities/bottom_navbar.dart';
-import 'package:bakingup_frontend/utilities/drawer.dart';
-import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
+import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:bakingup_frontend/widgets/order_detail/order_detail_text.dart';
-import 'package:bakingup_frontend/widgets/profile/production_queue_list.dart';
 import 'package:bakingup_frontend/widgets/profile/profile_title.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+class SettingEditProfile extends StatefulWidget {
+  const SettingEditProfile({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<SettingEditProfile> createState() => _ProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends State<SettingEditProfile> {
   bool isLoading = true;
   bool isError = false;
   String userID = '';
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  final int _currentDrawerIndex = 1;
+  // final int _currentDrawerIndex = 1;
   String firstName = '';
   String lastName = '';
   String tel = '';
   String email = '';
   String storeName = '';
-  List<ProductionQueue> productionQueue = [];
 
   @override
   void initState() {
@@ -66,7 +61,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         lastName = data.lastName;
         tel = data.tel;
         storeName = data.storeName;
-        productionQueue = data.productionQueue!;
       });
     } catch (e) {
       setState(() {
@@ -79,9 +73,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  Future<void> _signOut() async {
-    await FirebaseAuth.instance.signOut();
-  }
+  // Future<void> _signOut() async {
+  //   await FirebaseAuth.instance.signOut();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -90,32 +84,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         backgroundColor: lightYellowColor,
         scrolledUnderElevation: 0,
+        title: const Text(
+          "Edit Profile",
+          style: TextStyle(
+              fontFamily: 'Inter',
+              fontSize: 24,
+              fontWeight: FontWeight.w500,
+              fontStyle: FontStyle.normal),
+        ),
+        centerTitle: true,
         leading: Builder(
           builder: (context) {
             return IconButton(
-              icon: const Icon(Icons.menu),
+              icon: const Icon(Icons.arrow_back_ios),
               onPressed: () {
-                Scaffold.of(context).openDrawer();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SettingScreen()));
               },
             );
           },
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SettingScreen()));
-            },
-          ),
-        ],
       ),
-      drawer: BakingUpDrawer(
-        currentDrawerIndex: _currentDrawerIndex,
-      ),
-      bottomNavigationBar: const BottomNavbar(),
       body: Column(
         children: [
           Stack(
@@ -185,56 +176,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 OrderDetailText(
                     isLoading: isLoading, text: storeName, label: 'Store Name'),
                 const SizedBox(height: 20),
-                Text(
-                  productionQueue.isEmpty ? '' : 'Production Queue',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontFamily: 'Inter',
-                    fontStyle: FontStyle.normal,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                ProductionQueueList(
-                    productionQueue: productionQueue, isLoading: isLoading)
               ],
             ),
           ),
-          const Spacer(),
-          TextButton(
-            onPressed: () {
-              showDialog(
-                  context: context,
-                  barrierColor: const Color(0xC7D9D9D9),
-                  builder: (BuildContext context) {
-                    return BakingUpDialog(
-                      title: 'Confirm Logout?',
-                      imgUrl: 'assets/icons/warning.png',
-                      content: 'Are you sure to logout from this account?',
-                      grayButtonTitle: 'Cancel',
-                      secondButtonTitle: 'Confirm',
-                      grayButtonOnClick: () {
-                        Navigator.pop(context);
-                      },
-                      secondButtonOnClick: () {
-                        _signOut();
-                        Navigator.of(context).pushNamedAndRemoveUntil(
-                            loginRoute, (route) => false);
-                      },
-                    );
-                  });
-            },
-            child: Text(
-              "Log out",
-              style: TextStyle(
-                color: redColor,
-                fontFamily: 'Poppins',
-                fontStyle: FontStyle.normal,
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-                height: 0.5,
+          const SizedBox(
+            height: 200,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              BakingUpLongActionButton(
+                title: "Cancel",
+                color: greyColor,
+                isDisabled: false,
               ),
-            ),
+              BakingUpLongActionButton(
+                title: "Confirm",
+                color: lightGreenColor,
+                isDisabled: false,
+              )
+            ],
           ),
           const SizedBox(
             height: 70,

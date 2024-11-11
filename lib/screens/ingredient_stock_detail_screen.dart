@@ -8,7 +8,6 @@ import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_sto
 import 'package:bakingup_frontend/models/ingredient_stock_detail.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
 import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_brand.dart';
-import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_edit_button.dart';
 import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_expiration_date.dart';
 import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_image.dart';
 import 'package:bakingup_frontend/widgets/ingredient_stock_detail/ingredient_stock_detail_ingredient_name.dart';
@@ -114,7 +113,6 @@ class _IngredientStockDetailScreenState
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IngredientStockDetailTitle(title: "Ingredient Information"),
-              IngredientStockDetailEditButton(),
             ],
           ),
           Stack(

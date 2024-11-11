@@ -10,6 +10,7 @@ import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart'
 import 'package:bakingup_frontend/widgets/baking_up_loading_dialog.dart';
 import 'package:bakingup_frontend/widgets/setting/setting_change_password_dialog.dart';
 import 'package:bakingup_frontend/widgets/setting/setting_change_password_email_dialog.dart';
+import 'package:bakingup_frontend/widgets/setting/setting_edit_profile.dart';
 import 'package:bakingup_frontend/widgets/setting/setting_expired_color_icon_modal.dart';
 import 'package:bakingup_frontend/widgets/setting/setting_fixcost_modal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -208,13 +209,14 @@ class _SettingScreenState extends State<SettingScreen> {
         backgroundColor: backgroundColor,
         appBar: AppBar(
           title: const Text(
-            "Setting",
+            "Settings",
             style: TextStyle(
                 fontSize: 24,
                 fontFamily: 'Inter',
                 fontStyle: FontStyle.normal,
                 fontWeight: FontWeight.w500),
           ),
+          centerTitle: true,
           backgroundColor: backgroundColor,
           leading: Builder(
             builder: (context) {
@@ -273,6 +275,12 @@ class _SettingScreenState extends State<SettingScreen> {
                   ),
                 ),
                 trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SettingEditProfile()));
+                },
               ),
               ListTile(
                 title: Padding(
