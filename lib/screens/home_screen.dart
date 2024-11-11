@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
       isLoadingDashboard = true;
       isError = false;
     });
-    print("31312");
+
     try {
       String filterStartDateTime = "";
       String filterEndDateTime = "";
@@ -127,7 +127,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
       final topProductListResponse = TopProductResponse.fromJson(response);
 
-      print(response);
       final dataResponse = topProductListResponse.data;
       setState(() {
         topProductList = dataResponse.products;
