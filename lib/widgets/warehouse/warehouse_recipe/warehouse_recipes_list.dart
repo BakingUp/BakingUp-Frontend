@@ -35,6 +35,14 @@ class WarehouseRecipeListState extends State<WarehouseRecipeList> {
 
     await NetworkService.instance
         .delete('/api/recipe/deleteRecipe?recipe_id=$recipeId');
+
+    if (widget.recipeList.length == 1) {
+      widget.fetchRecipeList();
+    } else {
+      setState(() {
+        widget.recipeList.removeWhere((recipe) => recipe.recipeID == recipeId);
+      });
+    }
   }
 
   @override
@@ -127,11 +135,6 @@ class WarehouseRecipeListState extends State<WarehouseRecipeList> {
                                     },
                                   );
                                 });
-                          },
-                          onDismissed: (direction) {
-                            setState(() {
-                              widget.recipeList.removeAt(index);
-                            });
                           },
                           child: WarehouseRecipesItem(
                             recipeList: widget.recipeList,

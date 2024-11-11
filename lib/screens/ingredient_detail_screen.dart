@@ -125,6 +125,7 @@ class _IngredientDetailScreenState extends State<IngredientDetailScreen> {
           BakingUpDetailImage(
             imageUrl: ingredientUrl,
             isLoading: isLoading,
+            isScaled: false,
           ),
           const IngredientDetailBackButtonContainer(
             children: [

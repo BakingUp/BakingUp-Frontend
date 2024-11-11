@@ -11,6 +11,7 @@ import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredien
 import 'package:bakingup_frontend/widgets/add_edit_ingredient/add_edit_ingredient_text_field.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
 import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
+import 'package:bakingup_frontend/widgets/baking_up_loading_dialog.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
 import 'package:bakingup_frontend/models/add_edit_ingredient_controller.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
@@ -382,6 +383,14 @@ class _EditIngredientScreenState extends State<EditIngredientScreen> {
                           "ingredient_id": widget.ingredientId,
                         };
                         log(data.toString());
+                        Navigator.of(context).pop();
+                        showDialog(
+                          context: context,
+                          barrierColor: const Color(0xC7D9D9D9),
+                          builder: (BuildContext context) {
+                            return const BakingUpLoadingDialog();
+                          },
+                        );
                         await NetworkService.instance
                             .put(
                           "/api/ingredient/editIngredient",

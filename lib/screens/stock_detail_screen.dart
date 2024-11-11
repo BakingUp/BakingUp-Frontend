@@ -130,7 +130,8 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
           BakingUpDetailImage(
             imageUrl: stockUrl,
             isLoading: isLoading,
-            noBaseURL: true,
+            noBaseURL: false,
+            isScaled: false,
           ),
           const StockDetailBackButtonContainer(
             children: [

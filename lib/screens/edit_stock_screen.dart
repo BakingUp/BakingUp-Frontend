@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:bakingup_frontend/models/edit_stock_detail.dart';
 import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
+import 'package:bakingup_frontend/widgets/baking_up_loading_dialog.dart';
 import 'package:flutter/material.dart';
 
 // Importing files
@@ -416,16 +417,14 @@ class _EditStockScreenState extends State<EditStockScreen> {
                   title: 'Confirm',
                   color: _controller.lstController.text.isEmpty ||
                           _controller.sellingPriceController.text.isEmpty ||
-                          _controller.sellingPriceController.text.isEmpty ||
                           _controller.stockLessThanController.text.isEmpty ||
-                          selectedBakeryRecipe.isEmpty
+                          _controller.expirationDateController.text.isEmpty
                       ? greyColor
                       : lightGreenColor,
                   isDisabled: _controller.lstController.text.isEmpty ||
                       _controller.sellingPriceController.text.isEmpty ||
-                      _controller.sellingPriceController.text.isEmpty ||
                       _controller.stockLessThanController.text.isEmpty ||
-                      selectedBakeryRecipe.isEmpty,
+                      _controller.expirationDateController.text.isEmpty,
                   dialogParams: BakingUpDialogParams(
                     title: 'Confirm Stock Changes?',
                     imgUrl: 'assets/icons/warning.png',
@@ -445,6 +444,14 @@ class _EditStockScreenState extends State<EditStockScreen> {
                           "stock_less_than":
                               _controller.stockLessThanController.text,
                         };
+                        Navigator.of(context).pop();
+                        showDialog(
+                          context: context,
+                          barrierColor: const Color(0xC7D9D9D9),
+                          builder: (BuildContext context) {
+                            return const BakingUpLoadingDialog();
+                          },
+                        );
                         await NetworkService.instance
                             .put(
                           "/api/stock/editStock",
