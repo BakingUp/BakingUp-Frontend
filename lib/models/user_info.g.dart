@@ -25,6 +25,9 @@ UserInfoData _$UserInfoDataFromJson(Map<String, dynamic> json) => UserInfoData(
       lastName: json['last_name'] as String,
       tel: json['tel'] as String,
       storeName: json['store_name'] as String,
+      productionQueue: (json['production_queue'] as List<dynamic>?)
+          ?.map((e) => ProductionQueue.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$UserInfoDataToJson(UserInfoData instance) =>
@@ -33,6 +36,7 @@ Map<String, dynamic> _$UserInfoDataToJson(UserInfoData instance) =>
       'last_name': instance.lastName,
       'tel': instance.tel,
       'store_name': instance.storeName,
+      'production_queue': instance.productionQueue,
     };
 
 ProductionQueue _$ProductionQueueFromJson(Map<String, dynamic> json) =>

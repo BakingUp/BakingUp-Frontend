@@ -28,12 +28,15 @@ class UserInfoData {
   final String tel;
   @JsonKey(name: 'store_name')
   final String storeName;
+  @JsonKey(name: 'production_queue')
+  final List<ProductionQueue>? productionQueue;
 
   UserInfoData({
     required this.firstName,
     required this.lastName,
     required this.tel,
     required this.storeName,
+    required this.productionQueue,
   });
 
   factory UserInfoData.fromJson(Map<String, dynamic> json) =>

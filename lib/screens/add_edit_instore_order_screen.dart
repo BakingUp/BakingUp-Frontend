@@ -89,8 +89,8 @@ class _AddEditInstoreOrderScreenState extends State<AddEditInstoreOrderScreen> {
         return 'PERSONAL';
       case 'Bulk-Order':
         return 'BULK_ORDER';
-      case 'Spacial-day':
-        return 'SPACIAL_DAY';
+      case 'Special-day':
+        return 'SPECIAL_DAY';
       case 'Festival':
         return 'FESTIVAL';
       case 'Other':
@@ -371,7 +371,7 @@ class _AddEditInstoreOrderScreenState extends State<AddEditInstoreOrderScreen> {
                               options: const [
                                 'Personal',
                                 'Bulk-Order',
-                                'Spacial-day',
+                                'Special-day',
                                 'Festival',
                                 'Other'
                               ],
@@ -789,7 +789,7 @@ class _AddEditInstoreOrderScreenState extends State<AddEditInstoreOrderScreen> {
                               options: const [
                                 'Personal',
                                 'Bulk-Order',
-                                'Spacial-day',
+                                'Special-day',
                                 'Festival',
                                 'Other'
                               ],
