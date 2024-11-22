@@ -4,6 +4,7 @@ import 'package:bakingup_frontend/models/add_edit_order_controller.dart';
 import 'package:bakingup_frontend/models/stock_order_page.dart';
 import 'package:bakingup_frontend/screens/auth/add_edit_order_stock_screen.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:bakingup_frontend/utilities/regex.dart';
 import 'package:bakingup_frontend/widgets/add_edit_order/add_edit_order_date_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_order/add_edit_order_note_text_field.dart';
 import 'package:bakingup_frontend/widgets/add_edit_order/add_edit_order_stock_main.dart';
@@ -487,7 +488,7 @@ class _AddEditInstoreOrderScreenState extends State<AddEditInstoreOrderScreen> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Text(
-                                  'Total: $total',
+                                  'Total: ${NumberFormat('#,##0.00').format(total).replaceAll(removeTrailingZeros, '')}',
                                   style: const TextStyle(
                                       fontSize: 16,
                                       fontFamily: 'Inter',
@@ -504,7 +505,7 @@ class _AddEditInstoreOrderScreenState extends State<AddEditInstoreOrderScreen> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Text(
-                                  'Profit: $profit',
+                                  'Profit: ${NumberFormat('#,##0.00').format(profit).replaceAll(removeTrailingZeros, '')}',
                                   style: const TextStyle(
                                       fontSize: 16,
                                       fontFamily: 'Inter',
@@ -1059,7 +1060,7 @@ class _AddEditInstoreOrderScreenState extends State<AddEditInstoreOrderScreen> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Text(
-                                  'Total: $total',
+                                  'Total: ${NumberFormat('#,##0.00').format(total).replaceAll(removeTrailingZeros, '')}',
                                   style: const TextStyle(
                                       fontSize: 16,
                                       fontFamily: 'Inter',
@@ -1076,7 +1077,7 @@ class _AddEditInstoreOrderScreenState extends State<AddEditInstoreOrderScreen> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Text(
-                                  'Profit: $profit',
+                                  'Profit: ${NumberFormat('#,##0.00').format(profit).replaceAll(removeTrailingZeros, '')}',
                                   style: const TextStyle(
                                       fontSize: 16,
                                       fontFamily: 'Inter',

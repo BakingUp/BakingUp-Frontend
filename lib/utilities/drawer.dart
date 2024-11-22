@@ -200,7 +200,7 @@ class _BakingUpDrawerState extends State<BakingUpDrawer> {
                   index: 5,
                   currentDrawerIndex: widget.currentDrawerIndex ?? -1,
                   url: "assets/icons/setting_icon.png",
-                  title: "Setting",
+                  title: "Settings",
                   routeName: settingsRoute),
             ],
           ),

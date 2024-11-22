@@ -30,3 +30,4 @@ const stockDetailInformationRoute = '/stockDetailInformation/';
 const editIngredientRoute = '/editIngredient/';
 const editIngredientStockRoute = '/editIngredientStock/';
 const editStockRoute = '/editStock/';
+const editProfile = '/editProfile/';
