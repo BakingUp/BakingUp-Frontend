@@ -87,6 +87,7 @@ class _ProfileScreenState extends State<SettingEditProfile> {
 
       await NetworkService.instance.put("/api/user/editUserInfo", data: data);
     } catch (e) {
+      //ignore: use_build_context_synchronously
       Navigator.of(context).overlay!.insert(
         OverlayEntry(
           builder: (BuildContext context) {
