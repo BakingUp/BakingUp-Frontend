@@ -42,7 +42,7 @@ class OrderDetailProfit extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               Text(
-                profit.toString(),
+                profit.toStringAsFixed(2),
                 style: const TextStyle(
                   fontSize: 18,
                   fontFamily: 'Inter',
