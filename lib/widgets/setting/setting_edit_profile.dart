@@ -1,10 +1,12 @@
 import 'package:bakingup_frontend/constants/colors.dart';
+import 'package:bakingup_frontend/models/setting/setting_edit_profile_controller.dart';
 import 'package:bakingup_frontend/models/user_info.dart';
-import 'package:bakingup_frontend/screens/setting_screen.dart';
 import 'package:bakingup_frontend/services/network_service.dart';
+import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
+import 'package:bakingup_frontend/widgets/baking_up_error_top_notification.dart';
 import 'package:bakingup_frontend/widgets/baking_up_long_action_button.dart';
-import 'package:bakingup_frontend/widgets/order_detail/order_detail_text.dart';
 import 'package:bakingup_frontend/widgets/profile/profile_title.dart';
+import 'package:bakingup_frontend/widgets/setting/setting_edit_profile_item.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -21,12 +23,10 @@ class _ProfileScreenState extends State<SettingEditProfile> {
   String userID = '';
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  // final int _currentDrawerIndex = 1;
+  final SettingEditProfileController _editProfileControllers =
+      SettingEditProfileController();
   String firstName = '';
   String lastName = '';
-  String tel = '';
-  String email = '';
-  String storeName = '';
 
   @override
   void initState() {
@@ -38,7 +38,7 @@ class _ProfileScreenState extends State<SettingEditProfile> {
   void getUserInfo() {
     setState(() {
       userID = auth.currentUser!.uid;
-      email = auth.currentUser!.email!;
+      _editProfileControllers.email = auth.currentUser!.email!;
     });
   }
 
@@ -59,8 +59,10 @@ class _ProfileScreenState extends State<SettingEditProfile> {
       setState(() {
         firstName = data.firstName;
         lastName = data.lastName;
-        tel = data.tel;
-        storeName = data.storeName;
+        _editProfileControllers.firstName = data.firstName;
+        _editProfileControllers.lastName = data.lastName;
+        _editProfileControllers.tel = data.tel;
+        _editProfileControllers.storeName = data.storeName;
       });
     } catch (e) {
       setState(() {
@@ -73,13 +75,37 @@ class _ProfileScreenState extends State<SettingEditProfile> {
     }
   }
 
-  // Future<void> _signOut() async {
-  //   await FirebaseAuth.instance.signOut();
-  // }
+  Future<void> _editUserProfile() async {
+    try {
+      var data = {
+        "user_id": userID,
+        "first_name": _editProfileControllers.firstName,
+        "last_name": _editProfileControllers.lastName,
+        "tel": _editProfileControllers.tel,
+        "store_name": _editProfileControllers.storeName,
+      };
+
+      await NetworkService.instance.put("/api/user/editUserInfo", data: data);
+    } catch (e) {
+      Navigator.of(context).overlay!.insert(
+        OverlayEntry(
+          builder: (BuildContext context) {
+            return const BakingUpErrorTopNotification(
+              message:
+                  "Sorry, we couldn’t update your user information due to a system error. Please try again later.",
+            );
+          },
+        ),
+      );
+    }
+
+    _fetchUserInfo();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: backgroundColor,
       appBar: AppBar(
         backgroundColor: lightYellowColor,
@@ -98,109 +124,144 @@ class _ProfileScreenState extends State<SettingEditProfile> {
             return IconButton(
               icon: const Icon(Icons.arrow_back_ios),
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SettingScreen()));
+                Navigator.of(context).pop();
               },
             );
           },
         ),
       ),
-      body: Column(
-        children: [
-          Stack(
-            alignment: Alignment.center,
-            clipBehavior: Clip.none,
-            children: [
-              Container(
-                color: lightYellowColor,
-                height: 70,
-                width: double.infinity,
-              ),
-              Positioned(
-                top: 10,
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 60,
-                      backgroundColor: darkBrownColor,
-                      child: Text(
-                        !isLoading &&
-                                firstName.isNotEmpty &&
-                                lastName.isNotEmpty
-                            ? "${firstName[0]}${lastName[0]}"
-                            : "",
-                        style: TextStyle(
-                          fontSize: 32,
-                          color: whiteColor,
-                          fontWeight: FontWeight.bold,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(
+              alignment: Alignment.center,
+              clipBehavior: Clip.none,
+              children: [
+                Container(
+                  color: lightYellowColor,
+                  height: 70,
+                  width: double.infinity,
+                ),
+                Positioned(
+                  top: 10,
+                  child: Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 60,
+                        backgroundColor: darkBrownColor,
+                        child: Text(
+                          !isLoading &&
+                                  firstName.isNotEmpty &&
+                                  lastName.isNotEmpty
+                              ? "${firstName[0]}${lastName[0]}"
+                              : "",
+                          style: TextStyle(
+                            fontSize: 32,
+                            color: whiteColor,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    ProfileTitle(
-                        isLoading: isLoading,
-                        firstName: firstName,
-                        lastName: lastName)
-                  ],
+                      const SizedBox(height: 10),
+                      ProfileTitle(
+                          isLoading: isLoading,
+                          firstName: firstName,
+                          lastName: lastName)
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 130),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                OrderDetailText(
-                    isLoading: isLoading, text: firstName, label: 'Firstname'),
-                const SizedBox(
-                  height: 5,
-                ),
-                OrderDetailText(
-                    isLoading: isLoading, text: lastName, label: 'Lastname'),
-                const SizedBox(
-                  height: 5,
-                ),
-                OrderDetailText(isLoading: isLoading, text: tel, label: 'Tel'),
-                const SizedBox(
-                  height: 5,
-                ),
-                OrderDetailText(
-                    isLoading: isLoading, text: email, label: 'Email'),
-                const SizedBox(
-                  height: 5,
-                ),
-                OrderDetailText(
-                    isLoading: isLoading, text: storeName, label: 'Store Name'),
-                const SizedBox(height: 20),
               ],
             ),
-          ),
-          const SizedBox(
-            height: 200,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              BakingUpLongActionButton(
-                title: "Cancel",
-                color: greyColor,
-                isDisabled: false,
+            const SizedBox(height: 130),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SettingEditProfileItem(
+                    isLoading: isLoading,
+                    label: "Firstname",
+                    text: _editProfileControllers.firstNameController,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  SettingEditProfileItem(
+                    isLoading: isLoading,
+                    label: "Lastname",
+                    text: _editProfileControllers.lastNameController,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  SettingEditProfileItem(
+                    isLoading: isLoading,
+                    label: "Tel",
+                    text: _editProfileControllers.telController,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  SettingEditProfileItem(
+                    isLoading: isLoading,
+                    label: "Email",
+                    text: _editProfileControllers.emailController,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  SettingEditProfileItem(
+                    isLoading: isLoading,
+                    label: "Store Name",
+                    text: _editProfileControllers.storeNameController,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  const SizedBox(height: 20),
+                ],
               ),
-              BakingUpLongActionButton(
-                title: "Confirm",
-                color: lightGreenColor,
-                isDisabled: false,
-              )
-            ],
-          ),
-          const SizedBox(
-            height: 70,
-          ),
-        ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                BakingUpLongActionButton(
+                  title: "Cancel",
+                  color: greyColor,
+                  isDisabled: false,
+                  onClick: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                BakingUpLongActionButton(
+                  title: "Save",
+                  color: lightGreenColor,
+                  isDisabled: false,
+                  onClick: () {
+                    _editUserProfile();
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return BakingUpDialog(
+                            title: 'Update user info Successfully',
+                            imgUrl: 'assets/icons/success.png',
+                            content:
+                                'Your user information have been updated successfully',
+                            grayButtonTitle: 'OK',
+                            grayButtonOnClick: () {
+                              Navigator.of(context).pop();
+                            },
+                          );
+                        });
+                  },
+                )
+              ],
+            ),
+            const SizedBox(
+              height: 70,
+            ),
+          ],
+        ),
       ),
     );
   }
