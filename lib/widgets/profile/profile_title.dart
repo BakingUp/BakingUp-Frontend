@@ -35,7 +35,9 @@ class ProfileTitle extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                '$firstName ${lastName[0]}.',
+                firstName.isNotEmpty && lastName.isNotEmpty
+                    ? '$firstName ${lastName[0]}.'
+                    : "",
                 style: const TextStyle(
                   fontSize: 24,
                   fontFamily: 'Inter',

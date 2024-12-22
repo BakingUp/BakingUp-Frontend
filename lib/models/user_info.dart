@@ -47,9 +47,9 @@ class UserInfoData {
 @JsonSerializable()
 class ProductionQueue {
   @JsonKey(name: 'order_index')
-  final String orderIndex;
+  final int orderIndex;
   final String name;
-  final String quantity;
+  final int quantity;
   @JsonKey(name: 'pick_up_date')
   final String pickUpDate;
   @JsonKey(name: 'recipe_url')
