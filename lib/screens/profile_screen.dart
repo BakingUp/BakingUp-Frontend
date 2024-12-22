@@ -7,6 +7,7 @@ import 'package:bakingup_frontend/utilities/bottom_navbar.dart';
 import 'package:bakingup_frontend/utilities/drawer.dart';
 import 'package:bakingup_frontend/widgets/baking_up_dialog.dart';
 import 'package:bakingup_frontend/widgets/order_detail/order_detail_text.dart';
+import 'package:bakingup_frontend/widgets/profile/production_queue_list.dart';
 import 'package:bakingup_frontend/widgets/profile/profile_title.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -54,20 +55,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
     try {
       final response = await NetworkService.instance
           .get('/api/user/getUserInfo/?user_id=$userID');
-      final userInfoResponse = UserInfoResponse.fromJson(response);
-      final data = userInfoResponse.data;
 
       if (response == null) {
         throw Exception("Response is null");
       }
+      final userInfoResponse = UserInfoResponse.fromJson(response);
+
+      final data = userInfoResponse.data;
+
       setState(() {
         firstName = data.firstName;
         lastName = data.lastName;
         tel = data.tel;
         storeName = data.storeName;
-        productionQueue = data.productionQueue!;
+        productionQueue = data.productionQueue ?? [];
       });
     } catch (e) {
+      debugPrint("Error fetching user info: $e");
       setState(() {
         isError = true;
       });
@@ -193,13 +197,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 10),
-                // ProductionQueueList(
-                //     productionQueue: productionQueue, isLoading: isLoading)
               ],
             ),
           ),
-          const Spacer(),
+          const SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: ProductionQueueList(
+                productionQueue: productionQueue, isLoading: isLoading),
+          ),
+          // const Spacer(),
           TextButton(
             onPressed: () {
               showDialog(
@@ -234,9 +241,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 height: 0.5,
               ),
             ),
-          ),
-          const SizedBox(
-            height: 70,
           ),
         ],
       ),

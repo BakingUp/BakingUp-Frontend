@@ -41,9 +41,9 @@ Map<String, dynamic> _$UserInfoDataToJson(UserInfoData instance) =>
 
 ProductionQueue _$ProductionQueueFromJson(Map<String, dynamic> json) =>
     ProductionQueue(
-      orderIndex: json['order_index'] as String,
+      orderIndex: (json['order_index'] as num).toInt(),
       name: json['name'] as String,
-      quantity: json['quantity'] as String,
+      quantity: (json['quantity'] as num).toInt(),
       pickUpDate: json['pick_up_date'] as String,
       imgUrl: json['recipe_url'] as String,
     );
