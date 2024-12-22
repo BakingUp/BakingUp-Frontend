@@ -1,5 +1,6 @@
 import 'package:bakingup_frontend/models/user_info.dart';
 import 'package:bakingup_frontend/widgets/profile/production_detail.dart';
+import 'package:bakingup_frontend/widgets/profile/production_detail_loading.dart';
 import 'package:flutter/material.dart';
 
 class ProductionQueueList extends StatefulWidget {
@@ -25,7 +26,7 @@ class _ProductionQueueListState extends State<ProductionQueueList> {
               padding: const EdgeInsets.all(0),
               itemCount: 1,
               itemBuilder: (context, index) {
-                // return "Loading";
+                return const ProductionDetailLoading();
               },
             ),
           )
